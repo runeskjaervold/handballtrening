@@ -69,16 +69,35 @@
             to { transform: translateX(-20px); opacity: 0; }
         }
 
-        /* LOADER */
+        /* 2. LOADER MED ZOOM-UT EFFEKT */
         #loader { 
             position: fixed; inset: 0; 
             background: var(--accent); 
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
+            
+            /* Transition for selve bakgrunnen */
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
+        
         .loader-icon {
             width: 120px; height: auto;
-            animation: pulse-slow 2s ease-in-out infinite;
+            /* Transition for bildet (Zoom og Fade) */
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease-in-out;
+            animation: pulse-slow 2s ease-in-out infinite; /* Puls mens den venter */
         }
+
+        /* KLASSEN SOM TRIGGES NÅR FERDIG */
+        #loader.loaded {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #loader.loaded .loader-icon {
+            transform: scale(30); /* Zoomer enormt inn */
+            opacity: 0; /* Fader ut samtidig */
+        }
+        
         @keyframes pulse-slow {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.1); opacity: 0.9; }
@@ -355,10 +374,10 @@
                 renderLibrary();
                 renderFilters();
                 
+                // NY: LOAD ANIMATION (TRIGGER CLASS)
                 setTimeout(() => {
-                    document.getElementById('loader').style.opacity = 0;
-                    setTimeout(() => document.getElementById('loader').style.display='none', 300);
-                }, 500);
+                    document.getElementById('loader').classList.add('loaded');
+                }, 800); // Litt mer tid for å se ikonet
 
             } catch(e) { alert("Feil ved lasting."); }
             
@@ -451,12 +470,11 @@
             const cont = document.getElementById('home-scroll');
             cont.innerHTML = '';
             
-            // KRONOLOGISK SORTERING (Eldst først -> Nyest sist)
             const dates = Object.keys(data.sessions).sort((a, b) => new Date(a) - new Date(b));
             
             if(!dates.length) cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
             
-            let lastWeekKey = null; // Unik nøkkel for uke+år
+            let lastWeekKey = null; 
             const days = ['søn','man','tir','ons','tor','fre','lør']; 
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
 
@@ -478,9 +496,9 @@
 
                 const card = document.createElement('div');
                 card.className = 'session-card slide-up';
-                // VIKTIG: setAttribute for å sikre unike events
                 card.setAttribute('onclick', `window.openPres('${d}')`);
                 
+                // ENDRET REKKEFØLGE: ONS - 13 - JUL
                 card.innerHTML = `
                     <div class="date-box">
                         <span class="db-weekday">${dayName.toUpperCase()}</span>
