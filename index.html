@@ -62,22 +62,22 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 2. NY LOADER (ROTERENDE TEKST) */
+        /* 2. NY LOADER (STOR TEKST) */
         #loader { 
             position: fixed; inset: 0; background: var(--bg); 
-            z-index: 30000; /* Høyest av alt */
-            display: flex; justify-content: center; align-items: center; 
+            z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
         .spinner-wrap {
-            width: 140px; height: 140px;
-            animation: rotate-center 8s linear infinite;
+            width: 200px; height: 200px; /* Større sirkel */
+            animation: rotate-center 10s linear infinite;
         }
         .spinner-text {
             width: 100%; height: 100%;
-            fill: #333;
-            font-weight: 800; letter-spacing: 2px;
+            fill: #222;
+            font-weight: 800; 
+            letter-spacing: 6px; /* Luft mellom bokstavene */
             text-transform: uppercase;
-            font-size: 14px;
+            font-size: 24px; /* Stor tekst */
         }
         @keyframes rotate-center {
              from { transform: rotate(0deg); }
@@ -168,13 +168,13 @@
             box-shadow: var(--pill-shadow); 
             z-index: 9999; cursor: pointer;
             white-space: nowrap;
-            pointer-events: auto !important; /* TVING KLIKK */
+            pointer-events: auto !important;
         }
         #btn-close-pres {
             position: absolute; top: 20px; right: 20px; background: #f0f0f0; 
             width: 44px; height: 44px; border-radius: 50%; 
             z-index: 9999; cursor: pointer;
-            pointer-events: auto !important; /* TVING KLIKK */
+            pointer-events: auto !important;
         }
 
         /* MODALS */
@@ -214,8 +214,8 @@
         <div class="modal-box slide-up">
             <h3>Velg dato</h3>
             <input type="date" id="input-date">
-            <button class="modal-btn center-grid" id="btn-create-session">Planlegg økt</button>
-            <button onclick="closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
+            <button class="modal-btn center-grid" onclick="window.confirmDate()">Planlegg økt</button>
+            <button onclick="window.closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
 
@@ -223,18 +223,18 @@
         <div class="modal-box slide-up">
             <h3>Endre navn</h3>
             <input type="text" id="input-title" placeholder="Navn på økt">
-            <button class="modal-btn center-grid" onclick="confirmTitle()">Lagre navn</button>
-            <button onclick="closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
+            <button class="modal-btn center-grid" onclick="window.confirmTitle()">Lagre navn</button>
+            <button onclick="window.closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
 
-    <div id="modal-ex" class="modal-bg" onclick="closeModals()">
+    <div id="modal-ex" class="modal-bg" onclick="window.closeModals()">
         <div class="modal-box slide-up" onclick="event.stopPropagation()" style="text-align:left;">
             <h3 id="ex-title" class="cap-first"></h3>
             <p id="ex-meta" style="color:#666; font-size:0.9rem; margin: 5px 0 15px 0;"></p>
             <p id="ex-desc" style="line-height:1.5; margin-bottom:20px;"></p>
             <div id="ex-tags" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:20px;"></div>
-            <button class="modal-btn center-grid" onclick="closeModals()">Lukk</button>
+            <button class="modal-btn center-grid" onclick="window.closeModals()">Lukk</button>
         </div>
     </div>
 
@@ -242,25 +242,25 @@
         <header><h1>Mine økter</h1></header>
         <div id="home-scroll"></div>
         <div class="fab-pill slide-up">
-            <button class="fab-btn center-grid" onclick="startNewSession()">
+            <button class="fab-btn center-grid" onclick="window.startNewSession()">
                 <span class="material-icons-round">add</span>
             </button>
         </div>
     </div>
 
     <div id="view-pres" class="view">
-        <button id="btn-close-pres" class="center-grid" onclick="goHome()"><span class="material-icons-round">close</span></button>
+        <button id="btn-close-pres" class="center-grid" onclick="window.goHome()"><span class="material-icons-round">close</span></button>
         <div id="pres-content" class="slide-up"></div>
-        <button id="btn-edit-pres" class="slide-up center-grid">Rediger</button>
+        <button id="btn-edit-pres" class="slide-up center-grid" onclick="window.editCurrentSession()">Rediger</button>
     </div>
 
     <div id="view-editor" class="view">
         <div id="editor-top">
-            <button class="nav-icon center-grid" onclick="saveSession()">
+            <button class="nav-icon center-grid" onclick="window.saveSession()">
                 <span class="material-icons-round" id="icon-save">save</span>
             </button>
-            <span id="session-title-edit" onclick="openTitleModal()">Navn på økt</span>
-            <button class="nav-icon center-grid" onclick="goHome()">
+            <span id="session-title-edit" onclick="window.openTitleModal()">Navn på økt</span>
+            <button class="nav-icon center-grid" onclick="window.goHome()">
                 <span class="material-icons-round">close</span>
             </button>
         </div>
@@ -287,13 +287,6 @@
         document.addEventListener('DOMContentLoaded', init);
 
         async function init() {
-            // MANUELLE LYTTERE FOR Å SIKRE AT KNAPPENE VIRKER
-            const btnCreate = document.getElementById('btn-create-session');
-            if(btnCreate) btnCreate.addEventListener('click', confirmDate);
-
-            const btnEdit = document.getElementById('btn-edit-pres');
-            if(btnEdit) btnEdit.addEventListener('click', editCurrentSession);
-
             try {
                 const res = await fetch(API_URL + "?v=" + Date.now());
                 const json = await res.json();
@@ -368,33 +361,34 @@
                         <span class="session-date">${niceDate}</span>
                         <span class="session-name cap-first">${s.navn}</span>
                     </div>
-                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); toggleDel('${d}')">
+                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.toggleDel('${d}')">
                         <span class="material-icons-round">more_vert</span>
                     </div>
                 `;
-                card.onclick = () => openPres(d);
+                card.onclick = () => window.openPres(d);
                 cont.appendChild(card);
             });
         }
 
-        function toggleDel(d) {
+        /* --- GLOBAL FUNCTIONS (WINDOW) --- */
+        
+        window.toggleDel = function(d) {
             const el = document.getElementById(`act-${d}`);
             if(el.querySelector('button')) {
-                deleteSession(d);
+                window.deleteSession(d);
             } else {
                 el.innerHTML = `<button class="del-btn-home fade-in">Slett</button>`;
                 setTimeout(() => { if(el.innerHTML.includes('button')) el.innerHTML = `<span class="material-icons-round">more_vert</span>`; }, 3000);
             }
-        }
+        };
 
-        async function deleteSession(d) {
+        window.deleteSession = async function(d) {
             delete data.sessions[d];
             renderHome();
             await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
-        }
+        };
 
-        /* --- PRESENTATION --- */
-        function openPres(d) {
+        window.openPres = function(d) {
             state.date = d;
             state.session = data.sessions[d];
             showView('view-pres');
@@ -420,17 +414,16 @@
                     </div>`;
             });
             document.getElementById('pres-content').innerHTML = html;
-        }
+        };
 
-        /* --- EDITOR --- */
-        function startNewSession() {
+        window.startNewSession = function() {
             document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today; 
             document.getElementById('modal-date').style.display = 'grid'; 
-        }
+        };
 
-        function confirmDate() {
+        window.confirmDate = function() {
             const input = document.getElementById('input-date');
             if(!input.value) input.value = new Date().toISOString().split('T')[0];
             const d = input.value;
@@ -443,16 +436,16 @@
                 state.session = { navn: "Håndballøkt", plan: [] };
             }
             
-            loadEditor();
-            closeModals();
-        }
+            window.loadEditor();
+            window.closeModals();
+        };
 
-        function editCurrentSession() { 
+        window.editCurrentSession = function() { 
             if (!state.date) { alert("Ingen dato valgt"); return; }
-            loadEditor(); 
-        }
+            window.loadEditor(); 
+        };
 
-        function loadEditor() {
+        window.loadEditor = function() {
             document.getElementById('session-title-edit').innerText = state.session.navn;
             const area = document.getElementById('session-plan-area');
             area.innerHTML = '';
@@ -466,13 +459,58 @@
             }
             checkEmpty();
             showView('view-editor');
-        }
+        };
 
+        window.openTitleModal = function() {
+            document.getElementById('input-title').value = state.session.navn;
+            document.getElementById('modal-title').style.display = 'grid';
+        };
+
+        window.confirmTitle = function() {
+            const v = document.getElementById('input-title').value;
+            if(v) { state.session.navn = v; document.getElementById('session-title-edit').innerText = v; }
+            window.closeModals();
+        };
+
+        window.openExInfo = function(el) {
+            const d = JSON.parse(el.dataset.json);
+            document.getElementById('ex-title').innerText = d.navn;
+            document.getElementById('ex-meta').innerText = `${fmtTime(d.tid)} • ${d.kategori||''}`;
+            document.getElementById('ex-desc').innerText = d.beskrivelse||'';
+            document.getElementById('ex-tags').innerHTML = (d.tags||[]).map(t=>`<span class="pres-tag">${t}</span>`).join('');
+            document.getElementById('modal-ex').style.display = 'grid';
+        };
+
+        window.closeModals = function() {
+            document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none');
+        };
+
+        window.saveSession = async function() {
+            const cards = document.querySelectorAll('#session-plan-area .card');
+            state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
+            data.sessions[state.date] = state.session;
+            
+            const icon = document.getElementById('icon-save');
+            icon.innerText = 'hourglass_empty';
+            
+            try {
+                await fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
+                });
+                icon.innerText = 'check';
+                setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
+            } catch(e) { icon.innerText = 'error'; alert("Lagring feilet"); }
+        };
+
+        window.goHome = function() { renderHome(); showView('view-home'); };
+
+        /* --- HELPERS --- */
         function createCard(ex, removable) {
             const div = document.createElement('div');
             div.className = 'card';
             div.dataset.json = JSON.stringify(ex);
-            div.setAttribute('onclick', 'openExInfo(this)');
+            div.setAttribute('onclick', 'window.openExInfo(this)');
             
             let html = `
                 <div class="card-content">
@@ -512,22 +550,22 @@
             });
         }
 
-        function setCat(c, el) {
+        window.setCat = function(c, el) {
             state.catFilter = c; state.tagFilter = null;
             document.querySelectorAll('.cat-chip').forEach(e => e.classList.remove('active'));
             el.classList.add('active');
             document.querySelectorAll('.tag-chip').forEach(e => e.classList.remove('active'));
             renderLibrary();
-        }
+        };
 
-        function setTag(t, el) {
+        window.setTag = function(t, el) {
             state.tagFilter = t; state.catFilter = 'alle';
             document.querySelectorAll('.tag-chip').forEach(e => e.classList.remove('active'));
             el.classList.add('active');
             document.querySelectorAll('.cat-chip').forEach(e => e.classList.remove('active'));
             document.querySelector('.cat-scroll :first-child').classList.add('active');
             renderLibrary();
-        }
+        };
 
         function addSwipe(card) {
             let startX = 0;
@@ -547,60 +585,19 @@
             });
         }
 
-        /* --- MODAL LOGIC --- */
-        function openTitleModal() {
-            document.getElementById('input-title').value = state.session.navn;
-            document.getElementById('modal-title').style.display = 'grid';
-        }
-        function confirmTitle() {
-            const v = document.getElementById('input-title').value;
-            if(v) { state.session.navn = v; document.getElementById('session-title-edit').innerText = v; }
-            closeModals();
-        }
-        function openExInfo(el) {
-            const d = JSON.parse(el.dataset.json);
-            document.getElementById('ex-title').innerText = d.navn;
-            document.getElementById('ex-meta').innerText = `${fmtTime(d.tid)} • ${d.kategori||''}`;
-            document.getElementById('ex-desc').innerText = d.beskrivelse||'';
-            document.getElementById('ex-tags').innerHTML = (d.tags||[]).map(t=>`<span class="pres-tag">${t}</span>`).join('');
-            document.getElementById('modal-ex').style.display = 'grid';
-        }
-        function closeModals() {
-            document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none');
-        }
-
-        /* --- SAVE --- */
-        async function saveSession() {
-            const cards = document.querySelectorAll('#session-plan-area .card');
-            state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
-            data.sessions[state.date] = state.session;
-            
-            const icon = document.getElementById('icon-save');
-            icon.innerText = 'hourglass_empty';
-            
-            try {
-                await fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
-                });
-                icon.innerText = 'check';
-                setTimeout(() => { icon.innerText = 'save'; goHome(); }, 1000);
-            } catch(e) { icon.innerText = 'error'; alert("Lagring feilet"); }
-        }
-
-        /* --- HELPERS --- */
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.classList.remove('fade-in'); });
             const v = document.getElementById(id);
             v.classList.add('active'); v.classList.add('fade-in');
         }
-        function goHome() { renderHome(); showView('view-home'); }
+
         function getWeek(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
             d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
             var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
             return Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
         }
+
         function fmtTime(t) {
             if(!t) return '';
             return (!isNaN(t) || /^\d+$/.test(t)) ? t + ' min.' : t;
