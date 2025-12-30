@@ -62,35 +62,25 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 2. BALL ANIMASJON (RUND PÅ TOPP) */
-        .ball-wrap { 
-            height: 150px; width: 100%; position: relative;
-            display: flex; justify-content: center;
+        /* 2. NY LOADER (ROTERENDE TEKST) */
+        #loader { 
+            position: fixed; inset: 0; background: var(--bg); 
+            z-index: 10000; display: flex; justify-content: center; align-items: center; 
         }
-        .ball {
-            width: 30px; height: 30px; background: black; border-radius: 50%;
-            position: absolute; 
-            bottom: 20px; 
-            z-index: 2;
-            animation: bounce 0.6s cubic-bezier(0.28, 0.84, 0.42, 1) infinite alternate;
+        .spinner-wrap {
+            width: 150px; height: 150px;
+            animation: rotate-center 5s linear infinite;
         }
-        .shadow {
-            width: 30px; height: 6px; 
-            background: rgba(0,0,0,0.15); border-radius: 50%;
-            position: absolute; 
-            bottom: 15px; 
-            z-index: 1;
-            animation: shadow 0.6s cubic-bezier(0.28, 0.84, 0.42, 1) infinite alternate;
+        .spinner-text {
+            width: 100%; height: 100%;
+            fill: var(--text-soft);
+            font-weight: 800; letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 13.5px; /* Justert for å passe sirkelen */
         }
-        
-        @keyframes bounce { 
-            0% { transform: translateY(0) scale(1.15, 0.85); } /* Nede (skvis) */
-            40% { transform: translateY(-50px) scale(0.9, 1.1); } /* På vei opp (strekk) */
-            100% { transform: translateY(-90px) scale(1); } /* Toppen (HELT RUND) */
-        }
-        @keyframes shadow { 
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(0.5); opacity: 0.2; }
+        @keyframes rotate-center {
+             from { transform: rotate(0deg); }
+             to { transform: rotate(360deg); }
         }
 
         /* LAYOUT */
@@ -113,7 +103,7 @@
         .session-actions { width: 40px; height: 40px; }
         .del-btn-home { background: var(--danger); color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
 
-        /* 3. FAB (+ KNAPP) - ABSOLUTT SENTRERING */
+        /* FAB (+ KNAPP) */
         .fab-pill {
             position: fixed; bottom: 30px; 
             left: 0; right: 0; margin: 0 auto; width: fit-content;
@@ -149,8 +139,7 @@
         /* KORT DESIGN */
         .card {
             background: white; padding: 12px 15px; margin-bottom: 8px; border-radius: 4px;
-            border: 1px solid #999; /* TYDELIGERE KANT */
-            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid #999; display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); touch-action: none;
         }
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
@@ -169,19 +158,22 @@
         .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
         .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
 
-        /* KNAPPER (Z-INDEX FIX) */
+        /* KNAPPER (Z-INDEX & KLIKK FIX) */
         #btn-edit-pres {
             position: fixed; bottom: 30px; 
-            left: 0; right: 0; margin: 0 auto; width: fit-content;
+            left: 50%; transform: translateX(-50%); /* Robust sentrering for fixed */
             background: black; color: white; height: 50px; padding: 0 40px;
             border-radius: 25px; font-weight: 800; font-size: 1rem;
             box-shadow: var(--pill-shadow); 
             z-index: 9999; cursor: pointer;
+            white-space: nowrap;
+            pointer-events: auto !important; /* TVING KLIKK */
         }
         #btn-close-pres {
             position: absolute; top: 20px; right: 20px; background: #f0f0f0; 
             width: 44px; height: 44px; border-radius: 50%; 
             z-index: 9999; cursor: pointer;
+            pointer-events: auto !important; /* TVING KLIKK */
         }
 
         /* MODALS */
@@ -198,18 +190,23 @@
             border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px;
             display: flex; justify-content: center; align-items: center; cursor: pointer;
         }
-
-        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
 
     <div id="loader">
-        <div class="ball-wrap">
-            <div class="ball"></div>
-            <div class="shadow"></div>
+        <div class="spinner-wrap">
+            <svg class="spinner-text" viewBox="0 0 200 200">
+                <defs>
+                    <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" />
+                </defs>
+                <text>
+                    <textPath xlink:href="#circlePath" startOffset="0%">
+                        HENTER ØVELSER • HENTER ØVELSER •
+                    </textPath>
+                </text>
+            </svg>
         </div>
-        <p style="font-weight:800; color:#555;">Henter øvelser...</p>
     </div>
 
     <div id="modal-date" class="modal-bg">
@@ -288,10 +285,10 @@
 
         document.addEventListener('DOMContentLoaded', init);
 
-        async function init() {
-            // FIX: Manuell lytting på Planlegg økt-knappen
-            document.getElementById('btn-create-session').addEventListener('click', confirmDate);
+        // KNYTT LYTTER MANUELT FOR Å SIKRE AT DET FUNKER
+        document.getElementById('btn-create-session').addEventListener('click', confirmDate);
 
+        async function init() {
             try {
                 const res = await fetch(API_URL + "?v=" + Date.now());
                 const json = await res.json();
@@ -424,8 +421,8 @@
         function startNewSession() {
             document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('input-date').value = today; // Sett dagens dato
-            document.getElementById('modal-date').style.display = 'grid'; // Vis modal
+            document.getElementById('input-date').value = today; 
+            document.getElementById('modal-date').style.display = 'grid'; 
         }
 
         function confirmDate() {
