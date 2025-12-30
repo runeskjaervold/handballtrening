@@ -11,14 +11,17 @@
 
     <style>
         :root {
-            --bg: #eef2f6;
+            --bg: #f2f4f8;
             --surface: #ffffff;
             --text: #111;
             --text-soft: #666;
-            --accent: #000;
+            
+            /* NY HOVEDFARGE (BLÅ) */
+            --accent: #0056b3; 
+            
             --danger: #d32f2f;
-            --border: #ccc;
-            --pill-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            --border: #dbe0e8;
+            --pill-shadow: 0 4px 15px rgba(0, 86, 179, 0.3); /* Blåaktig skygge */
         }
 
         /* 1. HARD RESET */
@@ -46,49 +49,31 @@
         }
 
         /* HELPER: SENTRERING */
-        .center-grid {
-            display: grid !important;
-            place-items: center !important;
-        }
-        .material-icons-round { 
-            display: block; 
-            line-height: 1; 
-        }
+        .center-grid { display: grid !important; place-items: center !important; }
+        .material-icons-round { display: block; line-height: 1; }
 
         /* ANIMASJONER */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         .slide-up { animation: slideUp 0.3s ease forwards; }
         
-        /* SLETTE-KNAPP ANIMASJONER */
-        .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        .slide-out-left { animation: slideOutLeft 0.3s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
-
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        @keyframes slideInRight {
-            from { transform: translateX(20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOutLeft {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(-20px); opacity: 0; }
-        }
 
-        /* LOADER */
+        /* 2. LOADER (BLÅ BAKGRUNN, HVIT TEKST) */
         #loader { 
-            position: fixed; inset: 0; background: var(--bg); 
+            position: fixed; inset: 0; 
+            background: var(--accent); /* BLÅ BAKGRUNN */
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
         .spinner-wrap {
             width: 180px; height: 180px;
-            animation: rotate-center 8s linear infinite;
+            animation: rotate-center 10s linear infinite;
         }
         .spinner-text {
             font-weight: 800; 
             text-transform: uppercase;
             font-size: 15px; 
-            fill: #222;
+            fill: #ffffff; /* HVIT TEKST */
             letter-spacing: 4px;
         }
         @keyframes rotate-center {
@@ -105,16 +90,46 @@
         #home-scroll { flex: 1; overflow-y: auto; padding: 10px 15px 100px 15px; }
         .week-header { font-size: 1.1rem; color: var(--text-soft); margin: 20px 0 10px 5px; font-weight: 800; }
 
+        /* NYTT DESIGN PÅ ØKT-KORT */
         .session-card {
-            background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #ddd;
-            display: flex; justify-content: space-between; align-items: center;
+            background: var(--surface); 
+            border-radius: 12px; 
+            padding: 0; /* Padding styres av innholdet nå */
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
+            border: 1px solid white;
+            display: flex; 
+            align-items: center;
+            overflow: hidden; /* For at datoboksen skal følge rundingen */
+            height: 80px; /* Fast høyde for pen look */
         }
-        .session-info { display: flex; flex-direction: column; gap: 4px; }
-        .session-date { font-size: 0.85rem; color: var(--text-soft); }
-        .session-name { font-size: 1.1rem; font-weight: 800; }
+
+        /* DATO BOKS (BLÅ) */
+        .date-box {
+            background-color: var(--accent);
+            width: 70px;
+            height: 100%; /* Fyller hele høyden */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            flex-shrink: 0;
+        }
+        .db-month { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
+        .db-day { font-size: 1.6rem; font-weight: 800; line-height: 1.1; margin: 2px 0; }
+        .db-weekday { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
+
+        /* ØKT INFO */
+        .session-info { 
+            flex: 1; 
+            padding: 0 15px; 
+            display: flex; 
+            align-items: center; 
+        }
+        .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
         
-        .session-actions { width: 40px; height: 40px; position: relative; overflow: visible; }
+        .session-actions { width: 50px; height: 100%; display: flex; align-items: center; justify-content: center; }
         
         /* RØD SLETTEKNAPP (Sirkel) */
         .del-circle {
@@ -140,30 +155,34 @@
 
         /* EDITOR */
         #editor-top {
-            height: 60px; background: var(--surface); border-bottom: 1px solid #ccc;
+            height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; padding: 0 10px; flex-shrink: 0;
         }
-        .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--text); }
-        #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+        /* IKONER I EDITOR - BLÅ */
+        .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--accent); }
+        
+        #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; color: var(--text); }
 
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
         /* Mørkere bakgrunn i droppsonen */
         #session-plan-area { 
-            flex: 1; background: #d0d0d0; /* Mørkere grå */
+            flex: 1; background: #e0e4ea; /* Litt mørkere blågrå */
             overflow-y: auto; padding: 15px; min-height: 100px; 
         }
-        .empty-state { text-align: center; color: #555; margin-top: 50px; pointer-events: none; font-weight: 600; }
+        .empty-state { text-align: center; color: #777; margin-top: 50px; pointer-events: none; font-weight: 600; }
 
-        #library-area { height: 45%; background: var(--surface); display: flex; flex-direction: column; border-top: 1px solid #ccc; z-index: 20; }
-        .cat-scroll { display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; scrollbar-width: none; }
-        .cat-chip { padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
-        .cat-chip.active { background: var(--accent); color: white; }
+        #library-area { height: 45%; background: var(--surface); display: flex; flex-direction: column; border-top: 1px solid var(--border); z-index: 20; }
         
-        /* Litt gråere bakgrunn i listen */
+        .cat-scroll { display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; scrollbar-width: none; }
+        
+        /* KATEGORI CHIPS */
+        .cat-chip { padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
+        .cat-chip.active { background: var(--accent); color: white; } /* Blå når aktiv */
+        
         #exercise-list { 
             flex: 1; overflow-y: auto; padding: 10px; 
-            background: #f5f5f5; /* Litt gråere */
+            background: #f7f9fc; /* Litt gråere */
         }
         .tag-scroll { display: flex; overflow-x: auto; padding: 10px; gap: 8px; border-top: 1px solid #eee; background: #f9f9f9; flex-shrink: 0; height: 50px; align-items: center; scrollbar-width: none; }
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
@@ -172,10 +191,10 @@
         /* KOMPAKTE OG RUNDE KORT */
         .card {
             background: white; 
-            padding: 6px 12px; /* Lavere boks */
-            margin-bottom: 6px; /* Mindre avstand */
-            border-radius: 12px; /* Runde hjørner (lik home) */
-            border: 1px solid #bbb; /* Tydeligere ramme */
+            padding: 6px 12px; 
+            margin-bottom: 6px; 
+            border-radius: 8px; /* Runde hjørner */
+            border: 1px solid #cbd2d9; /* Tydelig ramme */
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
             touch-action: none;
@@ -199,9 +218,12 @@
 
         /* KNAPPER (Z-INDEX FIX) */
         #btn-edit-pres {
-            position: fixed; bottom: 30px; 
+            position: fixed; 
+            bottom: 30px; 
             right: 30px; left: auto; transform: none;
-            background: black; color: white; width: 56px; height: 56px;
+            background: var(--accent); /* BLÅ */
+            color: white; 
+            width: 56px; height: 56px;
             border-radius: 50%;
             box-shadow: var(--pill-shadow); 
             z-index: 9999; cursor: pointer;
@@ -225,10 +247,15 @@
             font-family: inherit; -webkit-appearance: none;
         }
         .modal-btn { 
-            width: 100%; padding: 15px; background: black; color: white; 
+            width: 100%; padding: 15px; 
+            background: var(--accent); /* BLÅ KNAPP */
+            color: white; 
             border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px;
             display: flex; justify-content: center; align-items: center; cursor: pointer;
         }
+        
+        /* ROTASJON FOR TIMEGLASS */
+        .rotating { animation: spin 1s linear infinite; }
     </style>
 </head>
 <body>
@@ -448,7 +475,8 @@
             if(!dates.length) cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
             
             let lastWeek = null;
-            const days = ['søndag','mandag','tirsdag','onsdag','torsdag','fredag','lørdag'];
+            // Dager og måneder med små bokstaver
+            const days = ['søn','man','tir','ons','tor','fre','lør']; // Kort format for boksen
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
 
             dates.forEach(d => {
@@ -461,16 +489,24 @@
                     lastWeek = week;
                 }
 
-                const niceDate = `${days[dateObj.getDay()]} ${dateObj.getDate()}. ${months[dateObj.getMonth()]}`;
+                // DATO BOKS LOGIKK
+                const dayName = days[dateObj.getDay()];
+                const monthName = months[dateObj.getMonth()];
+                const dayNum = dateObj.getDate();
+
                 const card = document.createElement('div');
                 card.className = 'session-card slide-up';
                 card.innerHTML = `
+                    <div class="date-box">
+                        <span class="db-month">${monthName}</span>
+                        <span class="db-day">${dayNum}</span>
+                        <span class="db-weekday">${dayName}</span>
+                    </div>
                     <div class="session-info">
-                        <span class="session-date">${niceDate}</span>
                         <span class="session-name cap-first">${s.navn}</span>
                     </div>
                     <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.toggleDel('${d}')">
-                        <span class="material-icons-round">more_vert</span>
+                        <span class="material-icons-round" style="color:#aaa;">more_vert</span>
                     </div>
                 `;
                 card.onclick = () => window.openPres(d);
@@ -478,32 +514,25 @@
             });
         }
 
-        // TOGGLE DELETE ANIMATION
+        // TOGGLE DELETE ANIMATION (RØD SIRKEL)
         window.toggleDel = function(d) {
             const container = document.getElementById(`act-${d}`);
-            
-            // Hvis knappen allerede er der, gjør ingenting (eller la den fade ut)
             if (container.querySelector('.del-circle')) return;
 
-            // Lagre original html (prikkene)
-            const originalHtml = `<span class="material-icons-round fade-in">more_vert</span>`;
+            const originalHtml = `<span class="material-icons-round fade-in" style="color:#aaa;">more_vert</span>`;
 
-            // Sett inn sletteknapp med animasjon
             container.innerHTML = `
                 <button class="del-circle slide-in-right center-grid" onclick="event.stopPropagation(); window.deleteSession('${d}')">
                     <span class="material-icons-round" style="font-size:20px">delete</span>
                 </button>
             `;
 
-            // Timer for å fjerne den igjen
             setTimeout(() => {
                 const btn = container.querySelector('.del-circle');
                 if (btn) {
                     btn.classList.remove('slide-in-right');
                     btn.classList.add('slide-out-left');
-                    setTimeout(() => {
-                        container.innerHTML = originalHtml;
-                    }, 280); // Vent til animasjon er ferdig
+                    setTimeout(() => { container.innerHTML = originalHtml; }, 280); 
                 }
             }, 3000);
         };
