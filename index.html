@@ -15,14 +15,9 @@
             --surface: #ffffff;
             --text: #111;
             --text-soft: #666;
-            
-            /* NY BLÅFARGE */
-            --accent: #3286af; 
-            
+            --accent: #3286af; /* BLÅ HOVEDFARGE */
             --danger: #d32f2f;
             --border: #dbe0e8;
-            
-            /* Skygge tilpasset ny blåfarge (RGB: 50, 134, 175) */
             --pill-shadow: 0 4px 15px rgba(50, 134, 175, 0.3); 
         }
 
@@ -74,26 +69,24 @@
             to { transform: translateX(-20px); opacity: 0; }
         }
 
-        /* 2. LOADER */
+        /* 2. NY LOADER MED BILDE */
         #loader { 
             position: fixed; inset: 0; 
-            background: var(--accent); /* NY BLÅFARGE */
+            background: var(--accent); /* BLÅ BAKGRUNN */
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
-        .spinner-wrap {
-            width: 180px; height: 180px;
-            animation: rotate-center 10s linear infinite;
+        
+        .loader-icon {
+            width: 120px; /* Størrelse på ikonet */
+            height: auto;
+            /* Rolig puls-animasjon */
+            animation: pulse-slow 2s ease-in-out infinite;
         }
-        .spinner-text {
-            font-weight: 800; 
-            text-transform: uppercase;
-            font-size: 15px; 
-            fill: #ffffff; /* HVIT TEKST */
-            letter-spacing: 4px;
-        }
-        @keyframes rotate-center {
-             from { transform: rotate(0deg); }
-             to { transform: rotate(360deg); }
+        
+        @keyframes pulse-slow {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.9; } /* Puster litt inn */
+            100% { transform: scale(1); opacity: 1; }
         }
 
         /* LAYOUT */
@@ -121,7 +114,7 @@
 
         /* DATO BOKS (BLÅ) */
         .date-box {
-            background-color: var(--accent); /* NY BLÅFARGE */
+            background-color: var(--accent);
             width: 70px;
             height: 100%; 
             display: flex;
@@ -274,18 +267,7 @@
 <body>
 
     <div id="loader">
-        <div class="spinner-wrap">
-            <svg class="spinner-text" viewBox="0 0 200 200">
-                <defs>
-                    <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" />
-                </defs>
-                <text>
-                    <textPath xlink:href="#circlePath" textLength="471" lengthAdjust="spacing">
-                        HENTER ØVELSER • HENTER ØVELSER •
-                    </textPath>
-                </text>
-            </svg>
-        </div>
+        <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/lasteikon.png" alt="Laster..." class="loader-icon">
     </div>
 
     <div id="modal-date" class="modal-bg">
