@@ -13,7 +13,7 @@
 
     <style>
         :root {
-            --bg: #e8ecf2; /* Litt mørkere for kontrast */
+            --bg: #e8ecf2;
             --surface: #ffffff;
             --text: #111111;
             --text-soft: #666666;
@@ -35,26 +35,21 @@
             font-weight: 600;
         }
 
-        /* TYPOGRAFI: Kun stor forbokstav i setninger */
+        /* TYPOGRAFI */
         h1, h2, h3, h4, p, span, div, button { text-transform: none; }
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
-        
         h1, h2, h3 { font-weight: 800; } 
 
         /* ANIMASJONER */
         .fade-in { animation: fadeIn 0.3s ease forwards; }
         .slide-up { animation: slideUp 0.3s ease forwards; }
-        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* LAYOUT & VIEWS */
         .view { 
-            display: none; 
-            height: 100%; 
-            flex-direction: column; 
-            position: absolute; 
-            top: 0; left: 0; width: 100%; 
+            display: none; height: 100%; flex-direction: column; 
+            position: absolute; top: 0; left: 0; width: 100%; 
             background: var(--bg);
         }
         .view.active { display: flex; z-index: 10; }
@@ -63,25 +58,13 @@
         #home-scroll { flex: 1; overflow-y: auto; padding: 20px 15px 100px 15px; }
         
         .week-header {
-            font-size: 1.1rem;
-            color: var(--text-soft);
-            margin: 25px 0 10px 5px;
-            font-weight: 800;
+            font-size: 1.1rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800;
         }
 
         .session-card {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.3s;
-            position: relative;
-            overflow: hidden;
+            background: var(--surface); border-radius: 12px; padding: 18px; margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between;
+            align-items: center; cursor: pointer; position: relative; overflow: hidden;
         }
         .session-card:active { transform: scale(0.98); }
 
@@ -89,42 +72,25 @@
         .session-date { font-size: 0.85rem; color: var(--text-soft); }
         .session-name { font-size: 1.1rem; font-weight: 800; }
         
-        /* Sletteknapp i kortet */
         .session-actions { 
-            width: 40px; height: 40px; 
-            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
             border-radius: 50%;
-            transition: background 0.2s;
         }
         .delete-confirm-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            animation: fadeIn 0.2s;
-            cursor: pointer;
+            background: var(--danger); color: white; border: none; padding: 8px 12px;
+            border-radius: 6px; font-size: 0.8rem; animation: fadeIn 0.2s; cursor: pointer;
         }
 
-        /* FAB (Flytende knapp) */
+        /* FAB */
         .fab-pill {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--surface);
-            border-radius: 50px;
-            padding: 8px;
-            display: flex;
-            box-shadow: var(--pill-shadow);
-            z-index: 100;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--surface); border-radius: 50px; padding: 8px;
+            display: flex; box-shadow: var(--pill-shadow); z-index: 100;
         }
         .fab-btn {
             background: var(--accent); color: white; border: none; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             width: 50px; height: 50px; border-radius: 50%;
-            transition: transform 0.2s;
         }
         .fab-btn:active { transform: scale(0.9); }
 
@@ -142,8 +108,7 @@
         #view-edit-btn {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: black; color: white; padding: 15px 40px; border-radius: 30px;
-            font-weight: 800; border: none; box-shadow: var(--pill-shadow); cursor: pointer;
-            z-index: 500; font-size: 1rem;
+            font-weight: 800; border: none; box-shadow: var(--pill-shadow); cursor: pointer; z-index: 500; font-size: 1rem;
         }
         #view-back-btn {
             position: absolute; top: 20px; right: 20px;
@@ -152,71 +117,49 @@
         }
 
         /* --- EDITOR VIEW --- */
-        /* Toppmeny fikset */
         #editor-top-bar {
-            height: 60px; background: var(--surface);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 10px; border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
+            height: 60px; background: var(--surface); display: flex; justify-content: space-between; align-items: center;
+            padding: 0 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
         }
         .nav-btn {
-            background: transparent; border: none; padding: 10px;
-            display: flex; align-items: center; justify-content: center;
+            background: transparent; border: none; padding: 10px; display: flex; align-items: center; justify-content: center;
             cursor: pointer; color: var(--text);
         }
         
         #session-title-edit { 
-            font-size: 1.1rem; border-bottom: 1px dashed #ccc; 
-            cursor: pointer; max-width: 50%; white-space: nowrap; 
-            overflow: hidden; text-overflow: ellipsis; font-weight: 800; text-align: center;
+            font-size: 1.1rem; border-bottom: 1px dashed #ccc; cursor: pointer; max-width: 50%; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 800; text-align: center;
         }
         
         #editor-workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         
-        /* Dropzone (Øverst) */
         #session-plan-area {
-            flex: 1; /* Tar den plassen den trenger */
-            background: #f4f6f9;
-            overflow-y: auto;
-            overflow-x: hidden; /* Forhindre horisontal scroll på hele området */
-            padding: 15px;
-            border-bottom: 2px solid var(--border);
+            flex: 1; background: #f4f6f9; overflow-y: auto; overflow-x: hidden; padding: 15px; border-bottom: 2px solid var(--border);
         }
         .empty-state { text-align: center; color: #999; margin-top: 60px; font-weight: 600; }
 
-        /* Library (Nederst) */
         #library-area {
-            height: 45%; /* Fast høyde */
-            background: var(--surface);
-            display: flex; flex-direction: column;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-            z-index: 20;
+            height: 45%; background: var(--surface); display: flex; flex-direction: column;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 20;
         }
 
-        /* Kategorier */
         .cat-scroll { 
-            display: flex; overflow-x: auto; padding: 12px; gap: 8px; 
-            border-bottom: 1px solid var(--border); background: white; flex-shrink: 0; 
-            scrollbar-width: none; /* Skjul scrollbar */
+            display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-bottom: 1px solid var(--border); 
+            background: white; flex-shrink: 0; scrollbar-width: none;
         }
         .cat-scroll::-webkit-scrollbar { display: none; }
         
         .cat-chip {
-            padding: 8px 16px; background: #f4f4f4; border-radius: 20px;
-            white-space: nowrap; font-size: 0.9rem; cursor: pointer; font-weight: 600;
-            border: 1px solid transparent;
+            padding: 8px 16px; background: #f4f4f4; border-radius: 20px; white-space: nowrap; 
+            font-size: 0.9rem; cursor: pointer; font-weight: 600; border: 1px solid transparent;
         }
         .cat-chip.active { background: var(--accent); color: white; }
 
-        /* Øvelsesliste */
         #exercise-list { flex: 1; overflow-y: auto; padding: 10px; }
 
-        /* Meta-tags filter (Helt nederst) */
         .tag-scroll { 
-            display: flex; overflow-x: auto; padding: 12px; gap: 8px; 
-            border-top: 1px solid var(--border); background: #fafafa; flex-shrink: 0;
-            height: 55px; align-items: center;
-            scrollbar-width: none;
+            display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-top: 1px solid var(--border); 
+            background: #fafafa; flex-shrink: 0; height: 55px; align-items: center; scrollbar-width: none;
         }
         .tag-chip {
             padding: 6px 12px; background: white; border: 1px solid #ddd; border-radius: 6px;
@@ -227,21 +170,16 @@
         /* KORT I EDITOR */
         .card {
             background: white; padding: 14px; margin-bottom: 8px; border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 4px solid #ccc;
-            user-select: none;
-            position: relative;
-            transform: translateX(0);
-            transition: transform 0.2s ease, opacity 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+            border-left: 4px solid #ccc; user-select: none; position: relative;
+            transform: translateX(0); transition: transform 0.2s ease, opacity 0.2s ease;
         }
-        .card.swiping { transition: none; } /* Ingen delay mens man drar */
         
-        .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; }
+        .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .card h4 { margin: 0; font-size: 0.95rem; font-weight: 800; }
         .card span { font-size: 0.85rem; color: #666; font-weight: 600; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
         
-        /* Farger kategorier - dynamisk tilpasset i JS hvis mulig, men her er standarder */
+        /* Farger kategorier */
         .c-oppvarming { border-color: #10b981; }
         .c-hoveddel { border-color: #3b82f6; }
         .c-spill { border-color: #f59e0b; }
@@ -251,10 +189,19 @@
         /* MODALS */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000;
-            display: none; align-items: center; justify-content: center;
-            backdrop-filter: blur(2px);
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px);
         }
-        .modal-box { background: white; padding: 25px; border-radius: 16px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-box { 
+            background: white; padding: 25px; border-radius: 16px; width: 85%; max-width: 350px; 
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+        }
+        
+        /* Exercise Detail Modal */
+        #ex-modal-content { text-align: left; }
+        #ex-modal-title { font-size: 1.4rem; margin-bottom: 5px; }
+        #ex-modal-meta { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
+        #ex-modal-desc { line-height: 1.6; color: #333; margin-bottom: 20px; white-space: pre-wrap; }
+
         input[type="date"], input[type="text"] {
             width: 100%; padding: 15px; font-size: 1.1rem; border: 1px solid #ccc; border-radius: 10px;
             margin: 20px 0; font-family: 'Inter', sans-serif; -webkit-appearance: none;
@@ -276,6 +223,18 @@
     <div id="loader">
         <div class="spinner"></div>
         <p style="margin-top:20px; font-weight:800;">Henter øvelser...</p>
+    </div>
+
+    <div id="exercise-modal" class="modal-overlay" onclick="closeModals()">
+        <div class="modal-box slide-up" id="ex-modal-content" onclick="event.stopPropagation()">
+            <h3 id="ex-modal-title" class="cap-first"></h3>
+            <div id="ex-modal-meta">
+                <span id="ex-modal-cat" style="text-transform:capitalize"></span> • <span id="ex-modal-time"></span>
+            </div>
+            <div id="ex-modal-desc"></div>
+            <div class="tags" id="ex-modal-tags" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:20px;"></div>
+            <button class="modal-btn" onclick="closeModals()">Lukk</button>
+        </div>
     </div>
 
     <div id="date-modal" class="modal-overlay">
@@ -343,7 +302,7 @@
             <div id="library-area" class="slide-up">
                 <div class="cat-scroll" id="cat-tabs">
                     <div class="cat-chip active" onclick="filterCat('alle', this)">Alle</div>
-                    </div>
+                </div>
 
                 <div id="exercise-list"></div>
 
@@ -360,12 +319,11 @@
         // State
         let exercises = [];
         let sessions = {};
-        let categories = new Set(); // For å lagre unike kategorier
+        let categories = new Set();
         let currentSessionDate = null;
         let currentSessionData = { navn: "Ny økt", plan: [] };
         let activeTagFilter = null;
         let activeCatFilter = 'alle';
-        let deleteTimer = null; // Timer for sletteknapp på hjemskjerm
 
         // --- OPPSTART ---
         document.addEventListener('DOMContentLoaded', initApp);
@@ -377,11 +335,11 @@
                 exercises = data.ovelser || [];
                 sessions = data.planer || {};
                 
-                extractCategories(); // Finn alle kategorier fra regnearket
+                extractCategories();
                 renderHome();
                 renderLibrary();
                 generateTags();
-                renderCategories(); // Tegn opp kategori-fanene
+                renderCategories();
                 
                 document.getElementById('loader').style.display = 'none';
             } catch (e) {
@@ -399,18 +357,15 @@
         }
 
         function initSortable() {
-            // Bibliotek (Kan dras fra)
             new Sortable(document.getElementById('exercise-list'), {
                 group: { name: 'shared', pull: 'clone', put: false },
                 sort: false, animation: 150
             });
 
-            // Økt-plan (Kan dras til og sorteres)
             new Sortable(document.getElementById('session-plan-area'), {
                 group: 'shared', animation: 150,
                 onAdd: function (evt) {
                     document.querySelector('.empty-state').style.display = 'none';
-                    // Legg til swipe-lytter på det nye elementet
                     addSwipeListener(evt.item);
                 },
                 onRemove: function() {
@@ -427,14 +382,12 @@
             }
         }
 
-        // --- NAVIGASJON & VISNING ---
+        // --- VISNING & NAVIGASJON ---
         function showView(viewId) {
-            // Fade out current
             document.querySelectorAll('.view').forEach(el => {
                 el.classList.remove('active');
                 el.classList.remove('fade-in');
             });
-            // Show new
             const view = document.getElementById(viewId);
             view.classList.add('active');
             view.classList.add('fade-in');
@@ -445,12 +398,12 @@
             showView('view-home');
         }
 
-        // --- HOME LOGIKK (UKELISTE) ---
+        // --- HOME LOGIKK ---
         function renderHome() {
             const container = document.getElementById('home-scroll');
             container.innerHTML = '';
 
-            const sortedDates = Object.keys(sessions).sort(); // Dato sortering (eldst først for kalenderflyt, eller nyest?) -> Kronologisk er best for planlegger
+            const sortedDates = Object.keys(sessions).sort();
             
             let lastWeek = null;
 
@@ -478,9 +431,6 @@
                 const days = ['søn','man','tir','ons','tor','fre','lør'];
                 const dayName = days[dateObj.getDay()];
                 const niceDate = `${dayName} ${dateObj.getDate()}.${dateObj.getMonth()+1}`;
-
-                // Unik ID for delete-knapp logikk
-                const btnId = `del-btn-${date}`;
                 const iconId = `icon-${date}`;
 
                 card.innerHTML = `
@@ -497,49 +447,65 @@
             });
         }
 
-        // Logikk for slette-knapp på fremsiden (3 prikker -> Slett)
         function toggleDelete(date) {
             const container = document.getElementById(`action-${date}`);
-            const icon = document.getElementById(`icon-${date}`);
             
-            // Hvis allerede i slette-modus, slett!
             if (container.classList.contains('confirm-mode')) {
                 deleteSessionFromHome(date);
             } else {
-                // Bytt til slette-modus
                 container.classList.add('confirm-mode');
                 container.innerHTML = `<button class="delete-confirm-btn">Slett</button>`;
-                
-                // Tilbakestill etter 3 sekunder hvis ikke trykket
                 setTimeout(() => {
                     if (container && container.classList.contains('confirm-mode')) {
                         container.classList.remove('confirm-mode');
-                        container.innerHTML = `<span class="material-icons-round" id="icon-${date}">more_vert</span>`;
+                        container.innerHTML = `<span class="material-icons-round">more_vert</span>`;
                     }
                 }, 3000);
             }
         }
 
         async function deleteSessionFromHome(date) {
-            // Visuell fjerning med en gang
-            renderHome(); // Re-render fjerner den fra listen midlertidig hvis vi oppdaterer state
-            
-            // Oppdater state og send til server
             delete sessions[date];
-            renderHome(); // Oppdater visning
-
+            renderHome();
             try {
                 await fetch(API_URL, {
                     method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ handling: 'slett', dato: date })
                 });
-            } catch(e) {
-                alert("Kunne ikke slette fra server.");
-            }
+            } catch(e) { alert("Kunne ikke slette."); }
         }
 
+        // --- EXERCISE MODAL ---
+        function openExerciseInfo(el) {
+            const data = JSON.parse(el.dataset.json);
+            
+            document.getElementById('ex-modal-title').innerText = data.navn;
+            document.getElementById('ex-modal-cat').innerText = data.kategori || 'Annet';
+            document.getElementById('ex-modal-time').innerText = formatTime(data.tid);
+            document.getElementById('ex-modal-desc').innerText = data.beskrivelse || 'Ingen beskrivelse';
+            
+            const tagsCont = document.getElementById('ex-modal-tags');
+            tagsCont.innerHTML = '';
+            if(data.tags && Array.isArray(data.tags)) {
+                data.tags.forEach(t => {
+                    tagsCont.innerHTML += `<span class="view-tag">${t}</span>`;
+                });
+            }
 
-        // --- PRESENTASJON VIEW ---
+            document.getElementById('exercise-modal').style.display = 'flex';
+        }
+
+        function formatTime(t) {
+            if(!t) return '';
+            let s = t.toString();
+            // Legg til min hvis det er bare tall
+            if(!isNaN(s) || (/\d+$/.test(s) && !s.toLowerCase().includes('min'))) {
+                return s + ' min.';
+            }
+            return s;
+        }
+
+        // --- PRESENTATION VIEW ---
         function openPresentation(date) {
             currentSessionDate = date;
             currentSessionData = sessions[date];
@@ -556,16 +522,13 @@
                 currentSessionData.plan.forEach(ex => {
                     const el = document.createElement('div');
                     el.className = 'view-item';
-                    
                     let tagsHtml = '';
-                    if(ex.tags) {
-                        const tArray = Array.isArray(ex.tags) ? ex.tags : [];
-                        tArray.forEach(t => tagsHtml += `<span class="view-tag">${t}</span>`);
+                    if(ex.tags && Array.isArray(ex.tags)) {
+                        ex.tags.forEach(t => tagsHtml += `<span class="view-tag">${t}</span>`);
                     }
-
                     el.innerHTML = `
                         <h3 class="cap-first">${ex.navn}</h3>
-                        <div style="color:#555;">${ex.tid} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
+                        <div style="color:#555;">${formatTime(ex.tid)} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
                         <div style="margin-top:8px; line-height:1.5;">${ex.beskrivelse || ''}</div>
                         <div class="tags">${tagsHtml}</div>
                     `;
@@ -585,7 +548,6 @@
         function confirmDate() {
             const d = document.getElementById('date-input').value;
             if(!d) return;
-            
             currentSessionDate = d;
             if(sessions[d]) {
                 if(!confirm("Det finnes allerede en økt denne dagen. Vil du redigere den?")) return;
@@ -593,14 +555,11 @@
             } else {
                 currentSessionData = { navn: "Håndballøkt", plan: [] };
             }
-            
             loadEditor();
             closeModals();
         }
 
-        function editCurrentSession() {
-            loadEditor();
-        }
+        function editCurrentSession() { loadEditor(); }
 
         function loadEditor() {
             document.getElementById('session-title-edit').innerText = currentSessionData.navn;
@@ -611,7 +570,7 @@
                 currentSessionData.plan.forEach(ex => {
                     const card = createCard(ex);
                     area.appendChild(card);
-                    addSwipeListener(card); // Legg til swipe-funksjon
+                    addSwipeListener(card);
                 });
             } else {
                 checkEmptyState();
@@ -625,32 +584,25 @@
             
             exercises.forEach(ex => {
                 if(activeCatFilter !== 'alle' && (!ex.kategori || !ex.kategori.toLowerCase() !== activeCatFilter)) {
-                    // Sjekk om kategori matcher (case insensitive)
                     if (ex.kategori && ex.kategori.toLowerCase() !== activeCatFilter) return;
                     if (!ex.kategori && activeCatFilter !== 'alle') return;
                 }
-                
                 if(activeTagFilter) {
-                    // Sjekk om tags array inneholder filteret
                     const hasTag = ex.tags && ex.tags.some(t => t.toLowerCase() === activeTagFilter.toLowerCase());
                     if (!hasTag) return;
                 }
-
                 list.appendChild(createCard(ex));
             });
         }
 
         function renderCategories() {
             const container = document.getElementById('cat-tabs');
-            // Reset til kun "Alle"
             container.innerHTML = `<div class="cat-chip active" onclick="filterCat('alle', this)">Alle</div>`;
-            
-            // Sorter alfabetisk
             Array.from(categories).sort().forEach(cat => {
                 if(!cat) return;
                 const el = document.createElement('div');
                 el.className = 'cat-chip';
-                el.innerText = cat.charAt(0).toUpperCase() + cat.slice(1); // Capitalize visuelt
+                el.innerText = cat.charAt(0).toUpperCase() + cat.slice(1);
                 el.onclick = function() { filterCat(cat, this); };
                 container.appendChild(el);
             });
@@ -662,17 +614,18 @@
             el.className = `card ${catClass}`;
             el.dataset.json = JSON.stringify(ex);
             
-            // Layout: Navn venstre, Tid høyre
+            // Onclick trigger popup
+            el.setAttribute('onclick', 'openExerciseInfo(this)');
+
             el.innerHTML = `
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>
-                    <span>${ex.tid}</span>
+                    <span>${formatTime(ex.tid)}</span>
                 </div>
             `;
             return el;
         }
 
-        // --- SVEIP FOR Å SLETTE (Touch Events) ---
         function addSwipeListener(card) {
             let startX = 0;
             let currentX = 0;
@@ -681,7 +634,7 @@
             card.addEventListener('touchstart', (e) => {
                 startX = e.touches[0].clientX;
                 isDragging = true;
-                card.style.transition = 'none'; // Fjern transition for direkte respons
+                card.style.transition = 'none';
             }, {passive: true});
 
             card.addEventListener('touchmove', (e) => {
@@ -689,10 +642,9 @@
                 currentX = e.touches[0].clientX;
                 const diff = currentX - startX;
                 
-                // Bare flytt hvis vi drar horisontalt mer enn litt
                 if (Math.abs(diff) > 10) {
                     card.style.transform = `translateX(${diff}px)`;
-                    card.style.opacity = 1 - (Math.abs(diff) / 300); // Fade ut
+                    card.style.opacity = 1 - (Math.abs(diff) / 300);
                 }
             }, {passive: true});
 
@@ -701,19 +653,15 @@
                 const diff = currentX - startX;
                 card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
-                // Hvis dratt mer enn 100px til venstre eller høyre -> Slett
                 if (Math.abs(diff) > 100) {
-                    // Animer ut av skjermen
                     const direction = diff > 0 ? 500 : -500;
                     card.style.transform = `translateX(${direction}px)`;
                     card.style.opacity = '0';
-                    
                     setTimeout(() => {
                         card.remove();
                         checkEmptyState();
                     }, 300);
                 } else {
-                    // Sprett tilbake
                     card.style.transform = 'translateX(0)';
                     card.style.opacity = '1';
                 }
@@ -723,13 +671,10 @@
         // --- FILTRERING ---
         function filterCat(cat, btn) {
             activeCatFilter = cat;
-            activeTagFilter = null; // Reset tags når vi bytter kategori
+            activeTagFilter = null;
             document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
-            
-            // Reset tag visuals
             document.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('active'));
-            
             renderLibrary();
         }
 
@@ -738,33 +683,24 @@
             exercises.forEach(ex => {
                 if(ex.tags) ex.tags.forEach(t => allTags.add(t.trim()));
             });
-            
             const container = document.getElementById('tag-filters');
-            container.innerHTML = ''; // Tøm først
-            
+            container.innerHTML = '';
             Array.from(allTags).sort().forEach(tag => {
                 const el = document.createElement('div');
                 el.className = 'tag-chip';
-                el.innerText = tag.toLowerCase(); // Alt smått i tag-listen
+                el.innerText = tag.toLowerCase();
                 el.onclick = function() { filterTag(tag, this); };
                 container.appendChild(el);
             });
         }
 
         function filterTag(tag, btn) {
-            // Hvis vi trykker på en tag, nullstill kategori-filteret visuelt (men behold logikk om ønskelig, her resetter vi til Alle for å søke i alt)
-            // Brukerønske: "når jeg trykker på en meta-tag, så vi ljegha liste over alle som har den taggen"
-            
             activeTagFilter = tag;
-            activeCatFilter = 'alle'; // Søk i hele basen
-            
-            // Oppdater UI
+            activeCatFilter = 'alle';
             document.querySelectorAll('.tag-chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
-            
             document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-            document.querySelector('.cat-scroll .cat-chip:first-child').classList.add('active'); // Sett Alle aktiv
-            
+            document.querySelector('.cat-scroll .cat-chip:first-child').classList.add('active');
             renderLibrary();
         }
 
@@ -787,9 +723,7 @@
         async function saveSession() {
             const cards = document.querySelectorAll('#session-plan-area .card');
             const plan = [];
-            cards.forEach(c => {
-                plan.push(JSON.parse(c.dataset.json));
-            });
+            cards.forEach(c => { plan.push(JSON.parse(c.dataset.json)); });
 
             currentSessionData.plan = plan;
             sessions[currentSessionDate] = currentSessionData;
@@ -807,20 +741,17 @@
                     })
                 });
                 icon.innerText = 'check';
-                setTimeout(() => {
-                    icon.innerText = 'save';
-                    goHome(); // Gå tilbake til forsiden etter lagring
-                }, 1000);
+                setTimeout(() => { icon.innerText = 'save'; goHome(); }, 1000);
             } catch(e) {
                 icon.innerText = 'error';
                 alert("Lagring feilet");
             }
         }
 
-        // --- HJELPEFUNKSJONER ---
         function closeModals() {
             document.getElementById('date-modal').style.display = 'none';
             document.getElementById('title-modal').style.display = 'none';
+            document.getElementById('exercise-modal').style.display = 'none';
         }
 
         function getWeekNumber(d) {
