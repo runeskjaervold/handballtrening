@@ -62,7 +62,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 2. NY LOADER (KLASSISK SPINNER) */
+        /* LOADER (SPINNER) */
         #loader { 
             position: fixed; inset: 0; background: var(--bg); 
             z-index: 30000; display: flex; flex-direction: column; 
@@ -71,13 +71,11 @@
         .spinner {
             width: 50px; height: 50px;
             border: 5px solid #ccc;
-            border-top-color: #000; /* Sort roterende del */
+            border-top-color: #000;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* LAYOUT */
         .view { display: none; height: 100%; flex-direction: column; position: absolute; inset: 0; background: var(--bg); z-index: 10; }
@@ -99,7 +97,7 @@
         .session-actions { width: 40px; height: 40px; }
         .del-btn-home { background: var(--danger); color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
 
-        /* FAB (+ KNAPP) */
+        /* FAB */
         .fab-pill {
             position: fixed; bottom: 30px; 
             left: 0; right: 0; margin: 0 auto; width: fit-content;
@@ -114,10 +112,17 @@
         /* EDITOR */
         #editor-top {
             height: 60px; background: var(--surface); border-bottom: 1px solid #ccc;
-            display: flex; justify-content: space-between; align-items: center; padding: 0 10px; flex-shrink: 0;
+            display: flex; justify-content: space-between; align-items: center; padding: 0 5px; flex-shrink: 0;
         }
-        .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--text); }
-        #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+        /* Økt størrelse på knapper for bedre treffsikkerhet */
+        .nav-icon { width: 50px; height: 50px; font-size: 28px; color: var(--text); z-index: 100; cursor: pointer; }
+        
+        /* Større tittel */
+        #session-title-edit { 
+            font-size: 1.3rem; /* Større tittel */
+            font-weight: 800; border-bottom: 1px dashed #999; 
+            max-width: 55%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; 
+        }
 
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         #session-plan-area { flex: 1; background: #e0e0e0; overflow-y: auto; padding: 15px; min-height: 100px; }
@@ -132,17 +137,33 @@
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
 
-        /* KORT DESIGN */
+        /* KOMPAKTE KORT DESIGN */
         .card {
-            background: white; padding: 12px 15px; margin-bottom: 8px; border-radius: 4px;
-            border: 1px solid #999; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05); touch-action: none;
+            background: white; 
+            padding: 8px 12px; /* Mindre padding (høyde) */
+            margin-bottom: 10px; /* Mer luft mellom */
+            border-radius: 4px; /* Firkantet */
+            border: 1px solid #999; /* Tydelig ramme */
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+            /* touch-action fjernet her for å la SortableJS styre det, men vi bruker delay */
         }
+        
+        /* Visuell feedback når man drar */
+        .sortable-drag { opacity: 0; } 
+        .sortable-ghost { background: #ccc; border: 1px dashed #666; }
+
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
-        .card h4 { font-size: 0.95rem; font-weight: 800; color: #000; }
-        .card span { font-size: 0.85rem; font-weight: 600; color: #555; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
-        .card-del { width: 30px; height: 30px; color: #ccc; margin-left: 10px; cursor: pointer; font-size: 1.2rem; }
-        .card-del:hover { color: var(--danger); }
+        .card h4 { font-size: 0.9rem; font-weight: 800; color: #000; }
+        .card span { font-size: 0.8rem; font-weight: 600; color: #555; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
+        
+        /* Tydelig X knapp */
+        .card-del { 
+            width: 35px; height: 35px; 
+            color: #999; margin-left: 10px; cursor: pointer; font-size: 1.2rem;
+            border-left: 1px solid #eee; /* Skillelinje */
+        }
+        .card-del:hover { color: var(--danger); background: #fff0f0; }
 
         /* PRESENTATION VIEW */
         #view-pres { background: white; z-index: 50; }
@@ -306,7 +327,6 @@
             document.getElementById('modal-date').style.display = 'grid'; 
         };
 
-        // DENNE FUNKSJONEN KRASJET FØR PGA 'emptyMsg is null'
         window.confirmDate = function() {
             const input = document.getElementById('input-date');
             if(!input.value) input.value = new Date().toISOString().split('T')[0];
@@ -320,34 +340,29 @@
                 state.session = { navn: "Håndballøkt", plan: [] };
             }
             
-            window.loadEditor(); // Dette kaller checkEmpty
+            window.loadEditor();
             window.closeModals();
         };
 
         window.loadEditor = function() {
             document.getElementById('session-title-edit').innerText = state.session.navn;
             const area = document.getElementById('session-plan-area');
-            area.innerHTML = ''; // Tømmer innholdet (inkludert empty-state)
+            area.innerHTML = ''; 
             
             if(state.session.plan.length > 0) {
                 state.session.plan.forEach(ex => {
                     const card = createCard(ex, true);
                     area.appendChild(card);
-                    addSwipe(card);
                 });
             }
-            
-            // HER VAR FEILEN: checkEmpty() forventet at elementet fantes
             checkEmpty();
             showView('view-editor');
         };
 
-        // FIX: SJEKKER OM ELEMENTET FINNES, HVIS IKKE - LAG DET
         function checkEmpty() {
             const area = document.getElementById('session-plan-area');
             let emptyMsg = area.querySelector('.empty-state');
             
-            // Hvis elementet er slettet (innerHTML=''), lag det på nytt
             if (!emptyMsg) {
                 emptyMsg = document.createElement('div');
                 emptyMsg.className = 'empty-state';
@@ -371,13 +386,24 @@
         }
 
         function initDrag() {
+            // LIBRARY LIST (DELAY PÅ 300MS FOR Å SKILLE SCROLL/DRAG)
             new Sortable(document.getElementById('exercise-list'), {
                 group: { name: 'shared', pull: 'clone', put: false },
-                sort: false, animation: 150, forceFallback: true
+                sort: false, 
+                animation: 150, 
+                forceFallback: true,
+                delay: 300, // VIKTIG: Må holde i 300ms for å dra på touch
+                delayOnTouchOnly: true // Forsinkelse kun på touch, mus er direkte
             });
+
+            // SESSION LIST
             new Sortable(document.getElementById('session-plan-area'), {
-                group: 'shared', animation: 150, forceFallback: true,
-                onAdd: (evt) => { checkEmpty(); addSwipe(evt.item); },
+                group: 'shared', 
+                animation: 150, 
+                forceFallback: true,
+                delay: 200, // Litt raskere respons i selve planen
+                delayOnTouchOnly: true,
+                onAdd: (evt) => { checkEmpty(); },
                 onRemove: checkEmpty
             });
         }
@@ -567,29 +593,13 @@
             renderLibrary();
         };
 
-        function addSwipe(card) {
-            let startX = 0;
-            card.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive:true});
-            card.addEventListener('touchmove', e => {
-                const diff = e.touches[0].clientX - startX;
-                if(Math.abs(diff)>10) card.style.transform = `translateX(${diff}px)`;
-            }, {passive:true});
-            card.addEventListener('touchend', e => {
-                const diff = e.changedTouches[0].clientX - startX;
-                if(Math.abs(diff)>100) {
-                    card.style.transform = `translateX(${diff>0?500:-500}px)`;
-                    setTimeout(() => { card.remove(); checkEmpty(); }, 200);
-                } else {
-                    card.style.transform = 'translateX(0)';
-                }
-            });
-        }
-
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.classList.remove('fade-in'); });
             const v = document.getElementById(id);
             v.classList.add('active'); v.classList.add('fade-in');
         }
+
+        function goHome() { renderHome(); showView('view-home'); }
 
         function getWeek(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
