@@ -51,18 +51,25 @@
         @keyframes fadeInBtn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADING ANIMATION */
+        /* LOADING ANIMATION (Gravity Fixed) */
         .ball-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100px; }
         .ball {
             width: 20px; height: 20px; background: black; border-radius: 50%;
-            animation: bounce 0.5s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
+            /* Cubic-bezier her gir "Toss up" effekt: Rask opp, bremser på toppen, akselererer ned */
+            animation: bounce 0.6s infinite alternate cubic-bezier(0.4, 0.0, 0.2, 1);
         }
         .shadow {
             width: 20px; height: 4px; background: rgba(0,0,0,0.2); border-radius: 50%;
-            margin-top: 5px; animation: shadow 0.5s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
+            margin-top: 5px; animation: shadow 0.6s infinite alternate cubic-bezier(0.4, 0.0, 0.2, 1);
         }
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-40px); } }
-        @keyframes shadow { from { transform: scale(1); opacity: 0.8; } to { transform: scale(0.6); opacity: 0.3; } }
+        @keyframes bounce { 
+            0% { transform: translateY(0) scaleY(0.9); } /* Floor - squish */
+            100% { transform: translateY(-40px) scaleY(1); } /* Air */
+        }
+        @keyframes shadow { 
+            0% { transform: scale(1); opacity: 0.8; } 
+            100% { transform: scale(0.6); opacity: 0.3; } 
+        }
 
         /* LAYOUT & VIEWS */
         .view { 
@@ -90,6 +97,7 @@
         .session-date { font-size: 0.9rem; color: var(--text-soft); }
         .session-name { font-size: 1.2rem; font-weight: 800; }
         
+        /* Sletteknapp container */
         .session-actions { 
             height: 40px; display: flex; align-items: center; justify-content: flex-end;
             border-radius: 20px; min-width: 40px; transition: all 0.3s ease;
@@ -100,26 +108,17 @@
             white-space: nowrap;
         }
 
-        /* FAB (Plus button) - FIX */
+        /* FAB */
         .fab-pill {
-            position: fixed; 
-            bottom: 30px; 
-            left: 50%; 
-            transform: translateX(-50%); /* Sentrerer pilla horisontalt */
-            background: var(--surface); 
-            border-radius: 50px; 
-            padding: 8px;
-            display: flex; 
-            justify-content: center; /* Sentrerer innholdet i pilla */
-            align-items: center;
-            box-shadow: var(--pill-shadow); 
-            z-index: 100;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--surface); border-radius: 50px; padding: 8px;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: var(--pill-shadow); z-index: 100;
         }
         .fab-btn {
             background: var(--accent); color: white; border: none; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            width: 50px; height: 50px; border-radius: 50%;
-            margin: 0; /* Fjerner standard marger */
+            width: 50px; height: 50px; border-radius: 50%; margin: 0;
         }
         .fab-btn:active { transform: scale(0.9); }
 
@@ -134,25 +133,11 @@
         .view-item .tags { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
         .view-tag { background: #f0f0f0; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; color: #555; }
 
-        /* Rediger knapp - FIX */
         #view-edit-btn {
-            position: fixed; 
-            bottom: 30px; 
-            left: 50%; 
-            transform: translateX(-50%); /* Tvinger den til midten */
-            background: black; 
-            color: white; 
-            padding: 15px 40px; 
-            border-radius: 30px;
-            font-weight: 800; 
-            border: none; 
-            box-shadow: var(--pill-shadow); 
-            cursor: pointer; 
-            z-index: 500; 
-            font-size: 1rem; 
-            text-transform: none;
-            margin: 0;
-            white-space: nowrap; /* Hindrer tekstbryting */
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: black; color: white; padding: 15px 40px; border-radius: 30px;
+            font-weight: 800; border: none; box-shadow: var(--pill-shadow); cursor: pointer; 
+            z-index: 500; font-size: 1rem; text-transform: none; margin: 0; white-space: nowrap;
         }
         #view-back-btn {
             position: absolute; top: 20px; right: 20px;
@@ -223,6 +208,13 @@
         .card h4 { margin: 0; font-size: 0.95rem; font-weight: 800; }
         .card span { font-size: 0.85rem; color: #666; font-weight: 600; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
         
+        /* Sletteknapp på kort (PC/Desktop) */
+        .card-del-btn {
+            color: #ccc; padding: 10px; cursor: pointer; font-weight: bold; font-size: 1.2rem;
+            transition: color 0.2s; margin-left: 10px;
+        }
+        .card-del-btn:hover { color: var(--danger); }
+
         /* Farger kategorier */
         .c-oppvarming { border-color: #10b981; }
         .c-hoveddel { border-color: #3b82f6; }
@@ -240,7 +232,6 @@
             text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
         }
         
-        /* Exercise Detail Modal */
         #ex-modal-content { text-align: left; }
         #ex-modal-title { font-size: 1.4rem; margin-bottom: 5px; }
         #ex-modal-meta { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
@@ -507,7 +498,6 @@
                 deleteSessionFromHome(date);
             } else {
                 container.classList.add('confirm-mode');
-                // Legg til knappen med en fade-in-btn klasse
                 container.innerHTML = `<button class="delete-confirm-btn fade-in-btn">Slett</button>`;
                 setTimeout(() => {
                     if (container && container.classList.contains('confirm-mode')) {
@@ -552,7 +542,6 @@
         function formatTime(t) {
             if(!t) return '';
             let s = t.toString();
-            // Legg til min hvis det er bare tall
             if(!isNaN(s) || (/\d+$/.test(s) && !s.toLowerCase().includes('min'))) {
                 return s + ' min.';
             }
@@ -566,7 +555,6 @@
             
             const content = document.getElementById('view-content');
             
-            // Format date for header
             const d = new Date(date);
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
             const niceDate = `${d.getDate()}. ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
@@ -628,7 +616,7 @@
             
             if(currentSessionData.plan && currentSessionData.plan.length > 0) {
                 currentSessionData.plan.forEach(ex => {
-                    const card = createCard(ex);
+                    const card = createCard(ex, true); // true = vis sletteknapp
                     area.appendChild(card);
                     addSwipeListener(card);
                 });
@@ -651,7 +639,7 @@
                     const hasTag = ex.tags && ex.tags.some(t => t.toLowerCase() === activeTagFilter.toLowerCase());
                     if (!hasTag) return;
                 }
-                list.appendChild(createCard(ex));
+                list.appendChild(createCard(ex, false));
             });
         }
 
@@ -668,7 +656,7 @@
             });
         }
 
-        function createCard(ex) {
+        function createCard(ex, isRemovable) {
             const el = document.createElement('div');
             let catClass = 'c-' + (ex.kategori ? ex.kategori.split(' ')[0].toLowerCase() : 'annet');
             el.className = `card ${catClass}`;
@@ -677,12 +665,19 @@
             // Onclick trigger popup
             el.setAttribute('onclick', 'openExerciseInfo(this)');
 
-            el.innerHTML = `
+            let html = `
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>
                     <span>${formatTime(ex.tid)}</span>
                 </div>
             `;
+            
+            // Legg til sletteknapp hvis kortet er i redigeringsmodus (isRemovable = true)
+            if(isRemovable) {
+                html += `<div class="card-del-btn" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmptyState();">✕</div>`;
+            }
+
+            el.innerHTML = html;
             return el;
         }
 
