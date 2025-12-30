@@ -16,12 +16,14 @@
             --text: #111;
             --text-soft: #666;
             
-            /* NY HOVEDFARGE (BLÅ) */
-            --accent: #0056b3; 
+            /* NY BLÅFARGE */
+            --accent: #3286af; 
             
             --danger: #d32f2f;
             --border: #dbe0e8;
-            --pill-shadow: 0 4px 15px rgba(0, 86, 179, 0.3); /* Blåaktig skygge */
+            
+            /* Skygge tilpasset ny blåfarge (RGB: 50, 134, 175) */
+            --pill-shadow: 0 4px 15px rgba(50, 134, 175, 0.3); 
         }
 
         /* 1. HARD RESET */
@@ -59,10 +61,23 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 2. LOADER (BLÅ BAKGRUNN, HVIT TEKST) */
+        /* SLETTE-KNAPP ANIMASJONER */
+        .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .slide-out-left { animation: slideOutLeft 0.3s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutLeft {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-20px); opacity: 0; }
+        }
+
+        /* 2. LOADER */
         #loader { 
             position: fixed; inset: 0; 
-            background: var(--accent); /* BLÅ BAKGRUNN */
+            background: var(--accent); /* NY BLÅFARGE */
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
         .spinner-wrap {
@@ -90,25 +105,25 @@
         #home-scroll { flex: 1; overflow-y: auto; padding: 10px 15px 100px 15px; }
         .week-header { font-size: 1.1rem; color: var(--text-soft); margin: 20px 0 10px 5px; font-weight: 800; }
 
-        /* NYTT DESIGN PÅ ØKT-KORT */
+        /* ØKT-KORT */
         .session-card {
             background: var(--surface); 
             border-radius: 12px; 
-            padding: 0; /* Padding styres av innholdet nå */
+            padding: 0; 
             margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
             border: 1px solid white;
             display: flex; 
             align-items: center;
-            overflow: hidden; /* For at datoboksen skal følge rundingen */
-            height: 80px; /* Fast høyde for pen look */
+            overflow: hidden;
+            height: 80px;
         }
 
         /* DATO BOKS (BLÅ) */
         .date-box {
-            background-color: var(--accent);
+            background-color: var(--accent); /* NY BLÅFARGE */
             width: 70px;
-            height: 100%; /* Fyller hele høyden */
+            height: 100%; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -120,7 +135,6 @@
         .db-day { font-size: 1.6rem; font-weight: 800; line-height: 1.1; margin: 2px 0; }
         .db-weekday { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
 
-        /* ØKT INFO */
         .session-info { 
             flex: 1; 
             padding: 0 15px; 
@@ -165,9 +179,8 @@
 
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Mørkere bakgrunn i droppsonen */
         #session-plan-area { 
-            flex: 1; background: #e0e4ea; /* Litt mørkere blågrå */
+            flex: 1; background: #e0e4ea; 
             overflow-y: auto; padding: 15px; min-height: 100px; 
         }
         .empty-state { text-align: center; color: #777; margin-top: 50px; pointer-events: none; font-weight: 600; }
@@ -182,7 +195,7 @@
         
         #exercise-list { 
             flex: 1; overflow-y: auto; padding: 10px; 
-            background: #f7f9fc; /* Litt gråere */
+            background: #f7f9fc; 
         }
         .tag-scroll { display: flex; overflow-x: auto; padding: 10px; gap: 8px; border-top: 1px solid #eee; background: #f9f9f9; flex-shrink: 0; height: 50px; align-items: center; scrollbar-width: none; }
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
@@ -193,8 +206,8 @@
             background: white; 
             padding: 6px 12px; 
             margin-bottom: 6px; 
-            border-radius: 8px; /* Runde hjørner */
-            border: 1px solid #cbd2d9; /* Tydelig ramme */
+            border-radius: 8px; 
+            border: 1px solid #cbd2d9; 
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
             touch-action: none;
