@@ -62,22 +62,20 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 2. NY LOADER (STOR TEKST) */
+        /* 2. NY LOADER (PERFEKT SIRKEL) */
         #loader { 
             position: fixed; inset: 0; background: var(--bg); 
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
         .spinner-wrap {
-            width: 200px; height: 200px; /* Større sirkel */
-            animation: rotate-center 10s linear infinite;
+            width: 160px; height: 160px;
+            animation: rotate-center 8s linear infinite;
         }
         .spinner-text {
-            width: 100%; height: 100%;
-            fill: #222;
             font-weight: 800; 
-            letter-spacing: 6px; /* Luft mellom bokstavene */
             text-transform: uppercase;
-            font-size: 24px; /* Stor tekst */
+            font-size: 14px;
+            fill: #333;
         }
         @keyframes rotate-center {
              from { transform: rotate(0deg); }
@@ -199,10 +197,10 @@
         <div class="spinner-wrap">
             <svg class="spinner-text" viewBox="0 0 200 200">
                 <defs>
-                    <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" />
+                    <path id="circlePath" d="M 100, 100 m -80, 0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0" />
                 </defs>
                 <text>
-                    <textPath xlink:href="#circlePath" startOffset="0%">
+                    <textPath xlink:href="#circlePath" textLength="500">
                         HENTER ØVELSER • HENTER ØVELSER •
                     </textPath>
                 </text>
@@ -214,7 +212,7 @@
         <div class="modal-box slide-up">
             <h3>Velg dato</h3>
             <input type="date" id="input-date">
-            <button class="modal-btn center-grid" onclick="window.confirmDate()">Planlegg økt</button>
+            <button class="modal-btn center-grid" id="btn-start-plan">Planlegg økt</button>
             <button onclick="window.closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
@@ -287,6 +285,9 @@
         document.addEventListener('DOMContentLoaded', init);
 
         async function init() {
+            // MANUELL LYTTER FOR PLANLEGG ØKT (Sikkerhet)
+            document.getElementById('btn-start-plan').addEventListener('click', confirmDate);
+
             try {
                 const res = await fetch(API_URL + "?v=" + Date.now());
                 const json = await res.json();
@@ -423,9 +424,15 @@
             document.getElementById('modal-date').style.display = 'grid'; 
         };
 
+        // GLOBAL FUNKSJON FOR KNAPPEN
         window.confirmDate = function() {
             const input = document.getElementById('input-date');
-            if(!input.value) input.value = new Date().toISOString().split('T')[0];
+            
+            // SIKKERHET: Sett dato hvis tom
+            if(!input.value) {
+                const today = new Date().toISOString().split('T')[0];
+                input.value = today;
+            }
             const d = input.value;
             
             state.date = d;
