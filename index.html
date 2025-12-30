@@ -37,7 +37,6 @@
 
         /* TYPOGRAFI */
         h1, h2, h3, h4, p, span, div, button { text-transform: none; }
-        h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
         h1, h2, h3 { font-weight: 800; } 
         
         button { text-transform: none !important; }
@@ -51,23 +50,25 @@
         @keyframes fadeInBtn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADING ANIMATION */
+        /* LOADING ANIMATION (Fikset tyngdekraft) */
         .ball-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100px; }
         .ball {
             width: 20px; height: 20px; background: black; border-radius: 50%;
-            animation: bounce 0.6s infinite alternate cubic-bezier(0.4, 0.0, 0.2, 1);
+            /* Starter oppe (-40px) og faller ned til 0 */
+            animation: bounce 0.6s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
         }
         .shadow {
             width: 20px; height: 4px; background: rgba(0,0,0,0.2); border-radius: 50%;
-            margin-top: 5px; animation: shadow 0.6s infinite alternate cubic-bezier(0.4, 0.0, 0.2, 1);
+            margin-top: 5px; animation: shadow 0.6s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
         }
+        
         @keyframes bounce { 
-            0% { transform: translateY(0) scaleY(0.9); } 
-            100% { transform: translateY(-40px) scaleY(1); } 
+            from { transform: translateY(-40px); } 
+            to { transform: translateY(0); } 
         }
         @keyframes shadow { 
-            0% { transform: scale(1); opacity: 0.8; } 
-            100% { transform: scale(0.6); opacity: 0.3; } 
+            from { transform: scale(0.6); opacity: 0.3; } 
+            to { transform: scale(1); opacity: 0.8; } 
         }
 
         /* LAYOUT & VIEWS */
@@ -96,16 +97,18 @@
         .session-date { font-size: 0.9rem; color: var(--text-soft); }
         .session-name { font-size: 1.2rem; font-weight: 800; }
         
+        /* Sletteknapp container */
         .session-actions { 
             height: 40px; display: flex; align-items: center; justify-content: flex-end;
             border-radius: 20px; min-width: 40px; transition: all 0.3s ease;
         }
         .delete-confirm-btn {
             background: var(--danger); color: white; border: none; padding: 8px 16px;
-            border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+            border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            white-space: nowrap;
         }
 
-        /* FAB */
+        /* FAB (Plus button) */
         .fab-pill {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--surface); border-radius: 50px; padding: 8px;
@@ -130,6 +133,7 @@
         .view-item .tags { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
         .view-tag { background: #f0f0f0; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; color: #555; }
 
+        /* Rediger knapp */
         #view-edit-btn {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: black; color: white; padding: 15px 40px; border-radius: 30px;
@@ -137,12 +141,12 @@
             z-index: 500; font-size: 1rem; text-transform: none; margin: 0; white-space: nowrap;
         }
         
-        /* FIX: Lukk-knapp (X) på visning */
+        /* Lukk-knapp (X) på visning */
         #view-back-btn {
             position: absolute; top: 20px; right: 20px;
             background: #f0f0f0; border:none; width: 44px; height: 44px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            z-index: 1000; /* Viktig! Ligger nå over innholdet */
+            z-index: 1000;
         }
 
         /* --- EDITOR VIEW --- */
@@ -290,7 +294,7 @@
         </div>
     </div>
 
-    <div id="view-home" class="view active">
+    <div id="view-home" class="view active fade-in">
         <header style="padding: 20px 15px; background: var(--bg);">
             <h1 style="margin:0; font-size: 1.8rem;">Mine økter</h1>
         </header>
@@ -455,6 +459,7 @@
                 return;
             }
 
+            // Definerte dager og måneder med Stor Forbokstav som forespurt
             const dayNames = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'];
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
 
@@ -498,6 +503,7 @@
                 deleteSessionFromHome(date);
             } else {
                 container.classList.add('confirm-mode');
+                // Legg til knappen med en fade-in-btn klasse
                 container.innerHTML = `<button class="delete-confirm-btn fade-in-btn">Slett</button>`;
                 setTimeout(() => {
                     if (container && container.classList.contains('confirm-mode')) {
@@ -542,6 +548,7 @@
         function formatTime(t) {
             if(!t) return '';
             let s = t.toString();
+            // Legg til min hvis det er bare tall
             if(!isNaN(s) || (/\d+$/.test(s) && !s.toLowerCase().includes('min'))) {
                 return s + ' min.';
             }
@@ -555,6 +562,7 @@
             
             const content = document.getElementById('view-content');
             
+            // Format date for header
             const d = new Date(date);
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
             const niceDate = `${d.getDate()}. ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
