@@ -40,15 +40,18 @@
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
         h1, h2, h3 { font-weight: 800; } 
         
-        /* KNAPPE-RESET (VIKTIG FOR SENTRERING) */
-        button { 
-            text-transform: none !important; 
-            padding: 0; margin: 0; 
-            display: flex; align-items: center; justify-content: center;
+        button { text-transform: none !important; }
+
+        /* SENTRERING AV IKONER I KNAPPER (FIX) */
+        .icon-center {
+            display: grid;
+            place-items: center;
+            padding: 0;
+            margin: 0;
         }
-        .material-icons-round { 
-            display: block; 
-            line-height: 1; /* Hindrer at ikonet flyter opp/ned */
+        .material-icons-round {
+            font-size: 24px;
+            display: block;
         }
 
         /* ANIMASJONER */
@@ -60,11 +63,12 @@
         @keyframes fadeInBtn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADING ANIMATION (Tung sprett) */
+        /* LOADING ANIMATION (Solid ball, tung sprett) */
         .ball-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100px; position: relative; }
         .ball {
             width: 40px; height: 40px; 
-            background: transparent; border: 4px solid black; border-radius: 50%;
+            background: var(--accent); /* Solid svart */
+            border-radius: 50%;
             position: absolute; bottom: 40px;
             animation: bounce 0.8s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
         }
@@ -122,7 +126,7 @@
             border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
         }
 
-        /* FAB PILL (Sentrert FIX) */
+        /* FAB PILL (Sentrert) */
         .fab-pill {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--surface); border-radius: 50px; padding: 8px;
@@ -132,8 +136,6 @@
         .fab-btn {
             background: var(--accent); color: white; border: none; cursor: pointer;
             width: 50px; height: 50px; border-radius: 50%;
-            /* VIKTIG FOR SENTRERING */
-            display: flex; align-items: center; justify-content: center; padding: 0; margin: 0;
         }
         .fab-btn:active { transform: scale(0.9); }
 
@@ -148,7 +150,7 @@
         .view-item .tags { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
         .view-tag { background: #f0f0f0; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; color: #555; }
 
-        /* REDIGER KNAPP (Sentrert FIX) */
+        /* REDIGER KNAPP (Sentrert) */
         #view-edit-btn {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: black; color: white; padding: 0 40px; height: 50px;
@@ -157,12 +159,11 @@
             display: flex; align-items: center; justify-content: center; white-space: nowrap;
         }
         
-        /* LUKK KNAPP (Sentrert FIX) */
+        /* LUKK KNAPP */
         #view-back-btn {
             position: absolute; top: 20px; right: 20px;
             background: #f0f0f0; border:none; width: 44px; height: 44px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            z-index: 1000; padding: 0;
+            cursor: pointer; z-index: 1000;
         }
 
         /* --- EDITOR VIEW --- */
@@ -172,8 +173,7 @@
         }
         .nav-btn {
             background: transparent; border: none; 
-            width: 44px; height: 44px; /* Fast størrelse for bedre treffpunkt */
-            display: flex; align-items: center; justify-content: center;
+            width: 44px; height: 44px;
             cursor: pointer; color: var(--text); padding: 0;
         }
         
@@ -224,18 +224,17 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
             border-left: 4px solid #ccc; user-select: none; position: relative;
             transform: translateX(0); transition: transform 0.2s ease, opacity 0.2s ease;
-            touch-action: none; /* VIKTIG FOR SWIPE PÅ MOBIL */
+            touch-action: none; 
         }
         
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .card h4 { margin: 0; font-size: 0.95rem; font-weight: 800; }
         .card span { font-size: 0.85rem; color: #666; font-weight: 600; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
         
-        /* Sletteknapp på kort (Sentrerings FIX) */
+        /* Sletteknapp på kort (PC/Desktop) */
         .card-del-btn {
             color: #ccc; width: 40px; height: 40px; cursor: pointer; 
             font-weight: bold; font-size: 1.2rem;
-            display: flex; align-items: center; justify-content: center;
             transition: color 0.2s; margin-left: 5px;
         }
         .card-del-btn:hover { color: var(--danger); }
@@ -324,14 +323,14 @@
             </div>
 
         <div class="fab-pill slide-up">
-            <button class="fab-btn" onclick="startNewSession()">
+            <button class="fab-btn icon-center" onclick="startNewSession()">
                 <span class="material-icons-round" style="font-size: 28px;">add</span>
             </button>
         </div>
     </div>
 
     <div id="view-presentation" class="view">
-        <button id="view-back-btn" onclick="goHome()">
+        <button id="view-back-btn" class="icon-center" onclick="goHome()">
             <span class="material-icons-round">close</span>
         </button>
         
@@ -343,13 +342,13 @@
 
     <div id="view-editor" class="view">
         <div id="editor-top-bar">
-            <button class="nav-btn" onclick="saveSession()">
+            <button class="nav-btn icon-center" onclick="saveSession()">
                 <span class="material-icons-round" id="save-icon" style="font-size: 28px;">save</span>
             </button>
 
             <span id="session-title-edit" onclick="openTitleModal()">Navn på økt</span>
 
-            <button class="nav-btn" onclick="goHome()">
+            <button class="nav-btn icon-center" onclick="goHome()">
                 <span class="material-icons-round" style="font-size: 28px;">close</span>
             </button>
         </div>
@@ -427,12 +426,14 @@
         function initSortable() {
             new Sortable(document.getElementById('exercise-list'), {
                 group: { name: 'shared', pull: 'clone', put: false },
-                sort: false, animation: 150
+                sort: false, animation: 150,
+                forceFallback: true, // Fix for drag on PC
+                fallbackOnBody: true
             });
 
             new Sortable(document.getElementById('session-plan-area'), {
                 group: 'shared', animation: 150,
-                forceFallback: true, // VIKTIG FOR DRA-PROBLEMET PÅ PC
+                forceFallback: true, // Fix for drag on PC
                 fallbackOnBody: true,
                 onAdd: function (evt) {
                     document.querySelector('.empty-state').style.display = 'none';
@@ -701,20 +702,20 @@
             
             // Legg til sletteknapp hvis kortet er i redigeringsmodus
             if(isRemovable) {
-                html += `<div class="card-del-btn" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmptyState();">✕</div>`;
+                html += `<div class="card-del-btn icon-center" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmptyState();">✕</div>`;
             }
 
             el.innerHTML = html;
             return el;
         }
 
-        // SWIPE & MOUSE DRAG SLETTEFUNKSJON
+        // SWIPE (KUN MOBIL)
         function addSwipeListener(card) {
             let startX = 0;
             let currentX = 0;
             let isDragging = false;
 
-            // TOUCH EVENTS
+            // KUN TOUCH EVENTS (Mobil)
             card.addEventListener('touchstart', (e) => {
                 startX = e.touches[0].clientX;
                 isDragging = true;
@@ -724,53 +725,32 @@
             card.addEventListener('touchmove', (e) => {
                 if (!isDragging) return;
                 currentX = e.touches[0].clientX;
-                handleMove(card, currentX - startX);
+                const diff = currentX - startX;
+                
+                if (Math.abs(diff) > 10) {
+                    card.style.transform = `translateX(${diff}px)`;
+                    card.style.opacity = 1 - (Math.abs(diff) / 300);
+                }
             }, {passive: true});
 
             card.addEventListener('touchend', (e) => {
-                if (!isDragging) return;
                 isDragging = false;
-                handleEnd(card, currentX - startX);
+                const diff = currentX - startX;
+                card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+                if (Math.abs(diff) > 100) {
+                    const direction = diff > 0 ? 500 : -500;
+                    card.style.transform = `translateX(${direction}px)`;
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        card.remove();
+                        checkEmptyState();
+                    }, 300);
+                } else {
+                    card.style.transform = 'translateX(0)';
+                    card.style.opacity = '1';
+                }
             });
-
-            // MOUSE EVENTS
-            card.addEventListener('mousedown', (e) => {
-                startX = e.clientX;
-                isDragging = true;
-                card.style.transition = 'none';
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                currentX = e.clientX;
-                handleMove(card, currentX - startX);
-            });
-
-            window.addEventListener('mouseup', (e) => {
-                if (!isDragging) return;
-                isDragging = false;
-                handleEnd(card, currentX - startX);
-            });
-        }
-
-        function handleMove(card, diff) {
-            if (Math.abs(diff) > 10) {
-                card.style.transform = `translateX(${diff}px)`;
-                card.style.opacity = 1 - (Math.abs(diff) / 300);
-            }
-        }
-
-        function handleEnd(card, diff) {
-            card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-            if (Math.abs(diff) > 100) {
-                const direction = diff > 0 ? 500 : -500;
-                card.style.transform = `translateX(${direction}px)`;
-                card.style.opacity = '0';
-                setTimeout(() => { card.remove(); checkEmptyState(); }, 300);
-            } else {
-                card.style.transform = 'translateX(0)';
-                card.style.opacity = '1';
-            }
         }
 
         // --- FILTRERING ---
