@@ -51,11 +51,10 @@
         @keyframes fadeInBtn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADING ANIMATION (Gravity Fixed) */
+        /* LOADING ANIMATION */
         .ball-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100px; }
         .ball {
             width: 20px; height: 20px; background: black; border-radius: 50%;
-            /* Cubic-bezier her gir "Toss up" effekt: Rask opp, bremser på toppen, akselererer ned */
             animation: bounce 0.6s infinite alternate cubic-bezier(0.4, 0.0, 0.2, 1);
         }
         .shadow {
@@ -63,8 +62,8 @@
             margin-top: 5px; animation: shadow 0.6s infinite alternate cubic-bezier(0.4, 0.0, 0.2, 1);
         }
         @keyframes bounce { 
-            0% { transform: translateY(0) scaleY(0.9); } /* Floor - squish */
-            100% { transform: translateY(-40px) scaleY(1); } /* Air */
+            0% { transform: translateY(0) scaleY(0.9); } 
+            100% { transform: translateY(-40px) scaleY(1); } 
         }
         @keyframes shadow { 
             0% { transform: scale(1); opacity: 0.8; } 
@@ -97,15 +96,13 @@
         .session-date { font-size: 0.9rem; color: var(--text-soft); }
         .session-name { font-size: 1.2rem; font-weight: 800; }
         
-        /* Sletteknapp container */
         .session-actions { 
             height: 40px; display: flex; align-items: center; justify-content: flex-end;
             border-radius: 20px; min-width: 40px; transition: all 0.3s ease;
         }
         .delete-confirm-btn {
             background: var(--danger); color: white; border: none; padding: 8px 16px;
-            border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
-            white-space: nowrap;
+            border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
         }
 
         /* FAB */
@@ -139,10 +136,13 @@
             font-weight: 800; border: none; box-shadow: var(--pill-shadow); cursor: pointer; 
             z-index: 500; font-size: 1rem; text-transform: none; margin: 0; white-space: nowrap;
         }
+        
+        /* FIX: Lukk-knapp (X) på visning */
         #view-back-btn {
             position: absolute; top: 20px; right: 20px;
             background: #f0f0f0; border:none; width: 44px; height: 44px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
+            z-index: 1000; /* Viktig! Ligger nå over innholdet */
         }
 
         /* --- EDITOR VIEW --- */
@@ -616,7 +616,7 @@
             
             if(currentSessionData.plan && currentSessionData.plan.length > 0) {
                 currentSessionData.plan.forEach(ex => {
-                    const card = createCard(ex, true); // true = vis sletteknapp
+                    const card = createCard(ex, true);
                     area.appendChild(card);
                     addSwipeListener(card);
                 });
@@ -672,7 +672,7 @@
                 </div>
             `;
             
-            // Legg til sletteknapp hvis kortet er i redigeringsmodus (isRemovable = true)
+            // Legg til sletteknapp hvis kortet er i redigeringsmodus
             if(isRemovable) {
                 html += `<div class="card-del-btn" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmptyState();">✕</div>`;
             }
