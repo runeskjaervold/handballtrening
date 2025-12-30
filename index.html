@@ -72,7 +72,7 @@
         /* LOADER */
         #loader { 
             position: fixed; inset: 0; 
-            background: var(--accent); /* BLÅ BAKGRUNN */
+            background: var(--accent); 
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
         .loader-icon {
@@ -106,6 +106,9 @@
             align-items: center;
             overflow: hidden;
             height: 80px;
+            position: relative;
+            z-index: 1;
+            cursor: pointer; /* Viser at den kan trykkes på */
         }
 
         /* DATO BOKS (BLÅ) */
@@ -120,9 +123,9 @@
             color: white;
             flex-shrink: 0;
         }
-        .db-month { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
-        .db-day { font-size: 1.6rem; font-weight: 800; line-height: 1.1; margin: 2px 0; }
-        .db-weekday { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
+        .db-month { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
+        .db-day { font-size: 1.7rem; font-weight: 900; line-height: 1; margin: 2px 0; }
+        .db-weekday { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
 
         .session-info { flex: 1; padding: 0 15px; display: flex; align-items: center; }
         .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
@@ -210,7 +213,9 @@
         
         .pres-item { padding: 20px 0; border-bottom: 1px solid #eee; }
         .pres-item h3 { font-size: 1.4rem; margin-bottom: 5px; }
-        
+        .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+        .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
+
         /* KNAPPER (Z-INDEX FIX) */
         #btn-edit-pres {
             position: fixed; bottom: 30px; right: 30px; left: auto; transform: none;
@@ -297,7 +302,7 @@
 
     <div id="view-editor" class="view">
         <div id="editor-top">
-            <button class="nav-icon center-grid" onclick="window.saveSession()">
+            <button class="nav-icon center-grid" id="btn-save-session" onclick="window.saveSession()">
                 <span class="material-icons-round" id="icon-save">save</span>
             </button>
             <span id="session-title-edit" onclick="window.openTitleModal()">Navn på økt</span>
@@ -463,11 +468,14 @@
 
                 const card = document.createElement('div');
                 card.className = 'session-card slide-up';
+                // VIKTIG: setAttribute for å sikre unike events
+                card.setAttribute('onclick', `window.openPres('${d}')`);
+                
                 card.innerHTML = `
                     <div class="date-box">
-                        <span class="db-month">${monthName}</span>
+                        <span class="db-month">${monthName.toUpperCase()}</span>
                         <span class="db-day">${dayNum}</span>
-                        <span class="db-weekday">${dayName}</span>
+                        <span class="db-weekday">${dayName.toUpperCase()}</span>
                     </div>
                     <div class="session-info">
                         <span class="session-name cap-first">${s.navn}</span>
@@ -476,7 +484,6 @@
                         <span class="material-icons-round" style="color:#aaa;">more_vert</span>
                     </div>
                 `;
-                card.onclick = () => window.openPres(d);
                 cont.appendChild(card);
             });
         }
