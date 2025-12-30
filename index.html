@@ -39,7 +39,17 @@
         h1, h2, h3, h4, p, span, div, button { text-transform: none; }
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
         h1, h2, h3 { font-weight: 800; } 
-        button { text-transform: none !important; }
+        
+        /* KNAPPE-RESET (VIKTIG FOR SENTRERING) */
+        button { 
+            text-transform: none !important; 
+            padding: 0; margin: 0; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        .material-icons-round { 
+            display: block; 
+            line-height: 1; /* Hindrer at ikonet flyter opp/ned */
+        }
 
         /* ANIMASJONER */
         .fade-in { animation: fadeIn 0.5s ease forwards; }
@@ -50,34 +60,25 @@
         @keyframes fadeInBtn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADING ANIMATION (Realistisk sprett) */
-        .ball-container { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 150px; position: relative;
-        }
+        /* LOADING ANIMATION (Tung sprett) */
+        .ball-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100px; position: relative; }
         .ball {
             width: 40px; height: 40px; 
-            background: transparent; 
-            border: 4px solid black;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 40px;
+            background: transparent; border: 4px solid black; border-radius: 50%;
+            position: absolute; bottom: 40px;
             animation: bounce 0.8s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
         }
         .shadow {
             width: 40px; height: 6px; 
-            background: rgba(0,0,0,0.15); 
-            border-radius: 50%;
-            position: absolute;
-            bottom: 30px; 
+            background: rgba(0,0,0,0.15); border-radius: 50%;
+            position: absolute; bottom: 30px; 
             animation: shadow 0.8s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
         }
-        
         @keyframes bounce { 
-            0% { transform: translateY(0) scale(1.1, 0.85); } /* Treffer bakken (skvis) */
-            30% { transform: translateY(-70px) scale(0.9, 1.1); } /* På vei opp (strekk) */
-            60% { transform: translateY(-80px) scale(1, 1); } /* Toppen (pause) */
-            100% { transform: translateY(0) scale(1.1, 0.85); } /* Ned igjen */
+            0% { transform: translateY(0) scale(1.1, 0.85); }
+            30% { transform: translateY(-70px) scale(0.9, 1.1); }
+            60% { transform: translateY(-80px) scale(1, 1); }
+            100% { transform: translateY(0) scale(1.1, 0.85); }
         }
         @keyframes shadow { 
             0% { transform: scale(1); opacity: 0.8; } 
@@ -121,7 +122,7 @@
             border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; white-space: nowrap;
         }
 
-        /* FAB */
+        /* FAB PILL (Sentrert FIX) */
         .fab-pill {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--surface); border-radius: 50px; padding: 8px;
@@ -130,8 +131,9 @@
         }
         .fab-btn {
             background: var(--accent); color: white; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            width: 50px; height: 50px; border-radius: 50%; margin: 0;
+            width: 50px; height: 50px; border-radius: 50%;
+            /* VIKTIG FOR SENTRERING */
+            display: flex; align-items: center; justify-content: center; padding: 0; margin: 0;
         }
         .fab-btn:active { transform: scale(0.9); }
 
@@ -146,17 +148,21 @@
         .view-item .tags { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
         .view-tag { background: #f0f0f0; font-size: 0.8rem; padding: 4px 10px; border-radius: 4px; color: #555; }
 
+        /* REDIGER KNAPP (Sentrert FIX) */
         #view-edit-btn {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: black; color: white; padding: 15px 40px; border-radius: 30px;
-            font-weight: 800; border: none; box-shadow: var(--pill-shadow); cursor: pointer; 
-            z-index: 500; font-size: 1rem; text-transform: none; margin: 0; white-space: nowrap;
+            background: black; color: white; padding: 0 40px; height: 50px;
+            border-radius: 30px; font-weight: 800; border: none; 
+            box-shadow: var(--pill-shadow); cursor: pointer; z-index: 500; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; white-space: nowrap;
         }
+        
+        /* LUKK KNAPP (Sentrert FIX) */
         #view-back-btn {
             position: absolute; top: 20px; right: 20px;
             background: #f0f0f0; border:none; width: 44px; height: 44px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            z-index: 1000;
+            z-index: 1000; padding: 0;
         }
 
         /* --- EDITOR VIEW --- */
@@ -165,8 +171,10 @@
             padding: 0 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
         }
         .nav-btn {
-            background: transparent; border: none; padding: 10px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--text);
+            background: transparent; border: none; 
+            width: 44px; height: 44px; /* Fast størrelse for bedre treffpunkt */
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text); padding: 0;
         }
         
         #session-title-edit { 
@@ -216,21 +224,19 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
             border-left: 4px solid #ccc; user-select: none; position: relative;
             transform: translateX(0); transition: transform 0.2s ease, opacity 0.2s ease;
-            touch-action: none; /* VIKTIG FOR MOBIL SWIPE */
+            touch-action: none; /* VIKTIG FOR SWIPE PÅ MOBIL */
         }
         
-        /* Spøkelseskort under dragging */
-        .sortable-ghost { opacity: 0.4; background: #e0e0e0; }
-        .sortable-drag { cursor: grabbing; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .card h4 { margin: 0; font-size: 0.95rem; font-weight: 800; }
         .card span { font-size: 0.85rem; color: #666; font-weight: 600; background: #f5f5f5; padding: 2px 6px; border-radius: 4px; }
         
-        /* Sletteknapp på kort (PC/Desktop) */
+        /* Sletteknapp på kort (Sentrerings FIX) */
         .card-del-btn {
-            color: #ccc; padding: 10px; cursor: pointer; font-weight: bold; font-size: 1.2rem;
-            transition: color 0.2s; margin-left: 10px;
+            color: #ccc; width: 40px; height: 40px; cursor: pointer; 
+            font-weight: bold; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: color 0.2s; margin-left: 5px;
         }
         .card-del-btn:hover { color: var(--danger); }
 
@@ -276,7 +282,7 @@
             <div class="ball"></div>
             <div class="shadow"></div>
         </div>
-        <p style="margin-top:20px; font-weight:600; color:#666;">Henter øvelser...</p>
+        <p style="margin-top:10px; font-weight:600; color:#666;">Henter øvelser...</p>
     </div>
 
     <div id="exercise-modal" class="modal-overlay" onclick="closeModals()">
@@ -309,7 +315,7 @@
         </div>
     </div>
 
-    <div id="view-home" class="view active">
+    <div id="view-home" class="view active fade-in">
         <header style="padding: 20px 15px; background: var(--bg);">
             <h1 style="margin:0; font-size: 1.8rem;">Mine økter</h1>
         </header>
@@ -419,18 +425,14 @@
         }
 
         function initSortable() {
-            // Bibliotek (Kan dras fra)
             new Sortable(document.getElementById('exercise-list'), {
                 group: { name: 'shared', pull: 'clone', put: false },
-                sort: false, animation: 150,
-                forceFallback: true, // VIKTIG FOR DRA-PROBLEMET
-                fallbackOnBody: true
+                sort: false, animation: 150
             });
 
-            // Økt-plan (Kan dras til)
             new Sortable(document.getElementById('session-plan-area'), {
                 group: 'shared', animation: 150,
-                forceFallback: true, // VIKTIG
+                forceFallback: true, // VIKTIG FOR DRA-PROBLEMET PÅ PC
                 fallbackOnBody: true,
                 onAdd: function (evt) {
                     document.querySelector('.empty-state').style.display = 'none';
@@ -480,7 +482,6 @@
                 return;
             }
 
-            // Dager og Måneder med Stor Forbokstav (som du ville ha)
             const dayNames = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'];
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
 
@@ -707,11 +708,13 @@
             return el;
         }
 
+        // SWIPE & MOUSE DRAG SLETTEFUNKSJON
         function addSwipeListener(card) {
             let startX = 0;
             let currentX = 0;
             let isDragging = false;
 
+            // TOUCH EVENTS
             card.addEventListener('touchstart', (e) => {
                 startX = e.touches[0].clientX;
                 isDragging = true;
@@ -721,32 +724,53 @@
             card.addEventListener('touchmove', (e) => {
                 if (!isDragging) return;
                 currentX = e.touches[0].clientX;
-                const diff = currentX - startX;
-                
-                if (Math.abs(diff) > 10) {
-                    card.style.transform = `translateX(${diff}px)`;
-                    card.style.opacity = 1 - (Math.abs(diff) / 300);
-                }
+                handleMove(card, currentX - startX);
             }, {passive: true});
 
             card.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
                 isDragging = false;
-                const diff = currentX - startX;
-                card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-
-                if (Math.abs(diff) > 100) {
-                    const direction = diff > 0 ? 500 : -500;
-                    card.style.transform = `translateX(${direction}px)`;
-                    card.style.opacity = '0';
-                    setTimeout(() => {
-                        card.remove();
-                        checkEmptyState();
-                    }, 300);
-                } else {
-                    card.style.transform = 'translateX(0)';
-                    card.style.opacity = '1';
-                }
+                handleEnd(card, currentX - startX);
             });
+
+            // MOUSE EVENTS
+            card.addEventListener('mousedown', (e) => {
+                startX = e.clientX;
+                isDragging = true;
+                card.style.transition = 'none';
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                currentX = e.clientX;
+                handleMove(card, currentX - startX);
+            });
+
+            window.addEventListener('mouseup', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                handleEnd(card, currentX - startX);
+            });
+        }
+
+        function handleMove(card, diff) {
+            if (Math.abs(diff) > 10) {
+                card.style.transform = `translateX(${diff}px)`;
+                card.style.opacity = 1 - (Math.abs(diff) / 300);
+            }
+        }
+
+        function handleEnd(card, diff) {
+            card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            if (Math.abs(diff) > 100) {
+                const direction = diff > 0 ? 500 : -500;
+                card.style.transform = `translateX(${direction}px)`;
+                card.style.opacity = '0';
+                setTimeout(() => { card.remove(); checkEmptyState(); }, 300);
+            } else {
+                card.style.transform = 'translateX(0)';
+                card.style.opacity = '1';
+            }
         }
 
         // --- FILTRERING ---
