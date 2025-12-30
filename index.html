@@ -21,37 +21,29 @@
             --pill-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* NULLSTILLING AV ALT (Viktig for sentrering) */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            margin: 0;
+            margin: 0; padding: 0;
             height: 100vh;
             overflow: hidden;
             font-weight: 600;
         }
 
-        /* TYPOGRAFI & RESET */
+        /* TYPOGRAFI */
         h1, h2, h3, button, input { font-family: 'Inter', sans-serif; text-transform: none; }
         h1, h2, h3 { font-weight: 800; margin: 0; }
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
         
+        /* KNAPPE-RESET (Fikser skeivhet) */
         button { 
             border: none; background: none; padding: 0; margin: 0; 
-            cursor: pointer; -webkit-appearance: none;
-        }
-
-        /* HELPER: SENTRERING AV IKONER */
-        .center-flex {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        .material-icons-round { 
-            display: block; 
-            line-height: 1; /* Hindrer vertikal forskyvning */
+            cursor: pointer; -webkit-appearance: none; appearance: none;
+            display: flex; align-items: center; justify-content: center;
         }
 
         /* ANIMASJONER */
@@ -61,33 +53,26 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADING BALL (NATURLIG GRAVITASJON) */
+        /* LOADING BALL (Sentrert skygge) */
         .ball-wrap { 
-            height: 120px; width: 100%; 
-            display: flex; justify-content: center; align-items: flex-end; 
-            padding-bottom: 20px; 
+            height: 120px; width: 100px; position: relative;
+            display: flex; justify-content: center; /* Sentrerer horisontalt */
         }
         .ball {
-            width: 30px; height: 30px; 
-            background: black; border-radius: 50%;
-            /* ease-in gir akselerasjon nedover (tyngdekraft). alternate gjør at den reverserer (bremser) oppover. */
-            animation: bounce 0.5s ease-in infinite alternate;
+            width: 30px; height: 30px; background: black; border-radius: 50%;
+            position: absolute; bottom: 40px; left: 50%; margin-left: -15px; /* Eksakt sentrering */
+            z-index: 2;
+            animation: bounce 0.6s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
         }
         .shadow {
-            width: 30px; height: 4px; 
-            background: rgba(0,0,0,0.1); border-radius: 50%;
-            margin-top: -5px; /* Ligger under ballen */
-            animation: shadow 0.5s ease-in infinite alternate;
+            width: 30px; height: 6px; 
+            background: rgba(0,0,0,0.15); border-radius: 50%;
+            position: absolute; bottom: 20px; left: 50%; margin-left: -15px; /* Eksakt sentrering */
+            z-index: 1;
+            animation: shadow 0.6s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
         }
-        
-        @keyframes bounce { 
-            0% { transform: translateY(-70px); } /* Starter i lufta */
-            100% { transform: translateY(0); }   /* Lander på gulvet */
-        }
-        @keyframes shadow { 
-            0% { transform: scale(0.5); opacity: 0.2; } /* Liten skygge når ballen er høyt */
-            100% { transform: scale(1); opacity: 0.8; } /* Stor skygge når ballen treffer */
-        }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-50px); } }
+        @keyframes shadow { from { transform: scale(1); opacity: 0.8; } to { transform: scale(0.5); opacity: 0.3; } }
 
         /* LAYOUT */
         .view { display: none; height: 100%; flex-direction: column; position: absolute; inset: 0; background: var(--bg); z-index: 10; }
@@ -108,45 +93,38 @@
         .session-date { font-size: 0.85rem; color: var(--text-soft); }
         .session-name { font-size: 1.1rem; font-weight: 800; }
         
-        .session-actions { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+        .session-actions { width: 40px; height: 40px; display: grid; place-items: center; }
         .del-btn-home { background: var(--danger); color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
 
-        /* FAB (Sentrert Fix) */
+        /* FAB (+ Knapp) - Sentrering */
         .fab-pill {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--surface); border-radius: 50px; padding: 6px;
-            box-shadow: var(--pill-shadow); z-index: 100; display: flex;
+            box-shadow: var(--pill-shadow); z-index: 100; 
+            display: flex; align-items: center; justify-content: center;
         }
         .fab-btn {
             background: var(--accent); color: white; width: 50px; height: 50px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
         }
-        .fab-btn .material-icons-round { font-size: 30px; }
+        .fab-btn .material-icons-round { font-size: 30px; line-height: 1; display: block; }
 
         /* --- EDITOR --- */
         #editor-top {
             height: 60px; background: var(--surface); border-bottom: 1px solid #ccc;
             display: flex; justify-content: space-between; align-items: center; padding: 0 10px; flex-shrink: 0;
         }
-        .nav-icon { 
-            width: 44px; height: 44px; color: var(--text); 
-            display: flex; align-items: center; justify-content: center; /* Sentrerer ikon i knapp */
-        }
-        .nav-icon .material-icons-round { font-size: 28px; }
-        
+        .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--text); display: flex; align-items: center; justify-content: center; }
         #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Dropzone */
         #session-plan-area {
-            flex: 1; background: #dcdcdc; /* Mørkere grå for kontrast */
-            overflow-y: auto; padding: 15px; 
-            min-height: 100px; /* Sikrer at man kan slippe ting her */
+            flex: 1; background: #dcdcdc; overflow-y: auto; padding: 15px; 
+            min-height: 100px;
         }
         .empty-state { text-align: center; color: #777; margin-top: 50px; pointer-events: none; }
 
-        /* Library */
         #library-area {
             height: 45%; background: var(--surface); display: flex; flex-direction: column; 
             border-top: 1px solid #ccc; z-index: 20;
@@ -156,29 +134,25 @@
             background: white; flex-shrink: 0; scrollbar-width: none;
         }
         .cat-chip {
-            padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-size: 0.9rem; white-space: nowrap; cursor: pointer;
+            padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-size: 0.9rem; white-space: nowrap;
         }
         .cat-chip.active { background: var(--accent); color: white; }
 
         #exercise-list { flex: 1; overflow-y: auto; padding: 10px; background: #fff; }
 
-        /* Tags bunn */
         .tag-scroll { 
             display: flex; overflow-x: auto; padding: 10px; gap: 8px; border-top: 1px solid #eee; 
             background: #f9f9f9; flex-shrink: 0; height: 50px; align-items: center; scrollbar-width: none;
         }
         .tag-chip {
-            padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer;
+            padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap;
         }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
 
-        /* KORT DESIGN */
         .card {
-            background: white; padding: 12px 15px; margin-bottom: 8px; border-radius: 4px; 
-            border: 1px solid #ccc;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            touch-action: none;
+            background: white; padding: 12px 15px; margin-bottom: 8px; border-radius: 4px;
+            border: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); touch-action: none;
         }
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .card h4 { font-size: 0.95rem; font-weight: 800; color: #000; }
@@ -186,13 +160,13 @@
         
         .card-del {
             width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
-            color: #ccc; margin-left: 10px; cursor: pointer; font-size: 1.2rem;
+            color: #ccc; margin-left: 10px; cursor: pointer;
         }
         .card-del:hover { color: var(--danger); }
 
         /* PRESENTATION VIEW */
         #view-pres { background: white; z-index: 50; }
-        #pres-content { flex: 1; overflow-y: auto; padding: 25px; }
+        #pres-content { flex: 1; overflow-y: auto; padding: 25px 25px 100px 25px; }
         .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
         .pres-title { font-size: 2rem; line-height: 1.1; margin-bottom: 5px; }
         
@@ -201,26 +175,30 @@
         .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
         .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
 
-        /* KNAPPER (Z-INDEX FIX) */
+        /* REDIGER KNAPP (Sentrert Fix) */
         #btn-edit-pres {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: black; color: white; height: 50px; padding: 0 40px;
             border-radius: 25px; font-weight: 800; font-size: 1rem;
-            display: flex; align-items: center; justify-content: center; 
-            box-shadow: var(--pill-shadow); z-index: 2000; /* Høy prioritet */
+            box-shadow: var(--pill-shadow); 
+            z-index: 2000; /* Høy prioritet for klikk */
+            display: flex; align-items: center; justify-content: center;
         }
         #btn-close-pres {
             position: absolute; top: 20px; right: 20px; background: #f0f0f0; 
             width: 44px; height: 44px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center;
-            z-index: 2000; /* Høy prioritet */
+            z-index: 2000; /* Høy prioritet for klikk */
         }
 
-        /* MODALS */
-        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; display: none; place-items: center; }
+        /* MODALS (Høyest prioritet) */
+        .modal-bg { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
+            z-index: 5000; /* Må være høyest */
+            display: none; place-items: center; 
+        }
         .modal-box { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; }
         
-        /* Modal inputs & buttons */
         input[type="date"], input[type="text"] {
             width: 100%; padding: 15px; font-size: 1.1rem; 
             border: 1px solid #ccc; border-radius: 8px; margin: 15px 0; 
@@ -368,7 +346,6 @@
         function checkEmpty() {
             const area = document.getElementById('session-plan-area');
             const emptyMsg = document.querySelector('.empty-state');
-            // Show empty text only if no card elements exist
             const hasCards = area.querySelectorAll('.card').length > 0;
             emptyMsg.style.display = hasCards ? 'none' : 'block';
         }
@@ -461,12 +438,15 @@
         function startNewSession() {
             document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('input-date').value = today; // Sett dagens dato
-            document.getElementById('modal-date').style.display = 'grid'; // Grid for å sentrere (definert i CSS)
+            document.getElementById('input-date').value = today; 
+            document.getElementById('modal-date').style.display = 'grid'; // Grid for å sentrere
         }
 
         function confirmDate() {
-            const d = document.getElementById('input-date').value;
+            // SIKRE AT KNAPPEN VIRKER: Hent verdi, sjekk den, kjør logikk.
+            const dateInput = document.getElementById('input-date');
+            const d = dateInput.value;
+            
             if(!d) { alert('Du må velge en dato'); return; }
             
             state.date = d;
@@ -480,14 +460,17 @@
             closeModals();
         }
 
-        function editCurrentSession() { loadEditor(); }
+        function editCurrentSession() { 
+            // Denne kalles fra "Rediger" knappen i presentation view
+            loadEditor(); 
+        }
 
         function loadEditor() {
             document.getElementById('session-title-edit').innerText = state.session.navn;
             const area = document.getElementById('session-plan-area');
             area.innerHTML = '';
             
-            if(state.session.plan.length) {
+            if(state.session.plan && state.session.plan.length > 0) {
                 state.session.plan.forEach(ex => {
                     const card = createCard(ex, true);
                     area.appendChild(card);
