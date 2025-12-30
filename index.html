@@ -43,15 +43,15 @@
             cursor: pointer; -webkit-appearance: none;
         }
 
-        /* HELPER: PERFEKT SENTRERING AV IKONER */
+        /* HELPER: SENTRERING AV IKONER */
         .center-flex {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
         }
-        .center-flex .material-icons-round {
-            display: block;
-            line-height: 1;
+        .material-icons-round { 
+            display: block; 
+            line-height: 1; /* Hindrer vertikal forskyvning */
         }
 
         /* ANIMASJONER */
@@ -61,15 +61,32 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOADING BALL (SOLID SPRETT) */
-        .ball-wrap { height: 120px; width: 100%; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px; }
-        .ball {
-            width: 30px; height: 30px; background: black; border-radius: 50%;
-            animation: bounce 0.5s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
+        /* LOADING BALL (NATURLIG GRAVITASJON) */
+        .ball-wrap { 
+            height: 120px; width: 100%; 
+            display: flex; justify-content: center; align-items: flex-end; 
+            padding-bottom: 20px; 
         }
+        .ball {
+            width: 30px; height: 30px; 
+            background: black; border-radius: 50%;
+            /* ease-in gir akselerasjon nedover (tyngdekraft). alternate gjør at den reverserer (bremser) oppover. */
+            animation: bounce 0.5s ease-in infinite alternate;
+        }
+        .shadow {
+            width: 30px; height: 4px; 
+            background: rgba(0,0,0,0.1); border-radius: 50%;
+            margin-top: -5px; /* Ligger under ballen */
+            animation: shadow 0.5s ease-in infinite alternate;
+        }
+        
         @keyframes bounce { 
-            from { transform: translateY(0); } 
-            to { transform: translateY(-60px); } 
+            0% { transform: translateY(-70px); } /* Starter i lufta */
+            100% { transform: translateY(0); }   /* Lander på gulvet */
+        }
+        @keyframes shadow { 
+            0% { transform: scale(0.5); opacity: 0.2; } /* Liten skygge når ballen er høyt */
+            100% { transform: scale(1); opacity: 0.8; } /* Stor skygge når ballen treffer */
         }
 
         /* LAYOUT */
@@ -91,10 +108,10 @@
         .session-date { font-size: 0.85rem; color: var(--text-soft); }
         .session-name { font-size: 1.1rem; font-weight: 800; }
         
-        .session-actions { width: 40px; height: 40px; }
+        .session-actions { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
         .del-btn-home { background: var(--danger); color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
 
-        /* FAB (Plus button) */
+        /* FAB (Sentrert Fix) */
         .fab-pill {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--surface); border-radius: 50px; padding: 6px;
@@ -102,52 +119,30 @@
         }
         .fab-btn {
             background: var(--accent); color: white; width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
         }
         .fab-btn .material-icons-round { font-size: 30px; }
-
-        /* --- PRESENTATION (FIXED Z-INDEX) --- */
-        #view-pres { background: white; z-index: 50; }
-        #pres-content { flex: 1; overflow-y: auto; padding: 25px 25px 100px 25px; position: relative; z-index: 1; }
-        
-        .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .pres-title { font-size: 2rem; line-height: 1.1; margin-bottom: 5px; }
-        
-        .pres-item { padding: 20px 0; border-bottom: 1px solid #eee; }
-        .pres-item h3 { font-size: 1.4rem; margin-bottom: 5px; }
-        .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
-        .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
-
-        /* REDIGER KNAPP */
-        #btn-edit-pres {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: black; color: white; height: 50px; padding: 0 40px;
-            border-radius: 25px; font-weight: 800; font-size: 1rem;
-            box-shadow: var(--pill-shadow); z-index: 1000; /* Høy Z-index */
-        }
-        
-        /* LUKK KNAPP */
-        #btn-close-pres {
-            position: absolute; top: 20px; right: 20px; background: #f0f0f0; 
-            width: 44px; height: 44px; border-radius: 50%; z-index: 1000; /* Høy Z-index */
-        }
 
         /* --- EDITOR --- */
         #editor-top {
             height: 60px; background: var(--surface); border-bottom: 1px solid #ccc;
             display: flex; justify-content: space-between; align-items: center; padding: 0 10px; flex-shrink: 0;
         }
-        .nav-icon { width: 44px; height: 44px; color: var(--text); }
-        .material-icons-round { font-size: 24px; }
+        .nav-icon { 
+            width: 44px; height: 44px; color: var(--text); 
+            display: flex; align-items: center; justify-content: center; /* Sentrerer ikon i knapp */
+        }
+        .nav-icon .material-icons-round { font-size: 28px; }
         
-        #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+        #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
         /* Dropzone */
         #session-plan-area {
-            flex: 1; background: #dcdcdc;
+            flex: 1; background: #dcdcdc; /* Mørkere grå for kontrast */
             overflow-y: auto; padding: 15px; 
-            min-height: 100px;
+            min-height: 100px; /* Sikrer at man kan slippe ting her */
         }
         .empty-state { text-align: center; color: #777; margin-top: 50px; pointer-events: none; }
 
@@ -179,7 +174,7 @@
 
         /* KORT DESIGN */
         .card {
-            background: white; padding: 12px 15px; margin-bottom: 8px; border-radius: 4px;
+            background: white; padding: 12px 15px; margin-bottom: 8px; border-radius: 4px; 
             border: 1px solid #ccc;
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -190,14 +185,42 @@
         .card span { font-size: 0.85rem; font-weight: 600; color: #555; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
         
         .card-del {
-            width: 30px; height: 30px; color: #ccc; margin-left: 10px; cursor: pointer;
+            width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+            color: #ccc; margin-left: 10px; cursor: pointer; font-size: 1.2rem;
         }
         .card-del:hover { color: var(--danger); }
+
+        /* PRESENTATION VIEW */
+        #view-pres { background: white; z-index: 50; }
+        #pres-content { flex: 1; overflow-y: auto; padding: 25px; }
+        .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        .pres-title { font-size: 2rem; line-height: 1.1; margin-bottom: 5px; }
+        
+        .pres-item { padding: 20px 0; border-bottom: 1px solid #eee; }
+        .pres-item h3 { font-size: 1.4rem; margin-bottom: 5px; }
+        .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+        .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
+
+        /* KNAPPER (Z-INDEX FIX) */
+        #btn-edit-pres {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: black; color: white; height: 50px; padding: 0 40px;
+            border-radius: 25px; font-weight: 800; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; 
+            box-shadow: var(--pill-shadow); z-index: 2000; /* Høy prioritet */
+        }
+        #btn-close-pres {
+            position: absolute; top: 20px; right: 20px; background: #f0f0f0; 
+            width: 44px; height: 44px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000; /* Høy prioritet */
+        }
 
         /* MODALS */
         .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; display: none; place-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; }
         
+        /* Modal inputs & buttons */
         input[type="date"], input[type="text"] {
             width: 100%; padding: 15px; font-size: 1.1rem; 
             border: 1px solid #ccc; border-radius: 8px; margin: 15px 0; 
@@ -206,6 +229,7 @@
         .modal-btn { 
             width: 100%; padding: 15px; background: black; color: white; 
             border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px;
+            display: flex; justify-content: center; align-items: center;
         }
 
         #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -214,7 +238,10 @@
 <body>
 
     <div id="loader">
-        <div class="ball-wrap"><div class="ball"></div></div>
+        <div class="ball-wrap">
+            <div class="ball"></div>
+            <div class="shadow"></div>
+        </div>
         <p style="font-weight:800; color:#555;">Henter øvelser...</p>
     </div>
 
@@ -222,7 +249,7 @@
         <div class="modal-box slide-up">
             <h3>Velg dato</h3>
             <input type="date" id="input-date">
-            <button class="modal-btn center-flex" onclick="confirmDate()">Planlegg økt</button>
+            <button class="modal-btn" onclick="confirmDate()">Planlegg økt</button>
             <button onclick="closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
@@ -231,7 +258,7 @@
         <div class="modal-box slide-up">
             <h3>Endre navn</h3>
             <input type="text" id="input-title" placeholder="Navn på økt">
-            <button class="modal-btn center-flex" onclick="confirmTitle()">Lagre navn</button>
+            <button class="modal-btn" onclick="confirmTitle()">Lagre navn</button>
             <button onclick="closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
@@ -242,7 +269,7 @@
             <p id="ex-meta" style="color:#666; font-size:0.9rem; margin: 5px 0 15px 0;"></p>
             <p id="ex-desc" style="line-height:1.5; margin-bottom:20px;"></p>
             <div id="ex-tags" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:20px;"></div>
-            <button class="modal-btn center-flex" onclick="closeModals()">Lukk</button>
+            <button class="modal-btn" onclick="closeModals()">Lukk</button>
         </div>
     </div>
 
@@ -250,25 +277,25 @@
         <header><h1>Mine økter</h1></header>
         <div id="home-scroll"></div>
         <div class="fab-pill slide-up">
-            <button class="fab-btn center-flex" onclick="startNewSession()">
+            <button class="fab-btn" onclick="startNewSession()">
                 <span class="material-icons-round">add</span>
             </button>
         </div>
     </div>
 
     <div id="view-pres" class="view">
-        <button id="btn-close-pres" class="center-flex" onclick="goHome()"><span class="material-icons-round">close</span></button>
+        <button id="btn-close-pres" onclick="goHome()"><span class="material-icons-round">close</span></button>
         <div id="pres-content" class="slide-up"></div>
-        <button id="btn-edit-pres" class="slide-up center-flex" onclick="editCurrentSession()">Rediger</button>
+        <button id="btn-edit-pres" class="slide-up" onclick="editCurrentSession()">Rediger</button>
     </div>
 
     <div id="view-editor" class="view">
         <div id="editor-top">
-            <button class="nav-icon center-flex" onclick="saveSession()">
+            <button class="nav-icon" onclick="saveSession()">
                 <span class="material-icons-round" id="icon-save">save</span>
             </button>
             <span id="session-title-edit" onclick="openTitleModal()">Navn på økt</span>
-            <button class="nav-icon center-flex" onclick="goHome()">
+            <button class="nav-icon" onclick="goHome()">
                 <span class="material-icons-round">close</span>
             </button>
         </div>
@@ -341,6 +368,7 @@
         function checkEmpty() {
             const area = document.getElementById('session-plan-area');
             const emptyMsg = document.querySelector('.empty-state');
+            // Show empty text only if no card elements exist
             const hasCards = area.querySelectorAll('.card').length > 0;
             emptyMsg.style.display = hasCards ? 'none' : 'block';
         }
@@ -433,8 +461,8 @@
         function startNewSession() {
             document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('input-date').value = today; 
-            document.getElementById('modal-date').style.display = 'grid';
+            document.getElementById('input-date').value = today; // Sett dagens dato
+            document.getElementById('modal-date').style.display = 'grid'; // Grid for å sentrere (definert i CSS)
         }
 
         function confirmDate() {
@@ -482,7 +510,7 @@
                     <span>${fmtTime(ex.tid)}</span>
                 </div>`;
             
-            if(removable) html += `<div class="card-del center-flex" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmpty();">✕</div>`;
+            if(removable) html += `<div class="card-del" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmpty();">✕</div>`;
             
             div.innerHTML = html;
             return div;
