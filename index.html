@@ -69,23 +69,19 @@
             to { transform: translateX(-20px); opacity: 0; }
         }
 
-        /* 2. NY LOADER MED BILDE */
+        /* LOADER */
         #loader { 
             position: fixed; inset: 0; 
             background: var(--accent); /* BLÅ BAKGRUNN */
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
-        
         .loader-icon {
-            width: 120px; /* Størrelse på ikonet */
-            height: auto;
-            /* Rolig puls-animasjon */
+            width: 120px; height: auto;
             animation: pulse-slow 2s ease-in-out infinite;
         }
-        
         @keyframes pulse-slow {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.9; } /* Puster litt inn */
+            50% { transform: scale(1.1); opacity: 0.9; }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -128,14 +124,8 @@
         .db-day { font-size: 1.6rem; font-weight: 800; line-height: 1.1; margin: 2px 0; }
         .db-weekday { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
 
-        .session-info { 
-            flex: 1; 
-            padding: 0 15px; 
-            display: flex; 
-            align-items: center; 
-        }
+        .session-info { flex: 1; padding: 0 15px; display: flex; align-items: center; }
         .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
-        
         .session-actions { width: 50px; height: 100%; display: flex; align-items: center; justify-content: center; }
         
         /* RØD SLETTEKNAPP (Sirkel) */
@@ -165,31 +155,28 @@
             height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; padding: 0 10px; flex-shrink: 0;
         }
-        /* IKONER I EDITOR - BLÅ */
         .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--accent); }
-        
         #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; color: var(--text); }
 
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
+        /* DROPZONE (NÅ BLÅ) */
         #session-plan-area { 
-            flex: 1; background: #e0e4ea; 
+            flex: 1; 
+            background: var(--accent); /* BLÅ BAKGRUNN */
             overflow-y: auto; padding: 15px; min-height: 100px; 
         }
-        .empty-state { text-align: center; color: #777; margin-top: 50px; pointer-events: none; font-weight: 600; }
+        /* HVIT TEKST PÅ BLÅ BAKGRUNN */
+        .empty-state { 
+            text-align: center; color: rgba(255,255,255,0.8); 
+            margin-top: 50px; pointer-events: none; font-weight: 600; 
+        }
 
         #library-area { height: 45%; background: var(--surface); display: flex; flex-direction: column; border-top: 1px solid var(--border); z-index: 20; }
-        
         .cat-scroll { display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; scrollbar-width: none; }
-        
-        /* KATEGORI CHIPS */
         .cat-chip { padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
-        .cat-chip.active { background: var(--accent); color: white; } /* Blå når aktiv */
-        
-        #exercise-list { 
-            flex: 1; overflow-y: auto; padding: 10px; 
-            background: #f7f9fc; 
-        }
+        .cat-chip.active { background: var(--accent); color: white; }
+        #exercise-list { flex: 1; overflow-y: auto; padding: 10px; background: #f7f9fc; }
         .tag-scroll { display: flex; overflow-x: auto; padding: 10px; gap: 8px; border-top: 1px solid #eee; background: #f9f9f9; flex-shrink: 0; height: 50px; align-items: center; scrollbar-width: none; }
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
@@ -208,7 +195,6 @@
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .card h4 { font-size: 0.9rem; font-weight: 800; color: #000; margin: 0; }
         .card span { font-size: 0.8rem; font-weight: 600; color: #555; background: #eee; padding: 2px 6px; border-radius: 6px; }
-        
         .card-del { width: 30px; height: 30px; color: #999; margin-left: 8px; cursor: pointer; font-size: 1.2rem; }
         .card-del:hover { color: var(--danger); }
 
@@ -216,22 +202,27 @@
         #view-pres { background: white; z-index: 50; }
         #pres-content { flex: 1; overflow-y: auto; padding: 25px 25px 100px 25px; }
         .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .pres-title { font-size: 2rem; line-height: 1.1; margin-bottom: 5px; }
+        
+        /* TITTEL I BLÅTT OG MED LUFT */
+        .pres-title { 
+            font-size: 2rem; 
+            line-height: 1.1; 
+            margin-bottom: 5px;
+            margin-top: 15px; /* Luft over tittel */
+            color: var(--accent); /* Blå tittel */
+        }
+        
         .pres-item { padding: 20px 0; border-bottom: 1px solid #eee; }
         .pres-item h3 { font-size: 1.4rem; margin-bottom: 5px; }
-        .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
-        .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
+        
+        /* TAGS SKJULES I DENNE VIEWEN (Ingen CSS for tags her) */
 
         /* KNAPPER (Z-INDEX FIX) */
         #btn-edit-pres {
             position: fixed; 
-            bottom: 30px; 
-            right: 30px; left: auto; transform: none;
-            background: var(--accent); /* BLÅ */
-            color: white; 
-            width: 56px; height: 56px;
-            border-radius: 50%;
-            box-shadow: var(--pill-shadow); 
+            bottom: 30px; right: 30px; left: auto; transform: none;
+            background: var(--accent); color: white; width: 56px; height: 56px;
+            border-radius: 50%; box-shadow: var(--pill-shadow); 
             z-index: 9999; cursor: pointer;
             pointer-events: auto !important;
             display: grid; place-items: center;
@@ -254,8 +245,7 @@
         }
         .modal-btn { 
             width: 100%; padding: 15px; 
-            background: var(--accent); /* BLÅ KNAPP */
-            color: white; 
+            background: var(--accent); color: white; 
             border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px;
             display: flex; justify-content: center; align-items: center; cursor: pointer;
         }
@@ -470,8 +460,7 @@
             if(!dates.length) cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
             
             let lastWeek = null;
-            // Dager og måneder med små bokstaver
-            const days = ['søn','man','tir','ons','tor','fre','lør']; // Kort format for boksen
+            const days = ['søn','man','tir','ons','tor','fre','lør']; 
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
 
             dates.forEach(d => {
@@ -484,7 +473,6 @@
                     lastWeek = week;
                 }
 
-                // DATO BOKS LOGIKK
                 const dayName = days[dateObj.getDay()];
                 const monthName = months[dateObj.getMonth()];
                 const dayNum = dateObj.getDate();
@@ -509,7 +497,6 @@
             });
         }
 
-        // TOGGLE DELETE ANIMATION (RØD SIRKEL)
         window.toggleDel = function(d) {
             const container = document.getElementById(`act-${d}`);
             if (container.querySelector('.del-circle')) return;
@@ -554,13 +541,11 @@
                 </div>`;
             
             (state.session.plan || []).forEach(ex => {
-                let tags = (ex.tags||[]).map(t => `<span class="pres-tag">${t}</span>`).join('');
                 html += `
                     <div class="pres-item">
                         <h3 class="cap-first">${ex.navn}</h3>
                         <div style="color:#555; margin-bottom:10px;">${fmtTime(ex.tid)} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
                         <div style="line-height:1.5">${ex.beskrivelse||''}</div>
-                        <div class="pres-tags">${tags}</div>
                     </div>`;
             });
             document.getElementById('pres-content').innerHTML = html;
