@@ -62,21 +62,21 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 2. NY LOADER (MATEMATISK KORREKT) */
+        /* 2. LOADER - FIKSET SIRKEL */
         #loader { 
             position: fixed; inset: 0; background: var(--bg); 
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
         }
         .spinner-wrap {
             width: 180px; height: 180px;
-            animation: rotate-center 8s linear infinite;
+            animation: rotate-center 10s linear infinite;
         }
         .spinner-text {
             font-weight: 800; 
             text-transform: uppercase;
-            font-size: 15px; /* Justert størrelse */
+            font-size: 14px; 
             fill: #222;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
         }
         @keyframes rotate-center {
              from { transform: rotate(0deg); }
@@ -198,10 +198,10 @@
         <div class="spinner-wrap">
             <svg class="spinner-text" viewBox="0 0 200 200">
                 <defs>
-                    <path id="circlePath" d="M 100, 100 m -80, 0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0" />
+                    <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" />
                 </defs>
                 <text>
-                    <textPath xlink:href="#circlePath" textLength="502">
+                    <textPath xlink:href="#circlePath" textLength="471" lengthAdjust="spacing">
                         HENTER ØVELSER • HENTER ØVELSER •
                     </textPath>
                 </text>
@@ -213,7 +213,7 @@
         <div class="modal-box slide-up">
             <h3>Velg dato</h3>
             <input type="date" id="input-date">
-            <button class="modal-btn center-grid" id="btn-confirm-date">Planlegg økt</button>
+            <button class="modal-btn center-grid" onclick="confirmDate()">Planlegg økt</button>
             <button onclick="closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
@@ -278,27 +278,14 @@
     </div>
 
     <script>
-        // GLOBAL SCOPE FUNCTIONS (Tilgjengelig for HTML)
+        // GLOBALE FUNKSJONER (Viktig for onclick i HTML)
+        
         const API_URL = 'https://script.google.com/macros/s/AKfycbzP0nNeb4sTee9XPb9IHUUGPQDwVRUAe_3_g2r8tppN6Wden8JTYPODJ4QmRhzLxaithg/exec';
 
         let data = { exercises: [], sessions: {} };
         let state = { categories: new Set(), date: null, session: { navn: "Ny økt", plan: [] }, catFilter: 'alle', tagFilter: null };
 
-        // 1. Initialisering
-        document.addEventListener('DOMContentLoaded', () => {
-            initApp();
-            
-            // 2. KOBLE TIL KNAPPEN MANUELT NÅR SIDEN ER KLAR
-            const confirmBtn = document.getElementById('btn-confirm-date');
-            if(confirmBtn) {
-                confirmBtn.addEventListener('click', confirmDate);
-                // Også støtte touch for sikkerhetsskyld
-                confirmBtn.addEventListener('touchend', (e) => {
-                    e.preventDefault();
-                    confirmDate();
-                });
-            }
-        });
+        document.addEventListener('DOMContentLoaded', initApp);
 
         async function initApp() {
             try {
@@ -322,19 +309,19 @@
             initDrag();
         }
 
-        // --- CORE FUNCTIONS (Globalt tilgjengelig) ---
+        // --- HOVEDFUNKSJONER (MÅ VÆRE GLOBALE) ---
 
-        function startNewSession() {
+        window.startNewSession = function() {
             document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today; 
             document.getElementById('modal-date').style.display = 'grid'; 
-        }
+        };
 
-        function confirmDate() {
+        window.confirmDate = function() {
             const input = document.getElementById('input-date');
             
-            // SIKKERHET: Hvis feltet er tomt, sett dagens dato automatisk
+            // SIKKERHET: Tving dato hvis tom
             if(!input.value) {
                 input.value = new Date().toISOString().split('T')[0];
             }
@@ -342,9 +329,8 @@
             const d = input.value;
             state.date = d;
             
-            // Sjekk om økt finnes
             if(data.sessions[d]) {
-                if(!confirm("Det finnes allerede en økt denne dagen. Vil du redigere den?")) return;
+                if(!confirm("Økt finnes. Redigere?")) return;
                 state.session = data.sessions[d];
             } else {
                 state.session = { navn: "Håndballøkt", plan: [] };
@@ -352,19 +338,19 @@
             
             loadEditor();
             closeModals();
-        }
+        };
 
-        function editCurrentSession() { 
+        window.editCurrentSession = function() { 
             if (!state.date) { alert("Ingen dato valgt"); return; }
             loadEditor(); 
-        }
+        };
 
-        function loadEditor() {
+        window.loadEditor = function() {
             document.getElementById('session-title-edit').innerText = state.session.navn;
             const area = document.getElementById('session-plan-area');
             area.innerHTML = '';
             
-            if(state.session.plan && state.session.plan.length > 0) {
+            if(state.session.plan.length) {
                 state.session.plan.forEach(ex => {
                     const card = createCard(ex, true);
                     area.appendChild(card);
@@ -373,9 +359,33 @@
             }
             checkEmpty();
             showView('view-editor');
-        }
+        };
 
-        function saveSession() {
+        window.openTitleModal = function() {
+            document.getElementById('input-title').value = state.session.navn;
+            document.getElementById('modal-title').style.display = 'grid';
+        };
+
+        window.confirmTitle = function() {
+            const v = document.getElementById('input-title').value;
+            if(v) { state.session.navn = v; document.getElementById('session-title-edit').innerText = v; }
+            window.closeModals();
+        };
+
+        window.openExInfo = function(el) {
+            const d = JSON.parse(el.dataset.json);
+            document.getElementById('ex-title').innerText = d.navn;
+            document.getElementById('ex-meta').innerText = `${fmtTime(d.tid)} • ${d.kategori||''}`;
+            document.getElementById('ex-desc').innerText = d.beskrivelse||'';
+            document.getElementById('ex-tags').innerHTML = (d.tags||[]).map(t=>`<span class="pres-tag">${t}</span>`).join('');
+            document.getElementById('modal-ex').style.display = 'grid';
+        };
+
+        window.closeModals = function() {
+            document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none');
+        };
+
+        window.saveSession = async function() {
             const cards = document.querySelectorAll('#session-plan-area .card');
             state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
             data.sessions[state.date] = state.session;
@@ -383,18 +393,80 @@
             const icon = document.getElementById('icon-save');
             icon.innerText = 'hourglass_empty';
             
-            fetch(API_URL, {
-                method: 'POST', mode: 'no-cors',
-                body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
-            }).then(() => {
+            try {
+                await fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
+                });
                 icon.innerText = 'check';
-                setTimeout(() => { icon.innerText = 'save'; goHome(); }, 1000);
-            }).catch(() => {
-                icon.innerText = 'error'; alert("Lagring feilet");
-            });
-        }
+                setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
+            } catch(e) { icon.innerText = 'error'; alert("Lagring feilet"); }
+        };
 
-        // --- SUPPORT FUNCTIONS ---
+        window.goHome = function() { renderHome(); showView('view-home'); };
+
+        window.toggleDel = function(d) {
+            const el = document.getElementById(`act-${d}`);
+            if(el.querySelector('button')) {
+                window.deleteSession(d);
+            } else {
+                el.innerHTML = `<button class="del-btn-home fade-in">Slett</button>`;
+                setTimeout(() => { if(el.innerHTML.includes('button')) el.innerHTML = `<span class="material-icons-round">more_vert</span>`; }, 3000);
+            }
+        };
+
+        window.deleteSession = async function(d) {
+            delete data.sessions[d];
+            renderHome();
+            await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
+        };
+
+        window.openPres = function(d) {
+            state.date = d;
+            state.session = data.sessions[d];
+            showView('view-pres');
+            
+            const dobj = new Date(d);
+            const months = ['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'];
+            const headerDate = `${dobj.getDate()}. ${months[dobj.getMonth()]} ${dobj.getFullYear()}`;
+
+            let html = `
+                <div class="pres-header">
+                    <div style="color:#666">${headerDate}</div>
+                    <h1 class="pres-title cap-first">${state.session.navn}</h1>
+                </div>`;
+            
+            (state.session.plan || []).forEach(ex => {
+                let tags = (ex.tags||[]).map(t => `<span class="pres-tag">${t}</span>`).join('');
+                html += `
+                    <div class="pres-item">
+                        <h3 class="cap-first">${ex.navn}</h3>
+                        <div style="color:#555; margin-bottom:10px;">${fmtTime(ex.tid)} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
+                        <div style="line-height:1.5">${ex.beskrivelse||''}</div>
+                        <div class="pres-tags">${tags}</div>
+                    </div>`;
+            });
+            document.getElementById('pres-content').innerHTML = html;
+        };
+
+        window.setCat = function(c, el) {
+            state.catFilter = c; state.tagFilter = null;
+            document.querySelectorAll('.cat-chip').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.tag-chip').forEach(e => e.classList.remove('active'));
+            renderLibrary();
+        };
+
+        window.setTag = function(t, el) {
+            state.tagFilter = t; state.catFilter = 'alle';
+            document.querySelectorAll('.tag-chip').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.cat-chip').forEach(e => e.classList.remove('active'));
+            document.querySelector('.cat-scroll :first-child').classList.add('active');
+            renderLibrary();
+        };
+
+        /* --- INTERNALS --- */
 
         function processCategories() {
             data.exercises.forEach(e => { if(e.kategori) state.categories.add(e.kategori.toLowerCase()); });
@@ -422,8 +494,8 @@
         function renderHome() {
             const cont = document.getElementById('home-scroll');
             cont.innerHTML = '';
-            const dates = Object.keys(data.sessions).sort();
             
+            const dates = Object.keys(data.sessions).sort();
             if(!dates.length) cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
             
             let lastWeek = null;
@@ -448,64 +520,20 @@
                         <span class="session-date">${niceDate}</span>
                         <span class="session-name cap-first">${s.navn}</span>
                     </div>
-                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); toggleDel('${d}')">
+                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.toggleDel('${d}')">
                         <span class="material-icons-round">more_vert</span>
                     </div>
                 `;
-                card.onclick = () => openPres(d);
+                card.onclick = () => window.openPres(d);
                 cont.appendChild(card);
             });
-        }
-
-        function toggleDel(d) {
-            const el = document.getElementById(`act-${d}`);
-            if(el.querySelector('button')) {
-                deleteSession(d);
-            } else {
-                el.innerHTML = `<button class="del-btn-home fade-in">Slett</button>`;
-                setTimeout(() => { if(el.innerHTML.includes('button')) el.innerHTML = `<span class="material-icons-round">more_vert</span>`; }, 3000);
-            }
-        }
-
-        async function deleteSession(d) {
-            delete data.sessions[d];
-            renderHome();
-            await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
-        }
-
-        function openPres(d) {
-            state.date = d;
-            state.session = data.sessions[d];
-            showView('view-pres');
-            
-            const dobj = new Date(d);
-            const months = ['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'];
-            const headerDate = `${dobj.getDate()}. ${months[dobj.getMonth()]} ${dobj.getFullYear()}`;
-
-            let html = `
-                <div class="pres-header">
-                    <div style="color:#666">${headerDate}</div>
-                    <h1 class="pres-title cap-first">${state.session.navn}</h1>
-                </div>`;
-            
-            (state.session.plan || []).forEach(ex => {
-                let tags = (ex.tags||[]).map(t => `<span class="pres-tag">${t}</span>`).join('');
-                html += `
-                    <div class="pres-item">
-                        <h3 class="cap-first">${ex.navn}</h3>
-                        <div style="color:#555; margin-bottom:10px;">${fmtTime(ex.tid)} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
-                        <div style="line-height:1.5">${ex.beskrivelse||''}</div>
-                        <div class="pres-tags">${tags}</div>
-                    </div>`;
-            });
-            document.getElementById('pres-content').innerHTML = html;
         }
 
         function createCard(ex, removable) {
             const div = document.createElement('div');
             div.className = 'card';
             div.dataset.json = JSON.stringify(ex);
-            div.setAttribute('onclick', 'openExInfo(this)');
+            div.setAttribute('onclick', 'window.openExInfo(this)');
             
             let html = `
                 <div class="card-content">
@@ -545,23 +573,6 @@
             });
         }
 
-        function setCat(c, el) {
-            state.catFilter = c; state.tagFilter = null;
-            document.querySelectorAll('.cat-chip').forEach(e => e.classList.remove('active'));
-            el.classList.add('active');
-            document.querySelectorAll('.tag-chip').forEach(e => e.classList.remove('active'));
-            renderLibrary();
-        }
-
-        function setTag(t, el) {
-            state.tagFilter = t; state.catFilter = 'alle';
-            document.querySelectorAll('.tag-chip').forEach(e => e.classList.remove('active'));
-            el.classList.add('active');
-            document.querySelectorAll('.cat-chip').forEach(e => e.classList.remove('active'));
-            document.querySelector('.cat-scroll :first-child').classList.add('active');
-            renderLibrary();
-        }
-
         function addSwipe(card) {
             let startX = 0;
             card.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive:true});
@@ -580,37 +591,11 @@
             });
         }
 
-        function openTitleModal() {
-            document.getElementById('input-title').value = state.session.navn;
-            document.getElementById('modal-title').style.display = 'grid';
-        }
-
-        function confirmTitle() {
-            const v = document.getElementById('input-title').value;
-            if(v) { state.session.navn = v; document.getElementById('session-title-edit').innerText = v; }
-            closeModals();
-        }
-
-        function openExInfo(el) {
-            const d = JSON.parse(el.dataset.json);
-            document.getElementById('ex-title').innerText = d.navn;
-            document.getElementById('ex-meta').innerText = `${fmtTime(d.tid)} • ${d.kategori||''}`;
-            document.getElementById('ex-desc').innerText = d.beskrivelse||'';
-            document.getElementById('ex-tags').innerHTML = (d.tags||[]).map(t=>`<span class="pres-tag">${t}</span>`).join('');
-            document.getElementById('modal-ex').style.display = 'grid';
-        }
-
-        function closeModals() {
-            document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none');
-        }
-
         function showView(id) {
             document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.classList.remove('fade-in'); });
             const v = document.getElementById(id);
             v.classList.add('active'); v.classList.add('fade-in');
         }
-
-        function goHome() { renderHome(); showView('view-home'); }
 
         function getWeek(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
