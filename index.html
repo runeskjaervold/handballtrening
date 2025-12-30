@@ -93,13 +93,12 @@
         header { padding: 20px 15px; background: var(--bg); display: flex; align-items: center; justify-content: space-between; }
         #home-scroll { flex: 1; overflow-y: auto; padding: 10px 15px 100px 15px; }
         
-        /* UKEOVERSKRIFT - JUSTERT STØRRELSE OG ÅRSTALL */
         .week-header { 
-            font-size: 0.9rem; /* Mindre skrift */
+            font-size: 0.9rem; 
             color: var(--text-soft); 
             margin: 20px 0 10px 5px; 
             font-weight: 800;
-            text-transform: uppercase; /* Store bokstaver ser ryddigere ut når de er små */
+            text-transform: uppercase;
             letter-spacing: 1px;
         }
 
@@ -484,9 +483,9 @@
                 
                 card.innerHTML = `
                     <div class="date-box">
-                        <span class="db-month">${monthName.toUpperCase()}</span>
-                        <span class="db-day">${dayNum}</span>
                         <span class="db-weekday">${dayName.toUpperCase()}</span>
+                        <span class="db-day">${dayNum}</span>
+                        <span class="db-month">${monthName.toUpperCase()}</span>
                     </div>
                     <div class="session-info">
                         <span class="session-name cap-first">${s.navn}</span>
