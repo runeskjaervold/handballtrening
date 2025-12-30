@@ -59,8 +59,12 @@
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         .slide-up { animation: slideUp 0.3s ease forwards; }
         
+        /* ROTASJON FOR TIMEGLASS */
+        .rotating { animation: spin 1s linear infinite; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* LOADER (SPINNER) */
         #loader { 
@@ -75,7 +79,6 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* LAYOUT */
         .view { display: none; height: 100%; flex-direction: column; position: absolute; inset: 0; background: var(--bg); z-index: 10; }
@@ -114,12 +117,12 @@
             height: 60px; background: var(--surface); border-bottom: 1px solid #ccc;
             display: flex; justify-content: space-between; align-items: center; padding: 0 5px; flex-shrink: 0;
         }
-        /* Økt størrelse på knapper for bedre treffsikkerhet */
+        /* Nav Icons */
         .nav-icon { width: 50px; height: 50px; font-size: 28px; color: var(--text); z-index: 100; cursor: pointer; }
         
         /* Større tittel */
         #session-title-edit { 
-            font-size: 1.3rem; /* Større tittel */
+            font-size: 1.3rem; 
             font-weight: 800; border-bottom: 1px dashed #999; 
             max-width: 55%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; 
         }
@@ -140,16 +143,14 @@
         /* KOMPAKTE KORT DESIGN */
         .card {
             background: white; 
-            padding: 8px 12px; /* Mindre padding (høyde) */
-            margin-bottom: 10px; /* Mer luft mellom */
-            border-radius: 4px; /* Firkantet */
-            border: 1px solid #999; /* Tydelig ramme */
+            padding: 8px 12px; 
+            margin-bottom: 10px; 
+            border-radius: 4px; 
+            border: 1px solid #999; 
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
-            /* touch-action fjernet her for å la SortableJS styre det, men vi bruker delay */
         }
         
-        /* Visuell feedback når man drar */
         .sortable-drag { opacity: 0; } 
         .sortable-ghost { background: #ccc; border: 1px dashed #666; }
 
@@ -161,7 +162,7 @@
         .card-del { 
             width: 35px; height: 35px; 
             color: #999; margin-left: 10px; cursor: pointer; font-size: 1.2rem;
-            border-left: 1px solid #eee; /* Skillelinje */
+            border-left: 1px solid #eee; 
         }
         .card-del:hover { color: var(--danger); background: #fff0f0; }
 
@@ -262,7 +263,7 @@
 
     <div id="view-editor" class="view">
         <div id="editor-top">
-            <button class="nav-icon center-grid" onclick="window.saveSession()">
+            <button class="nav-icon center-grid" id="btn-save-session" onclick="window.saveSession()">
                 <span class="material-icons-round" id="icon-save">save</span>
             </button>
             <span id="session-title-edit" onclick="window.openTitleModal()">Navn på økt</span>
@@ -392,8 +393,8 @@
                 sort: false, 
                 animation: 150, 
                 forceFallback: true,
-                delay: 300, // VIKTIG: Må holde i 300ms for å dra på touch
-                delayOnTouchOnly: true // Forsinkelse kun på touch, mus er direkte
+                delay: 300, 
+                delayOnTouchOnly: true 
             });
 
             // SESSION LIST
@@ -401,7 +402,7 @@
                 group: 'shared', 
                 animation: 150, 
                 forceFallback: true,
-                delay: 200, // Litt raskere respons i selve planen
+                delay: 200, 
                 delayOnTouchOnly: true,
                 onAdd: (evt) => { checkEmpty(); },
                 onRemove: checkEmpty
@@ -521,17 +522,26 @@
             
             const icon = document.getElementById('icon-save');
             icon.innerText = 'hourglass_empty';
+            icon.classList.add('rotating'); // Start rotation
             
             try {
                 await fetch(API_URL, {
                     method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
                 });
+                icon.classList.remove('rotating'); // Stop rotation
                 icon.innerText = 'check';
                 setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
-            } catch(e) { icon.innerText = 'error'; alert("Lagring feilet"); }
+            } catch(e) { 
+                icon.classList.remove('rotating');
+                icon.innerText = 'error'; 
+                alert("Lagring feilet"); 
+            }
         };
 
+        window.goHome = function() { renderHome(); showView('view-home'); };
+
+        /* --- HELPERS --- */
         function createCard(ex, removable) {
             const div = document.createElement('div');
             div.className = 'card';
@@ -598,8 +608,6 @@
             const v = document.getElementById(id);
             v.classList.add('active'); v.classList.add('fade-in');
         }
-
-        function goHome() { renderHome(); showView('view-home'); }
 
         function getWeek(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
