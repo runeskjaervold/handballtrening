@@ -22,11 +22,12 @@
             --pill-shadow: 0 6px 16px rgba(50, 134, 175, 0.35); 
         }
 
+        /* 1. RESET */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
             font-family: 'Inter', sans-serif; 
-            background-color: #e0e2e5; /* Mørkere bakgrunn for PC-ramme */
+            background-color: #e0e2e5; 
             color: var(--text);
             margin: 0; padding: 0; 
             font-weight: 600;
@@ -34,13 +35,13 @@
             height: 100dvh; 
             overflow: hidden;
             display: flex;
-            justify-content: center; /* Sentrering på PC */
+            justify-content: center; 
         }
 
-        /* APP CONTAINER - BEGRENSER BREDDEN PÅ PC */
+        /* APP CONTAINER */
         #app-root {
             width: 100%;
-            max-width: 600px; /* Mobilbredde på PC */
+            max-width: 600px; 
             background-color: var(--bg);
             height: 100%;
             position: relative;
@@ -63,15 +64,16 @@
         .fade-out-collapse {
             animation: fadeOutCollapse 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
             overflow: hidden; 
+            transform-origin: top;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         @keyframes fadeOutCollapse {
-            0% { opacity: 1; transform: scale(1); max-height: 100px; margin-bottom: 8px; padding: 20px 15px; }
-            50% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border: none; }
+            0% { opacity: 1; transform: scale(1); max-height: 120px; margin-bottom: 8px; padding: 12px 15px; }
+            40% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; margin-top: 0; padding-top: 0; padding-bottom: 0; border: none; }
         }
 
         .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
@@ -128,7 +130,10 @@
 
         @media (max-width: 600px) {
             header { flex-direction: column; align-items: center; gap: 35px; padding: 15px 15px 15px 15px; }
-            .header-logo { width: 70%; height: auto; margin: 0 auto; order: 1; }
+            
+            /* MINSKET LOGO STØRRELSE TIL 50% */
+            .header-logo { width: 50%; height: auto; margin: 0 auto; order: 1; }
+            
             .home-title { font-size: 1.5rem; align-self: flex-start; order: 2; margin-bottom: 0; }
         }
 
@@ -193,7 +198,7 @@
         #view-editor { height: 100%; overflow: hidden; position: absolute; inset: 0; }
         
         #editor-top {
-            height: 50px; /* ENNÅ LAVERE */
+            height: 55px; 
             background: var(--surface); 
             border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; padding: 0 15px; 
@@ -205,13 +210,11 @@
         
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* SESSION PLAN AREA (BLUE) */
         #session-plan-area { flex: 1; background: var(--accent); overflow-y: auto; padding: 10px 15px; min-height: 100px; }
         .empty-state { text-align: center; color: rgba(255,255,255,0.8); margin-top: 50px; pointer-events: none; font-weight: 600; }
         
-        /* LIBRARY AREA (WHITE) */
         #library-area { 
-            height: 55%; /* ØKT HØYDE */
+            height: 55%; 
             background: var(--surface); 
             display: flex; 
             flex-direction: column; 
@@ -225,9 +228,8 @@
         
         #exercise-list { flex: 1; overflow-y: auto; padding: 10px; background: #f7f9fc; }
         
-        /* TAG SCROLL FIX */
         .tag-scroll { 
-            display: flex; overflow-x: auto; padding: 10px 10px 25px 10px; /* Ekstra padding bunn */
+            display: flex; overflow-x: auto; padding: 10px 10px 25px 10px; 
             gap: 8px; 
             border-top: 1px solid #eee; background: #f9f9f9; 
             flex-shrink: 0; 
@@ -247,9 +249,8 @@
             box-shadow: var(--card-shadow); position: relative;
         }
         
-        /* SPESIFIKT FOR BOKSER I BLÅTT FELT (Lavere) */
         #session-plan-area .card {
-            padding: 8px 12px; /* Lavere padding */
+            padding: 8px 12px; 
             min-height: auto;
         }
 
@@ -262,8 +263,6 @@
             pointer-events: none; text-align: left;
         }
         .card h4 { font-size: 0.95rem; font-weight: 800; color: #000; margin: 0; }
-        
-        /* TIDSTEKST I EDITOR */
         .card-time-text { font-size: 0.85rem; font-weight: 600; color: #666; margin-left: 10px; white-space: nowrap;}
 
         .card-del { 
@@ -307,7 +306,6 @@
             z-index: 9999; cursor: pointer; pointer-events: auto !important; 
         }
 
-        /* CLOSE BUTTON FOR INFO POPUP */
         .circle-close {
             position: absolute; top: 15px; right: 15px;
             width: 32px; height: 32px; border-radius: 50%;
@@ -516,7 +514,7 @@
                         <button class="action-circle blue" onclick="event.stopPropagation(); window.editSessionDirect('${id}')">
                             <span class="material-icons-round" style="font-size:20px">edit</span>
                         </button>
-                        <button class="action-circle red" onclick="event.stopPropagation(); window.deleteSession('${id}')">
+                        <button class="action-circle red" onclick="event.stopPropagation(); window.deleteSession('${id}', this)">
                             <span class="material-icons-round" style="font-size:20px">delete</span>
                         </button>
                     </div>`;
@@ -698,7 +696,6 @@
             
             window.closeModals(); // Close confirmation
             
-            // Try updating UI first or show loader? Let's just delete.
             try {
                 await fetch(API_URL, {
                     method: 'POST', mode: 'no-cors',
@@ -854,17 +851,36 @@
             });
         }
 
-        // ANIMATED SESSION DELETE
-        window.deleteSession = async function(d, btn) {
+        // ANIMATED SESSION DELETE (UPDATED LOGIC TO REMOVE HEADER)
+        window.deleteSession = async function(d) {
             const card = document.getElementById(`card-${d}`);
-            if(card) {
-                card.classList.add('fade-out-collapse');
-                setTimeout(async () => {
-                    delete data.sessions[d]; 
-                    renderHome(); 
-                    await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
-                }, 350);
+            if(!card) return;
+
+            // 1. Animate card
+            card.classList.add('fade-out-collapse');
+
+            // 2. Check if we need to remove the header (if it was the only item in that week)
+            const prev = card.previousElementSibling;
+            const next = card.nextElementSibling;
+            let headerToRemove = null;
+
+            if (prev && prev.classList.contains('week-header')) {
+                // If next is another header, or null, this week is empty
+                if (!next || next.classList.contains('week-header')) {
+                    headerToRemove = prev;
+                    headerToRemove.classList.add('fade-out-collapse');
+                }
             }
+
+            // 3. Remove from DOM after animation
+            setTimeout(async () => {
+                card.remove();
+                if(headerToRemove) headerToRemove.remove();
+                
+                delete data.sessions[d]; 
+                // Do NOT call renderHome() to avoid flashing
+                await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
+            }, 350);
         };
 
         window.openPres = function(d) {
