@@ -38,10 +38,10 @@
             justify-content: center; 
         }
 
-        /* APP CONTAINER - BREDERE PÅ PC (750px) */
+        /* APP CONTAINER - PC BREDDE */
         #app-root {
             width: 100%;
-            max-width: 750px; /* ENDRET FRA 600px TIL 750px */
+            max-width: 750px;
             background-color: var(--bg);
             height: 100%;
             position: relative;
@@ -80,13 +80,10 @@
         @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-20px); opacity: 0; } }
 
-        /* LOADER - DEKKER HELE SKJERMEN */
+        /* LOADER */
         #loader { 
-            position: fixed; /* Sikrer full dekning */
-            inset: 0; 
-            background: var(--accent); 
-            z-index: 99999; /* Over alt annet */
-            display: flex; justify-content: center; align-items: center; 
+            position: fixed; inset: 0; background: var(--accent); 
+            z-index: 99999; display: flex; justify-content: center; align-items: center; 
             transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
         .loader-icon {
@@ -128,7 +125,9 @@
         }
         
         .header-logo { height: 25px; width: auto; order: 2; }
-        .home-title { font-size: 2rem; margin: 0; order: 1; }
+        
+        /* PC: MINDRE TITTEL */
+        .home-title { font-size: 1.2rem; margin: 0; order: 1; }
 
         @media (max-width: 600px) {
             header { flex-direction: column; align-items: center; gap: 35px; padding: 15px 15px 15px 15px; }
@@ -238,10 +237,10 @@
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
 
-        /* KORT DESIGN - HØYERE BOKSER */
+        /* KORT DESIGN */
         .card {
             background: white; 
-            padding: 22px 15px; /* ØKT HØYDE (MER LUFT) */
+            padding: 22px 15px; 
             margin-bottom: 8px; border-radius: 12px; 
             border: 1px solid #cbd2d9; 
             display: flex; justify-content: space-between; align-items: center; 
