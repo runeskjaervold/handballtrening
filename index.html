@@ -21,16 +21,16 @@
             --pill-shadow: 0 4px 15px rgba(50, 134, 175, 0.3); 
         }
 
+        /* 1. RESET */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
-            font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text);
             margin: 0; padding: 0; 
-            /* Fix for mobil høyde */
-            height: 100vh; 
-            height: 100dvh; 
-            overflow: hidden; 
             font-weight: 600;
+            /* FJERNET: height: 100vh og overflow: hidden for å la mobilen rulle naturlig */
         }
 
         h1, h2, h3, button, input, textarea, select { font-family: 'Inter', sans-serif; text-transform: none; }
@@ -46,7 +46,6 @@
         .slide-up { animation: slideUp 0.3s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
         .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .slide-out-left { animation: slideOutLeft 0.3s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
         @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -69,31 +68,26 @@
             0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; }
         }
 
-        /* LAYOUT - FIX FOR SAFE AREA (IPHONE NOTCH ETC) */
+        /* LAYOUT - TILBAKE TIL ENKEL LAYOUT */
         .view { 
             display: none; 
-            height: 100%; 
-            width: 100%;
+            min-height: 100vh; /* Sikrer at bakgrunnen dekker alt */
             flex-direction: column; 
-            position: absolute; 
-            inset: 0; 
             background: var(--bg); 
-            z-index: 10;
-            /* VIKTIG: Hindrer at innhold havner bak statusbaren */
-            padding-top: env(safe-area-inset-top); 
+            padding-top: env(safe-area-inset-top); /* Notch fix */
         }
-        .view.active { display: flex; z-index: 20; }
+        .view.active { display: flex; }
 
         /* HEADER */
         header { 
-            padding: 20px 30px; 
             background: var(--surface); 
+            padding: 20px 30px; 
             display: flex; 
             flex-direction: row; 
             align-items: center; 
             justify-content: space-between; 
             gap: 20px;
-            /* STICKY */
+            /* Enkel sticky som fungerer med naturlig scroll */
             position: sticky; 
             top: 0; 
             z-index: 50;
@@ -108,15 +102,19 @@
                 flex-direction: column; 
                 align-items: center; 
                 gap: 35px; 
-                padding: 10px 15px 15px 15px; 
+                padding: 15px 15px 15px 15px; 
             }
             .header-logo { width: 70%; height: auto; margin: 0 auto; order: 1; }
             .home-title { font-size: 1.5rem; align-self: flex-start; order: 2; margin-bottom: 0; }
         }
 
         /* SCROLL AREA */
-        #home-scroll { flex: 1; overflow-y: auto; padding: 0 15px 140px 15px; scroll-behavior: smooth; }
-        .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 20px 0 10px 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        #home-scroll { 
+            flex: 1; 
+            padding: 0 15px 120px 15px; /* God padding i bunn for FAB */
+        }
+        
+        .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         #home-scroll .week-header:first-child { margin-top: 15px; }
 
         /* SESSION CARD */
@@ -171,13 +169,14 @@
         .fab-main.active { transform: rotate(45deg); background: #222; }
         .fab-main .material-icons-round { font-size: 32px; }
 
-        /* EDITOR */
+        /* EDITOR (Fastlåst layout fungerer bra her, så vi beholder flex) */
+        #view-editor { height: 100vh; overflow: hidden; position: fixed; inset: 0; }
+        
         #editor-top {
-            height: 70px; /* Litt høyere for å sikre touch-vennlighet */
-            background: var(--surface); 
+            height: 70px; background: var(--surface); 
             border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; padding: 0 15px; 
-            flex-shrink: 0; /* Hindrer at denne krymper */
+            flex-shrink: 0;
         }
         .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--accent); cursor: pointer; }
         #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; color: var(--text); }
@@ -211,19 +210,19 @@
         .card h4 { font-size: 0.95rem; font-weight: 800; color: #000; margin: 0; }
         .card-del { width: 40px; height: 40px; color: #aaa; margin-left: 8px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
         
-        /* LIBRARY VIEW */
+        /* LIBRARY VIEW (Låst layout) */
+        #view-library-full { height: 100vh; overflow: hidden; position: fixed; inset: 0; }
         #library-search { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #ccc; font-size: 1rem; font-family: inherit; background: white; }
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
         .lib-cat-header { font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: none; letter-spacing: 0.5px; }
 
-        /* PRESENTATION VIEW (FIX) */
-        #view-pres { background: white; z-index: 50; }
+        /* PRESENTATION VIEW (Låst layout) */
+        #view-pres { background: white; z-index: 50; height: 100vh; overflow: hidden; position: fixed; inset: 0; }
         
         #pres-content { 
             flex: 1; 
             overflow-y: auto; 
-            /* EKSTRA TOP PADDING SÅ INNHOLD IKKE FORSVINNER BAK LUKKEKNAPPEN */
-            padding: 80px 25px 100px 25px; 
+            padding: 80px 25px 100px 25px; /* Plass til lukkeknapp */
         }
         
         .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
@@ -243,7 +242,6 @@
         
         #btn-close-pres { 
             position: absolute; 
-            /* Juster nedover så den ikke treffer notch */
             top: calc(15px + env(safe-area-inset-top)); 
             right: 20px; 
             background: #f0f0f0; width: 44px; height: 44px; border-radius: 50%; 
@@ -258,11 +256,8 @@
         textarea { height: 120px; resize: none; }
         .modal-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
         
-        /* CONFLICT MODAL LIST */
-        .conflict-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .conflict-item { background: #f0f0f0; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; }
-        .conflict-item:active { background: #e0e0e0; }
-
+        /* CONFLICT MODAL SPECIFIC */
+        #modal-conflict p { font-size: 1.1rem; }
         .rotating { animation: spin 1s linear infinite; }
     </style>
 </head>
@@ -283,11 +278,12 @@
 
     <div id="modal-conflict" class="modal-bg">
         <div class="modal-box slide-up">
-            <h3>Økt finnes</h3>
-            <p style="color:#666; margin-bottom:20px; line-height:1.5;">Det er allerede planlagt en økt på denne datoen. Vil du redigere den?</p>
-            
-            <button class="modal-btn center-grid" onclick="window.editExistingSession()">Ja, rediger økt</button>
-            <button onclick="window.closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
+            <h3 style="margin-bottom:10px;">Økt finnes</h3>
+            <p style="color:#555; margin-bottom:25px; line-height:1.5;">Det finnes allerede en økt på denne datoen. Vil du redigere den?</p>
+            <button class="modal-btn center-grid" onclick="window.editExistingSession()">
+                <span class="material-icons-round" style="margin-right:8px;">edit</span> Rediger økt
+            </button>
+            <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600; padding:10px;">Avbryt</button>
         </div>
     </div>
 
@@ -315,9 +311,7 @@
             <label style="font-size:0.85rem; font-weight:600; color:#555;">Beskrivelse</label>
             <textarea id="new-ex-desc" placeholder="Kort beskrivelse..."></textarea>
             
-            <button class="modal-btn center-grid" id="btn-save-new-ex" onclick="window.saveExercise()">
-                Lagre
-            </button>
+            <button class="modal-btn center-grid" id="btn-save-new-ex" onclick="window.saveExercise()">Lagre</button>
             <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
@@ -721,18 +715,13 @@
             const days = ['søn','man','tir','ons','tor','fre','lør']; 
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
             
-            // SCROLL LOGIC
-            const todayStr = new Date().toISOString().split('T')[0];
-            let scrollTargetId = null;
+            // FJERNET AUTO-SCROLL LOGIKKEN FOR Å SIKRE STABILITET
+            // (Tilbake til standard rulling)
 
             dates.forEach(d => {
                 const s = data.sessions[d];
-                
-                if (!scrollTargetId && d >= todayStr) {
-                    scrollTargetId = `card-${d}`;
-                }
-
                 const dateObj = new Date(d);
+                
                 const week = getWeek(dateObj);
                 const year = dateObj.getFullYear();
                 const weekKey = `${year}-${week}`;
@@ -759,18 +748,6 @@
                     </div>`;
                 cont.appendChild(card);
             });
-
-            // SCROLL EXECUTION
-            if (scrollTargetId) {
-                setTimeout(() => {
-                    const el = document.getElementById(scrollTargetId);
-                    if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }, 100);
-            } else {
-                setTimeout(() => cont.scrollTop = cont.scrollHeight, 100);
-            }
         }
 
         window.deleteSession = async function(d) {
