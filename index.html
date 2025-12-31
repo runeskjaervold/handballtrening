@@ -15,7 +15,7 @@
             --surface: #ffffff;
             --text: #111;
             --text-soft: #666;
-            --accent: #3286af; /* BLÅ HOVEDFARGE */
+            --accent: #3286af; 
             --danger: #d32f2f;
             --border: #dbe0e8;
             --pill-shadow: 0 4px 15px rgba(50, 134, 175, 0.3); 
@@ -35,7 +35,7 @@
         }
 
         /* TYPOGRAFI */
-        h1, h2, h3, button, input { font-family: 'Inter', sans-serif; text-transform: none; }
+        h1, h2, h3, button, input, textarea, select { font-family: 'Inter', sans-serif; text-transform: none; }
         h1, h2, h3 { font-weight: 800; margin: 0; }
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
         
@@ -69,7 +69,7 @@
             to { transform: translateX(-20px); opacity: 0; }
         }
 
-        /* LOADER MED ZOOM-UT EFFEKT */
+        /* LOADER */
         #loader { 
             position: fixed; inset: 0; 
             background: var(--accent); 
@@ -134,7 +134,7 @@
             cursor: pointer;
         }
 
-        /* DATO BOKS (BLÅ) */
+        /* DATO BOKS */
         .date-box {
             background-color: var(--accent);
             width: 70px;
@@ -154,7 +154,6 @@
         .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
         .session-actions { width: 50px; height: 100%; display: flex; align-items: center; justify-content: center; }
         
-        /* RØD SLETTEKNAPP (Sirkel) */
         .del-circle {
             width: 38px; height: 38px;
             background: var(--danger);
@@ -164,17 +163,35 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* FAB (+ KNAPP) */
-        .fab-pill {
-            position: fixed; bottom: 30px; 
-            left: 0; right: 0; margin: 0 auto; width: fit-content;
-            background: var(--surface); border-radius: 50px; padding: 6px;
-            box-shadow: var(--pill-shadow); z-index: 100; display: flex;
+        /* FAB & MENY */
+        .fab-container {
+            position: fixed; bottom: 30px; right: 30px; z-index: 100;
+            display: flex; flex-direction: column; align-items: flex-end; gap: 15px;
         }
-        .fab-btn {
-            background: var(--accent); color: white; width: 50px; height: 50px; border-radius: 50%;
+
+        .fab-options {
+            display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+            opacity: 0; transform: translateY(20px); pointer-events: none;
+            transition: all 0.3s ease;
         }
-        .fab-btn .material-icons-round { font-size: 30px; }
+        .fab-options.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+        .fab-option-btn {
+            background: var(--accent); color: white;
+            padding: 10px 20px; border-radius: 25px;
+            font-weight: 800; font-size: 0.95rem;
+            box-shadow: var(--pill-shadow);
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .fab-main {
+            background: var(--accent); color: white; width: 60px; height: 60px;
+            border-radius: 50%; box-shadow: var(--pill-shadow);
+            display: grid; place-items: center;
+            transition: transform 0.3s;
+        }
+        .fab-main.active { transform: rotate(45deg); background: #222; }
+        .fab-main .material-icons-round { font-size: 32px; }
 
         /* EDITOR */
         #editor-top {
@@ -186,16 +203,11 @@
 
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* DROPZONE (BLÅ) */
         #session-plan-area { 
-            flex: 1; 
-            background: var(--accent); 
+            flex: 1; background: var(--accent); 
             overflow-y: auto; padding: 15px; min-height: 100px; 
         }
-        .empty-state { 
-            text-align: center; color: rgba(255,255,255,0.8); 
-            margin-top: 50px; pointer-events: none; font-weight: 600; 
-        }
+        .empty-state { text-align: center; color: rgba(255,255,255,0.8); margin-top: 50px; pointer-events: none; font-weight: 600; }
 
         #library-area { height: 45%; background: var(--surface); display: flex; flex-direction: column; border-top: 1px solid var(--border); z-index: 20; }
         .cat-scroll { display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; scrollbar-width: none; }
@@ -206,23 +218,14 @@
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
 
-        /* KOMPAKTE OG RUNDE KORT */
+        /* KORT DESIGN */
         .card {
-            background: white; 
-            padding: 10px 12px; /* ØKT PADDING FOR BEDRE HØYDE/TOUCH */
-            margin-bottom: 8px; 
-            border-radius: 12px; 
-            border: 1px solid #cbd2d9; 
-            display: flex; justify-content: space-between; align-items: center;
+            background: white; padding: 10px 12px; margin-bottom: 8px; border-radius: 12px; 
+            border: 1px solid #cbd2d9; display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
-            /* Fjernet touch-action:none for å la sortable virke bedre */
         }
-        
-        .sortable-drag { opacity: 0; } 
-        /* Tydeligere farge når man holder kortet */
         .sortable-chosen { background: #eef5fa; border-color: var(--accent); transform: scale(1.02); }
         .sortable-ghost { opacity: 0.4; background: #ccc; }
-
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .card h4 { font-size: 0.9rem; font-weight: 800; color: #000; margin: 0; }
         .card span { font-size: 0.8rem; font-weight: 600; color: #555; background: #eee; padding: 2px 6px; border-radius: 6px; }
@@ -233,13 +236,7 @@
         #view-pres { background: white; z-index: 50; }
         #pres-content { flex: 1; overflow-y: auto; padding: 25px 25px 100px 25px; }
         .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        
-        .pres-title { 
-            font-size: 2rem; line-height: 1.1; 
-            margin-bottom: 5px; margin-top: 15px; 
-            color: var(--accent); 
-        }
-        
+        .pres-title { font-size: 2rem; line-height: 1.1; margin-bottom: 5px; margin-top: 15px; color: var(--accent); }
         .pres-item { padding: 20px 0; border-bottom: 1px solid #eee; }
         .pres-item h3 { font-size: 1.4rem; margin-bottom: 5px; }
         .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
@@ -263,11 +260,13 @@
         .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20000; display: none; place-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; }
         
-        input[type="date"], input[type="text"] {
-            width: 100%; padding: 15px; font-size: 1.1rem; 
-            border: 1px solid #ccc; border-radius: 8px; margin: 15px 0; 
+        input[type="date"], input[type="text"], input[type="number"], textarea, select {
+            width: 100%; padding: 12px; font-size: 1rem; 
+            border: 1px solid #ccc; border-radius: 8px; margin: 10px 0; 
             font-family: inherit; -webkit-appearance: none;
         }
+        textarea { height: 80px; resize: none; }
+        
         .modal-btn { 
             width: 100%; padding: 15px; background: var(--accent); color: white; 
             border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px;
@@ -301,6 +300,38 @@
         </div>
     </div>
 
+    <div id="modal-new-exercise" class="modal-bg">
+        <div class="modal-box slide-up" style="text-align:left;">
+            <h3 style="text-align:center; margin-bottom:15px;">Ny øvelse</h3>
+            
+            <label style="font-size:0.85rem; font-weight:600; color:#555;">Navn</label>
+            <input type="text" id="new-ex-name" placeholder="F.eks. Skuddtrening">
+            
+            <label style="font-size:0.85rem; font-weight:600; color:#555;">Kategori</label>
+            <input type="text" id="new-ex-cat" list="cat-datalist" placeholder="Velg eller skriv ny">
+            <datalist id="cat-datalist"></datalist>
+            
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1">
+                    <label style="font-size:0.85rem; font-weight:600; color:#555;">Tid (min)</label>
+                    <input type="number" id="new-ex-time" placeholder="10">
+                </div>
+                <div style="flex:1">
+                    <label style="font-size:0.85rem; font-weight:600; color:#555;">Tags</label>
+                    <input type="text" id="new-ex-tags" placeholder="forsvar, løp">
+                </div>
+            </div>
+
+            <label style="font-size:0.85rem; font-weight:600; color:#555;">Beskrivelse</label>
+            <textarea id="new-ex-desc" placeholder="Kort beskrivelse..."></textarea>
+
+            <button class="modal-btn center-grid" id="btn-save-new-ex" onclick="window.saveNewExercise()">
+                <span class="material-icons-round" id="icon-save-new">add_circle</span> &nbsp; Lagre øvelse
+            </button>
+            <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
+        </div>
+    </div>
+
     <div id="modal-ex" class="modal-bg" onclick="window.closeModals()">
         <div class="modal-box slide-up" onclick="event.stopPropagation()" style="text-align:left;">
             <h3 id="ex-title" class="cap-first"></h3>
@@ -314,8 +345,17 @@
     <div id="view-home" class="view active fade-in">
         <header><h1>Mine økter</h1></header>
         <div id="home-scroll"></div>
-        <div class="fab-pill slide-up">
-            <button class="fab-btn center-grid" onclick="window.startNewSession()">
+        
+        <div class="fab-container">
+            <div class="fab-options" id="fab-options">
+                <button class="fab-option-btn" onclick="window.openNewExerciseModal()">
+                    Ny øvelse <span class="material-icons-round">fitness_center</span>
+                </button>
+                <button class="fab-option-btn" onclick="window.startNewSession()">
+                    Ny økt <span class="material-icons-round">calendar_today</span>
+                </button>
+            </div>
+            <button class="fab-main" id="fab-main" onclick="window.toggleFab()">
                 <span class="material-icons-round">add</span>
             </button>
         </div>
@@ -385,9 +425,86 @@
             initDrag();
         }
 
-        // --- HOVEDFUNKSJONER ---
+        /* --- NY FUNKSJONALITET: FAB & NY ØVELSE --- */
+
+        window.toggleFab = function() {
+            const opts = document.getElementById('fab-options');
+            const main = document.getElementById('fab-main');
+            opts.classList.toggle('show');
+            main.classList.toggle('active');
+        };
+
+        window.openNewExerciseModal = function() {
+            window.toggleFab();
+            
+            const dl = document.getElementById('cat-datalist');
+            dl.innerHTML = '';
+            state.categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.charAt(0).toUpperCase() + cat.slice(1);
+                dl.appendChild(opt);
+            });
+
+            document.getElementById('new-ex-name').value = '';
+            document.getElementById('new-ex-cat').value = '';
+            document.getElementById('new-ex-time').value = '';
+            document.getElementById('new-ex-tags').value = '';
+            document.getElementById('new-ex-desc').value = '';
+
+            document.getElementById('modal-new-exercise').style.display = 'grid';
+        };
+
+        window.saveNewExercise = async function() {
+            const navn = document.getElementById('new-ex-name').value;
+            const kat = document.getElementById('new-ex-cat').value;
+            const tid = document.getElementById('new-ex-time').value;
+            const tagsRaw = document.getElementById('new-ex-tags').value;
+            const desc = document.getElementById('new-ex-desc').value;
+
+            if(!navn) { alert("Mangler navn"); return; }
+
+            const tags = tagsRaw.split(',').map(t => t.trim()).filter(t => t);
+            
+            const newEx = {
+                navn: navn,
+                kategori: kat,
+                tid: tid,
+                tags: tags,
+                beskrivelse: desc
+            };
+
+            const btn = document.getElementById('btn-save-new-ex');
+            const icon = document.getElementById('icon-save-new');
+            const oldText = btn.innerHTML;
+            icon.innerText = 'hourglass_empty';
+            icon.classList.add('rotating');
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ handling: 'ny_ovelse', info: newEx })
+                });
+
+                data.exercises.push(newEx);
+                if(kat) state.categories.add(kat.toLowerCase());
+                
+                renderLibrary(); 
+                window.closeModals();
+                alert("Øvelse lagret!");
+
+            } catch(e) {
+                alert("Feil ved lagring.");
+            } finally {
+                btn.innerHTML = oldText;
+            }
+        };
+
+        /* --- HOVEDFUNKSJONER --- */
 
         window.startNewSession = function() {
+            const opts = document.getElementById('fab-options');
+            if(opts.classList.contains('show')) window.toggleFab();
+
             document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today; 
@@ -446,37 +563,25 @@
             window.loadEditor(); 
         };
 
-        /* --- RESTERENDE FUNKSJONER --- */
-
         function processCategories() {
             data.exercises.forEach(e => { if(e.kategori) state.categories.add(e.kategori.toLowerCase()); });
         }
 
         function initDrag() {
-            // FIX: Bruker 'clone' for library, men erstatter elementet manuelt ved 'onAdd' i session-planen
             new Sortable(document.getElementById('exercise-list'), {
                 group: { name: 'shared', pull: 'clone', put: false },
-                sort: false, 
-                animation: 150, 
-                forceFallback: true, // Viktig for mobil
+                sort: false, animation: 150, forceFallback: true,
                 delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5
             });
 
             new Sortable(document.getElementById('session-plan-area'), {
-                group: 'shared', 
-                animation: 150, 
-                forceFallback: true,
+                group: 'shared', animation: 150, forceFallback: true,
                 delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5,
                 onAdd: (evt) => { 
-                    // NÅR ET KORT SLIPPES HER:
                     const item = evt.item;
-                    // 1. Hent data
                     const data = JSON.parse(item.dataset.json);
-                    // 2. Lag et NYTT "ekte" session-kort (med X-knapp)
                     const newCard = createCard(data, true);
-                    // 3. Bytt ut det midlertidige "bibliotek-kortet" med det nye kortet
                     item.parentNode.replaceChild(newCard, item);
-                    
                     checkEmpty(); 
                 },
                 onRemove: checkEmpty
