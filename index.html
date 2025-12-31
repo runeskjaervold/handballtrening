@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Håndball Planlegger</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
@@ -21,15 +21,15 @@
             --pill-shadow: 0 4px 15px rgba(50, 134, 175, 0.3); 
         }
 
-        /* 1. RESET & BASE */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
             font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text);
             margin: 0; padding: 0; 
-            height: 100vh; /* Full viewport height */
-            height: 100dvh; /* Dynamic viewport height for mobile fix */
-            overflow: hidden; /* Hindrer hele siden i å rulle (kun innholdet skal rulle) */
+            /* Fix for mobil høyde */
+            height: 100vh; 
+            height: 100dvh; 
+            overflow: hidden; 
             font-weight: 600;
         }
 
@@ -69,32 +69,35 @@
             0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; }
         }
 
-        /* LAYOUT - HOVEDSTRUKTUR */
+        /* LAYOUT - FIX FOR SAFE AREA (IPHONE NOTCH ETC) */
         .view { 
             display: none; 
             height: 100%; 
+            width: 100%;
             flex-direction: column; 
             position: absolute; 
             inset: 0; 
             background: var(--bg); 
-            z-index: 10; 
+            z-index: 10;
+            /* VIKTIG: Hindrer at innhold havner bak statusbaren */
+            padding-top: env(safe-area-inset-top); 
         }
         .view.active { display: flex; z-index: 20; }
 
         /* HEADER */
         header { 
-            background: var(--surface); 
             padding: 20px 30px; 
+            background: var(--surface); 
             display: flex; 
             flex-direction: row; 
             align-items: center; 
             justify-content: space-between; 
             gap: 20px;
-            /* Fiks for sticky/fixed problemer: */
-            position: relative; 
+            /* STICKY */
+            position: sticky; 
+            top: 0; 
             z-index: 50;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            flex-shrink: 0; /* Headeren skal aldri krympe */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         
         .header-logo { height: 50px; width: auto; order: 2; }
@@ -104,25 +107,17 @@
             header { 
                 flex-direction: column; 
                 align-items: center; 
-                gap: 30px; 
-                padding: 20px 15px 15px 15px; 
+                gap: 35px; 
+                padding: 10px 15px 15px 15px; 
             }
             .header-logo { width: 70%; height: auto; margin: 0 auto; order: 1; }
             .home-title { font-size: 1.5rem; align-self: flex-start; order: 2; margin-bottom: 0; }
         }
 
         /* SCROLL AREA */
-        #home-scroll { 
-            flex: 1; /* Fyller resten av plassen under header */
-            overflow-y: auto; /* Ruller kun her */
-            padding: 10px 15px 140px 15px; /* EKSTRA padding i bunn for å fikse kutt ved FAB */
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll iOS */
-        }
-        
-        .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        /* Første ukesoverskrift trenger ikke margin-top siden vi har padding på container */
-        #home-scroll .week-header:first-of-type { margin-top: 10px; }
+        #home-scroll { flex: 1; overflow-y: auto; padding: 0 15px 140px 15px; scroll-behavior: smooth; }
+        .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 20px 0 10px 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        #home-scroll .week-header:first-child { margin-top: 15px; }
 
         /* SESSION CARD */
         .session-card {
@@ -178,8 +173,11 @@
 
         /* EDITOR */
         #editor-top {
-            height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 10px; flex-shrink: 0;
+            height: 70px; /* Litt høyere for å sikre touch-vennlighet */
+            background: var(--surface); 
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 15px; 
+            flex-shrink: 0; /* Hindrer at denne krymper */
         }
         .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--accent); cursor: pointer; }
         #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; color: var(--text); }
@@ -195,7 +193,7 @@
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
 
-        /* KORT DESIGN (ØVELSER) */
+        /* KORT DESIGN */
         .card {
             background: white; padding: 20px 15px; margin-bottom: 8px; border-radius: 12px; 
             border: 1px solid #cbd2d9; 
@@ -218,9 +216,16 @@
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
         .lib-cat-header { font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: none; letter-spacing: 0.5px; }
 
-        /* PRESENTATION VIEW */
+        /* PRESENTATION VIEW (FIX) */
         #view-pres { background: white; z-index: 50; }
-        #pres-content { flex: 1; overflow-y: auto; padding: 25px 25px 100px 25px; }
+        
+        #pres-content { 
+            flex: 1; 
+            overflow-y: auto; 
+            /* EKSTRA TOP PADDING SÅ INNHOLD IKKE FORSVINNER BAK LUKKEKNAPPEN */
+            padding: 80px 25px 100px 25px; 
+        }
+        
         .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
         .pres-title { font-size: 2rem; line-height: 1.1; margin-bottom: 5px; margin-top: 15px; color: var(--accent); }
         .pres-item { padding: 20px 0; border-bottom: 1px solid #eee; }
@@ -228,8 +233,22 @@
         .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
         .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
 
-        #btn-edit-pres { position: fixed; bottom: 30px; right: 30px; left: auto; transform: none; background: var(--accent); color: white; width: 56px; height: 56px; border-radius: 50%; box-shadow: var(--pill-shadow); z-index: 9999; cursor: pointer; pointer-events: auto !important; display: grid; place-items: center; }
-        #btn-close-pres { position: absolute; top: 20px; right: 20px; background: #f0f0f0; width: 44px; height: 44px; border-radius: 50%; z-index: 9999; cursor: pointer; pointer-events: auto !important; }
+        #btn-edit-pres { 
+            position: fixed; bottom: 30px; right: 30px; left: auto; transform: none; 
+            background: var(--accent); color: white; width: 56px; height: 56px; 
+            border-radius: 50%; box-shadow: var(--pill-shadow); 
+            z-index: 9999; cursor: pointer; pointer-events: auto !important; 
+            display: grid; place-items: center; 
+        }
+        
+        #btn-close-pres { 
+            position: absolute; 
+            /* Juster nedover så den ikke treffer notch */
+            top: calc(15px + env(safe-area-inset-top)); 
+            right: 20px; 
+            background: #f0f0f0; width: 44px; height: 44px; border-radius: 50%; 
+            z-index: 9999; cursor: pointer; pointer-events: auto !important; 
+        }
 
         /* MODALS */
         .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20000; display: none; place-items: center; }
@@ -238,10 +257,13 @@
         input[type="date"], input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; margin: 10px 0; font-family: inherit; -webkit-appearance: none; }
         textarea { height: 120px; resize: none; }
         .modal-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        .rotating { animation: spin 1s linear infinite; }
         
-        /* CONFLICT MODAL SPECIFIC */
-        #modal-conflict p { font-size: 1.1rem; }
+        /* CONFLICT MODAL LIST */
+        .conflict-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .conflict-item { background: #f0f0f0; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+        .conflict-item:active { background: #e0e0e0; }
+
+        .rotating { animation: spin 1s linear infinite; }
     </style>
 </head>
 <body>
@@ -261,13 +283,11 @@
 
     <div id="modal-conflict" class="modal-bg">
         <div class="modal-box slide-up">
-            <h3 style="margin-bottom:10px;">Økt finnes</h3>
-            <p style="color:#555; margin-bottom:25px; line-height:1.5;">Det finnes allerede en økt på denne datoen. Vil du redigere den?</p>
+            <h3>Økt finnes</h3>
+            <p style="color:#666; margin-bottom:20px; line-height:1.5;">Det er allerede planlagt en økt på denne datoen. Vil du redigere den?</p>
             
-            <button class="modal-btn center-grid" onclick="window.editExistingSession()">
-                <span class="material-icons-round" style="margin-right:8px;">edit</span> Rediger økt
-            </button>
-            <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600; padding:10px;">Avbryt</button>
+            <button class="modal-btn center-grid" onclick="window.editExistingSession()">Ja, rediger økt</button>
+            <button onclick="window.closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
 
@@ -613,7 +633,7 @@
             const d = input.value;
             state.date = d;
             
-            // SJEKK FOR KONFLIKT (Modal)
+            // SJEKK FOR KONFLIKT
             if(data.sessions[d]) {
                 document.getElementById('modal-date').style.display = 'none';
                 document.getElementById('modal-conflict').style.display = 'grid';
@@ -701,14 +721,13 @@
             const days = ['søn','man','tir','ons','tor','fre','lør']; 
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
             
-            // SCROLL LOGIC: Finn første dato som er i dag eller senere (tekst-sammenligning)
+            // SCROLL LOGIC
             const todayStr = new Date().toISOString().split('T')[0];
             let scrollTargetId = null;
 
             dates.forEach(d => {
                 const s = data.sessions[d];
                 
-                // Sammenlign tekst-dato: "2025-01-01" >= "2025-01-01" er sant
                 if (!scrollTargetId && d >= todayStr) {
                     scrollTargetId = `card-${d}`;
                 }
@@ -741,18 +760,16 @@
                 cont.appendChild(card);
             });
 
-            // UTFØR RULLING (MED LITT FORSINKELSE FOR Å SIKRE OPPTGNING)
+            // SCROLL EXECUTION
             if (scrollTargetId) {
                 setTimeout(() => {
                     const el = document.getElementById(scrollTargetId);
                     if (el) {
-                        // Rull slik at elementet havner midt på eller litt under header
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
-                }, 300);
+                }, 100);
             } else {
-                // Ingen fremtidige økter? Rull til bunn.
-                setTimeout(() => cont.scrollTop = cont.scrollHeight, 300);
+                setTimeout(() => cont.scrollTop = cont.scrollHeight, 100);
             }
         }
 
@@ -828,7 +845,6 @@
             let html = `
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>
-                    <span class="card-meta">${fmtTime(ex.tid)}</span>
                 </div>`;
             if(removable) html += `<div class="card-del center-grid" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmpty();">✕</div>`;
             div.innerHTML = html;
