@@ -21,173 +21,95 @@
             --pill-shadow: 0 4px 15px rgba(50, 134, 175, 0.3); 
         }
 
-        /* 1. HARD RESET */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0; padding: 0;
-            height: 100vh;
-            overflow: hidden;
-            font-weight: 600;
+            font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 0; height: 100vh; overflow: hidden; font-weight: 600;
         }
 
-        /* TYPOGRAFI */
         h1, h2, h3, button, input, textarea, select { font-family: 'Inter', sans-serif; text-transform: none; }
         h1, h2, h3 { font-weight: 800; margin: 0; }
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
         
-        /* KNAPPER */
-        button { 
-            border: none; background: none; padding: 0; margin: 0; 
-            cursor: pointer; -webkit-appearance: none; appearance: none;
-        }
-
-        /* HELPER: SENTRERING */
+        button { border: none; background: none; padding: 0; margin: 0; cursor: pointer; -webkit-appearance: none; appearance: none; }
         .center-grid { display: grid !important; place-items: center !important; }
         .material-icons-round { display: block; line-height: 1; }
 
-        /* ANIMASJONER */
+        /* ANIMATIONS */
         .fade-in { animation: fadeIn 0.4s ease forwards; }
         .slide-up { animation: slideUp 0.3s ease forwards; }
-        
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* SLETTE-KNAPP ANIMASJONER */
         .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .slide-out-left { animation: slideOutLeft 0.3s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
-        
-        @keyframes slideInRight {
-            from { transform: translateX(20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOutLeft {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(-20px); opacity: 0; }
-        }
+        @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-20px); opacity: 0; } }
 
         /* LOADER */
         #loader { 
-            position: fixed; inset: 0; 
-            background: var(--accent); 
+            position: fixed; inset: 0; background: var(--accent); 
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
             transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
-        
         .loader-icon {
             width: 120px; height: auto;
             transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease-in-out;
             animation: pulse-slow 2s ease-in-out infinite; 
         }
-
-        #loader.loaded {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        #loader.loaded .loader-icon {
-            transform: scale(30); 
-            opacity: 0; 
-        }
-        
+        #loader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
+        #loader.loaded .loader-icon { transform: scale(30); opacity: 0; }
         @keyframes pulse-slow {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.9; }
-            100% { transform: scale(1); opacity: 1; }
+            0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; }
         }
 
         /* LAYOUT */
         .view { display: none; height: 100%; flex-direction: column; position: absolute; inset: 0; background: var(--bg); z-index: 10; }
         .view.active { display: flex; z-index: 20; }
 
-        /* HOME */
         header { padding: 20px 15px; background: var(--bg); display: flex; align-items: center; justify-content: space-between; }
         #home-scroll { flex: 1; overflow-y: auto; padding: 10px 15px 100px 15px; }
-        
-        .week-header { 
-            font-size: 0.9rem; 
-            color: var(--text-soft); 
-            margin: 20px 0 10px 5px; 
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 20px 0 10px 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ØKT-KORT */
+        /* SESSION CARD */
         .session-card {
-            background: var(--surface); 
-            border-radius: 12px; 
-            padding: 0; 
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
-            border: 1px solid white;
-            display: flex; 
-            align-items: center;
-            overflow: hidden;
-            height: 80px;
-            position: relative;
-            z-index: 1;
-            cursor: pointer;
+            background: var(--surface); border-radius: 12px; padding: 0; margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid white;
+            display: flex; align-items: center; overflow: hidden; height: 80px;
+            position: relative; z-index: 1; cursor: pointer;
         }
-
-        /* DATO BOKS */
         .date-box {
-            background-color: var(--accent);
-            width: 70px;
-            height: 100%; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            flex-shrink: 0;
+            background-color: var(--accent); width: 70px; height: 100%; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; flex-shrink: 0;
         }
         .db-month { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
         .db-day { font-size: 1.7rem; font-weight: 900; line-height: 1; margin: 2px 0; }
         .db-weekday { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
-
         .session-info { flex: 1; padding: 0 15px; display: flex; align-items: center; }
         .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
         .session-actions { width: 50px; height: 100%; display: flex; align-items: center; justify-content: center; }
         
         .del-circle {
-            width: 38px; height: 38px;
-            background: var(--danger);
-            border-radius: 50%;
-            display: grid; place-items: center;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 38px; height: 38px; background: var(--danger); border-radius: 50%;
+            display: grid; place-items: center; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* FAB & MENY */
-        .fab-container {
-            position: fixed; bottom: 30px; right: 30px; z-index: 100;
-            display: flex; flex-direction: column; align-items: flex-end; gap: 15px;
-        }
-
+        /* FAB & MENU */
+        .fab-container { position: fixed; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
         .fab-options {
             display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
-            opacity: 0; transform: translateY(20px); pointer-events: none;
-            transition: all 0.3s ease;
+            opacity: 0; transform: translateY(20px); pointer-events: none; transition: all 0.3s ease;
         }
         .fab-options.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-
         .fab-option-btn {
-            background: var(--accent); color: white;
-            padding: 10px 20px; border-radius: 25px;
-            font-weight: 800; font-size: 0.95rem;
-            box-shadow: var(--pill-shadow);
+            background: var(--accent); color: white; padding: 10px 20px; border-radius: 25px;
+            font-weight: 800; font-size: 0.95rem; box-shadow: var(--pill-shadow);
             display: flex; align-items: center; gap: 8px;
         }
-
         .fab-main {
             background: var(--accent); color: white; width: 60px; height: 60px;
-            border-radius: 50%; box-shadow: var(--pill-shadow);
-            display: grid; place-items: center;
+            border-radius: 50%; box-shadow: var(--pill-shadow); display: grid; place-items: center;
             transition: transform 0.3s;
         }
         .fab-main.active { transform: rotate(45deg); background: #222; }
@@ -198,17 +120,11 @@
             height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; padding: 0 10px; flex-shrink: 0;
         }
-        .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--accent); }
+        .nav-icon { width: 44px; height: 44px; font-size: 28px; color: var(--accent); cursor: pointer; }
         #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; color: var(--text); }
-
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        
-        #session-plan-area { 
-            flex: 1; background: var(--accent); 
-            overflow-y: auto; padding: 15px; min-height: 100px; 
-        }
+        #session-plan-area { flex: 1; background: var(--accent); overflow-y: auto; padding: 15px; min-height: 100px; }
         .empty-state { text-align: center; color: rgba(255,255,255,0.8); margin-top: 50px; pointer-events: none; font-weight: 600; }
-
         #library-area { height: 45%; background: var(--surface); display: flex; flex-direction: column; border-top: 1px solid var(--border); z-index: 20; }
         .cat-scroll { display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; scrollbar-width: none; }
         .cat-chip { padding: 8px 16px; background: #f0f0f0; border-radius: 4px; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
@@ -232,6 +148,13 @@
         .card-del { width: 35px; height: 35px; color: #999; margin-left: 8px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
         .card-del:hover { color: var(--danger); background: #fff0f0; border-radius: 50%; }
 
+        /* LIBRARY FULL VIEW DESIGN */
+        #library-search {
+            width: 100%; padding: 15px; border: none; border-bottom: 1px solid #ccc;
+            font-size: 1rem; font-family: inherit; background: white;
+        }
+        #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
+
         /* PRESENTATION VIEW */
         #view-pres { background: white; z-index: 50; }
         #pres-content { flex: 1; overflow-y: auto; padding: 25px 25px 100px 25px; }
@@ -242,7 +165,7 @@
         .pres-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
         .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
 
-        /* KNAPPER (Z-INDEX FIX) */
+        /* BUTTONS */
         #btn-edit-pres {
             position: fixed; bottom: 30px; right: 30px; left: auto; transform: none;
             background: var(--accent); color: white; width: 56px; height: 56px;
@@ -266,13 +189,11 @@
             font-family: inherit; -webkit-appearance: none;
         }
         textarea { height: 80px; resize: none; }
-        
         .modal-btn { 
             width: 100%; padding: 15px; background: var(--accent); color: white; 
             border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px;
             display: flex; justify-content: center; align-items: center; cursor: pointer;
         }
-        
         .rotating { animation: spin 1s linear infinite; }
     </style>
 </head>
@@ -303,28 +224,17 @@
     <div id="modal-new-exercise" class="modal-bg">
         <div class="modal-box slide-up" style="text-align:left;">
             <h3 style="text-align:center; margin-bottom:15px;">Ny øvelse</h3>
-            
             <label style="font-size:0.85rem; font-weight:600; color:#555;">Navn</label>
             <input type="text" id="new-ex-name" placeholder="F.eks. Skuddtrening">
-            
             <label style="font-size:0.85rem; font-weight:600; color:#555;">Kategori</label>
             <input type="text" id="new-ex-cat" list="cat-datalist" placeholder="Velg eller skriv ny">
             <datalist id="cat-datalist"></datalist>
-            
             <div style="display:flex; gap:10px;">
-                <div style="flex:1">
-                    <label style="font-size:0.85rem; font-weight:600; color:#555;">Tid (min)</label>
-                    <input type="number" id="new-ex-time" placeholder="10">
-                </div>
-                <div style="flex:1">
-                    <label style="font-size:0.85rem; font-weight:600; color:#555;">Tags</label>
-                    <input type="text" id="new-ex-tags" placeholder="forsvar, løp">
-                </div>
+                <div style="flex:1"><label style="font-size:0.85rem; font-weight:600; color:#555;">Tid (min)</label><input type="number" id="new-ex-time" placeholder="10"></div>
+                <div style="flex:1"><label style="font-size:0.85rem; font-weight:600; color:#555;">Tags</label><input type="text" id="new-ex-tags" placeholder="forsvar, løp"></div>
             </div>
-
             <label style="font-size:0.85rem; font-weight:600; color:#555;">Beskrivelse</label>
             <textarea id="new-ex-desc" placeholder="Kort beskrivelse..."></textarea>
-
             <button class="modal-btn center-grid" id="btn-save-new-ex" onclick="window.saveNewExercise()">
                 <span class="material-icons-round" id="icon-save-new">add_circle</span> &nbsp; Lagre øvelse
             </button>
@@ -348,6 +258,9 @@
         
         <div class="fab-container">
             <div class="fab-options" id="fab-options">
+                <button class="fab-option-btn" onclick="window.openFullLibrary()">
+                    Øvelsesbank <span class="material-icons-round">library_books</span>
+                </button>
                 <button class="fab-option-btn" onclick="window.openNewExerciseModal()">
                     Ny øvelse <span class="material-icons-round">fitness_center</span>
                 </button>
@@ -359,6 +272,17 @@
                 <span class="material-icons-round">add</span>
             </button>
         </div>
+    </div>
+
+    <div id="view-library-full" class="view">
+        <div id="editor-top">
+            <span style="font-weight:800; font-size:1.1rem; padding-left:10px;">Øvelsesbank</span>
+            <button class="nav-icon center-grid" onclick="window.goHome()">
+                <span class="material-icons-round">close</span>
+            </button>
+        </div>
+        <input type="text" id="library-search" placeholder="Søk i øvelser..." onkeyup="window.filterFullLibrary()">
+        <div id="full-library-list"></div>
     </div>
 
     <div id="view-pres" class="view">
@@ -384,7 +308,6 @@
             <div id="session-plan-area">
                 <div class="empty-state">Dra øvelser hit</div>
             </div>
-            
             <div id="library-area" class="slide-up">
                 <div class="cat-scroll" id="cat-tabs"></div>
                 <div id="exercise-list"></div>
@@ -425,18 +348,15 @@
             initDrag();
         }
 
-        /* --- NY FUNKSJONALITET: FAB & NY ØVELSE --- */
+        /* --- FAB & NY ØVELSE & BIBLIOTEK --- */
 
         window.toggleFab = function() {
-            const opts = document.getElementById('fab-options');
-            const main = document.getElementById('fab-main');
-            opts.classList.toggle('show');
-            main.classList.toggle('active');
+            document.getElementById('fab-options').classList.toggle('show');
+            document.getElementById('fab-main').classList.toggle('active');
         };
 
         window.openNewExerciseModal = function() {
             window.toggleFab();
-            
             const dl = document.getElementById('cat-datalist');
             dl.innerHTML = '';
             state.categories.forEach(cat => {
@@ -444,13 +364,11 @@
                 opt.value = cat.charAt(0).toUpperCase() + cat.slice(1);
                 dl.appendChild(opt);
             });
-
             document.getElementById('new-ex-name').value = '';
             document.getElementById('new-ex-cat').value = '';
             document.getElementById('new-ex-time').value = '';
             document.getElementById('new-ex-tags').value = '';
             document.getElementById('new-ex-desc').value = '';
-
             document.getElementById('modal-new-exercise').style.display = 'grid';
         };
 
@@ -464,47 +382,87 @@
             if(!navn) { alert("Mangler navn"); return; }
 
             const tags = tagsRaw.split(',').map(t => t.trim()).filter(t => t);
-            
-            const newEx = {
-                navn: navn,
-                kategori: kat,
-                tid: tid,
-                tags: tags,
-                beskrivelse: desc
-            };
+            const newEx = { navn: navn, kategori: kat, tid: tid, tags: tags, beskrivelse: desc };
 
             const btn = document.getElementById('btn-save-new-ex');
             const icon = document.getElementById('icon-save-new');
             const oldText = btn.innerHTML;
-            icon.innerText = 'hourglass_empty';
-            icon.classList.add('rotating');
+            icon.innerText = 'hourglass_empty'; icon.classList.add('rotating');
 
             try {
                 await fetch(API_URL, {
                     method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ handling: 'ny_ovelse', info: newEx })
                 });
-
                 data.exercises.push(newEx);
                 if(kat) state.categories.add(kat.toLowerCase());
-                
                 renderLibrary(); 
                 window.closeModals();
                 alert("Øvelse lagret!");
+            } catch(e) { alert("Feil ved lagring."); } finally { btn.innerHTML = oldText; }
+        };
 
+        // KARTOTEK / BANK
+        window.openFullLibrary = function() {
+            window.toggleFab();
+            window.filterFullLibrary(); // Render all
+            showView('view-library-full');
+        };
+
+        window.filterFullLibrary = function() {
+            const term = document.getElementById('library-search').value.toLowerCase();
+            const list = document.getElementById('full-library-list');
+            list.innerHTML = '';
+            
+            data.exercises.forEach(ex => {
+                if(ex.navn.toLowerCase().includes(term) || (ex.kategori||'').toLowerCase().includes(term)) {
+                    // Kortet i banken har slette-knapp for permanent sletting
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.dataset.json = JSON.stringify(ex);
+                    div.setAttribute('onclick', 'window.openExInfo(this)');
+                    div.innerHTML = `
+                        <div class="card-content">
+                            <h4 class="cap-first">${ex.navn}</h4>
+                            <span>${fmtTime(ex.tid)}</span>
+                        </div>
+                        <div class="card-del center-grid" onclick="event.stopPropagation(); window.deleteExerciseFromBank('${ex.id}', this)">
+                            <span class="material-icons-round" style="font-size:1.2rem">delete_outline</span>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                }
+            });
+        };
+
+        window.deleteExerciseFromBank = async function(id, btn) {
+            if(!confirm("Vil du slette denne øvelsen permanent fra banken?")) return;
+            
+            // Vis at noe skjer
+            btn.innerHTML = '<span class="rotating material-icons-round">hourglass_empty</span>';
+            
+            try {
+                // Send sletteforespørsel
+                await fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ handling: 'slett_ovelse', id: id })
+                });
+                
+                // Fjern lokalt
+                data.exercises = data.exercises.filter(e => e.id !== id);
+                renderLibrary(); // Oppdater editor-liste
+                btn.closest('.card').remove(); // Fjern fra visning
             } catch(e) {
-                alert("Feil ved lagring.");
-            } finally {
-                btn.innerHTML = oldText;
+                alert("Kunne ikke slette.");
+                btn.innerHTML = '<span class="material-icons-round">error</span>';
             }
         };
 
-        /* --- HOVEDFUNKSJONER --- */
+        /* --- STANDARD FUNKSJONER --- */
 
         window.startNewSession = function() {
             const opts = document.getElementById('fab-options');
             if(opts.classList.contains('show')) window.toggleFab();
-
             document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('input-date').value = today; 
@@ -516,44 +474,35 @@
             if(!input.value) input.value = new Date().toISOString().split('T')[0];
             const d = input.value;
             state.date = d;
-            
             if(data.sessions[d]) {
                 if(!confirm("Økt finnes. Redigere?")) return;
                 state.session = data.sessions[d];
-            } else {
-                state.session = { navn: "Håndballøkt", plan: [] };
-            }
-            
-            window.loadEditor();
-            window.closeModals();
+            } else { state.session = { navn: "Håndballøkt", plan: [] }; }
+            window.loadEditor(); window.closeModals();
         };
 
         window.loadEditor = function() {
             document.getElementById('session-title-edit').innerText = state.session.navn;
             const area = document.getElementById('session-plan-area');
             area.innerHTML = ''; 
-            
             if(state.session.plan.length > 0) {
                 state.session.plan.forEach(ex => {
                     const card = createCard(ex, true);
                     area.appendChild(card);
                 });
             }
-            checkEmpty();
-            showView('view-editor');
+            checkEmpty(); showView('view-editor');
         };
 
         function checkEmpty() {
             const area = document.getElementById('session-plan-area');
             let emptyMsg = area.querySelector('.empty-state');
-            
             if (!emptyMsg) {
                 emptyMsg = document.createElement('div');
                 emptyMsg.className = 'empty-state';
                 emptyMsg.innerText = 'Dra øvelser hit';
                 area.appendChild(emptyMsg);
             }
-
             const hasCards = area.querySelectorAll('.card').length > 0;
             emptyMsg.style.display = hasCards ? 'none' : 'block';
         }
@@ -573,7 +522,6 @@
                 sort: false, animation: 150, forceFallback: true,
                 delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5
             });
-
             new Sortable(document.getElementById('session-plan-area'), {
                 group: 'shared', animation: 150, forceFallback: true,
                 delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5,
@@ -591,11 +539,8 @@
         function renderHome() {
             const cont = document.getElementById('home-scroll');
             cont.innerHTML = '';
-            
             const dates = Object.keys(data.sessions).sort((a, b) => new Date(a) - new Date(b));
-            
             if(!dates.length) cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
-            
             let lastWeekKey = null; 
             const days = ['søn','man','tir','ons','tor','fre','lør']; 
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
@@ -606,33 +551,26 @@
                 const week = getWeek(dateObj);
                 const year = dateObj.getFullYear();
                 const weekKey = `${year}-${week}`;
-                
                 if(weekKey !== lastWeekKey) {
                     cont.innerHTML += `<div class="week-header">Uke ${week} - ${year}</div>`;
                     lastWeekKey = weekKey;
                 }
-
                 const dayName = days[dateObj.getDay()];
                 const monthName = months[dateObj.getMonth()];
                 const dayNum = dateObj.getDate();
-
                 const card = document.createElement('div');
                 card.className = 'session-card slide-up';
                 card.setAttribute('onclick', `window.openPres('${d}')`);
-                
                 card.innerHTML = `
                     <div class="date-box">
                         <span class="db-weekday">${dayName.toUpperCase()}</span>
                         <span class="db-day">${dayNum}</span>
                         <span class="db-month">${monthName.toUpperCase()}</span>
                     </div>
-                    <div class="session-info">
-                        <span class="session-name cap-first">${s.navn}</span>
-                    </div>
+                    <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
                     <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.toggleDel('${d}')">
                         <span class="material-icons-round" style="color:#aaa;">more_vert</span>
-                    </div>
-                `;
+                    </div>`;
                 cont.appendChild(card);
             });
         }
@@ -640,46 +578,35 @@
         window.toggleDel = function(d) {
             const container = document.getElementById(`act-${d}`);
             if (container.querySelector('.del-circle')) return;
-
             const originalHtml = `<span class="material-icons-round fade-in" style="color:#aaa;">more_vert</span>`;
-
             container.innerHTML = `
                 <button class="del-circle slide-in-right center-grid" onclick="event.stopPropagation(); window.deleteSession('${d}')">
                     <span class="material-icons-round" style="font-size:20px">delete</span>
-                </button>
-            `;
-
+                </button>`;
             setTimeout(() => {
                 const btn = container.querySelector('.del-circle');
                 if (btn) {
-                    btn.classList.remove('slide-in-right');
-                    btn.classList.add('slide-out-left');
+                    btn.classList.remove('slide-in-right'); btn.classList.add('slide-out-left');
                     setTimeout(() => { container.innerHTML = originalHtml; }, 280); 
                 }
             }, 3000);
         };
 
         window.deleteSession = async function(d) {
-            delete data.sessions[d];
-            renderHome();
+            delete data.sessions[d]; renderHome();
             await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
         };
 
         window.openPres = function(d) {
-            state.date = d;
-            state.session = data.sessions[d];
-            showView('view-pres');
-            
+            state.date = d; state.session = data.sessions[d]; showView('view-pres');
             const dobj = new Date(d);
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
             const headerDate = `${dobj.getDate()}. ${months[dobj.getMonth()]} ${dobj.getFullYear()}`;
-
             let html = `
                 <div class="pres-header">
                     <div style="color:#666">${headerDate}</div>
                     <h1 class="pres-title cap-first">${state.session.navn}</h1>
                 </div>`;
-            
             (state.session.plan || []).forEach(ex => {
                 html += `
                     <div class="pres-item">
@@ -711,32 +638,22 @@
             document.getElementById('modal-ex').style.display = 'grid';
         };
 
-        window.closeModals = function() {
-            document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none');
-        };
+        window.closeModals = function() { document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none'); };
 
         window.saveSession = async function() {
             const cards = document.querySelectorAll('#session-plan-area .card');
             state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
             data.sessions[state.date] = state.session;
-            
             const icon = document.getElementById('icon-save');
-            icon.innerText = 'hourglass_empty';
-            icon.classList.add('rotating'); 
-            
+            icon.innerText = 'hourglass_empty'; icon.classList.add('rotating'); 
             try {
                 await fetch(API_URL, {
                     method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
                 });
-                icon.classList.remove('rotating'); 
-                icon.innerText = 'check';
+                icon.classList.remove('rotating'); icon.innerText = 'check';
                 setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
-            } catch(e) { 
-                icon.classList.remove('rotating');
-                icon.innerText = 'error'; 
-                alert("Lagring feilet"); 
-            }
+            } catch(e) { icon.classList.remove('rotating'); icon.innerText = 'error'; alert("Lagring feilet"); }
         };
 
         function createCard(ex, removable) {
@@ -744,15 +661,12 @@
             div.className = 'card';
             div.dataset.json = JSON.stringify(ex);
             div.setAttribute('onclick', 'window.openExInfo(this)');
-            
             let html = `
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>
                     <span>${fmtTime(ex.tid)}</span>
                 </div>`;
-            
             if(removable) html += `<div class="card-del center-grid" onclick="event.stopPropagation(); this.parentElement.remove(); checkEmpty();">✕</div>`;
-            
             div.innerHTML = html;
             return div;
         }
@@ -773,7 +687,6 @@
             Array.from(state.categories).sort().forEach(c => {
                 cats.innerHTML += `<div class="cat-chip" onclick="setCat('${c}', this)">${c.charAt(0).toUpperCase()+c.slice(1)}</div>`;
             });
-
             const tags = document.getElementById('tag-filters');
             const allTags = new Set();
             data.exercises.forEach(e => (e.tags||[]).forEach(t => allTags.add(t.trim())));
