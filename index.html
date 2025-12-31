@@ -18,20 +18,34 @@
             --accent: #3286af; 
             --danger: #d32f2f;
             --border: #dbe0e8;
-            /* ØKT SKYGGE FOR DYBDE */
-            --card-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.06); 
             --pill-shadow: 0 6px 16px rgba(50, 134, 175, 0.35); 
         }
 
-        /* 1. RESET */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
         body {
             font-family: 'Inter', sans-serif; 
-            background-color: var(--bg); 
+            background-color: #e0e2e5; /* Mørkere bakgrunn for PC-ramme */
             color: var(--text);
             margin: 0; padding: 0; 
             font-weight: 600;
+            height: 100vh; 
+            height: 100dvh; 
+            overflow: hidden;
+            display: flex;
+            justify-content: center; /* Sentrering på PC */
+        }
+
+        /* APP CONTAINER - BEGRENSER BREDDEN PÅ PC */
+        #app-root {
+            width: 100%;
+            max-width: 600px; /* Mobilbredde på PC */
+            background-color: var(--bg);
+            height: 100%;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.2);
+            overflow: hidden;
         }
 
         h1, h2, h3, button, input, textarea, select { font-family: 'Inter', sans-serif; text-transform: none; }
@@ -43,13 +57,12 @@
         .material-icons-round { display: block; line-height: 1; }
 
         /* ANIMATIONS */
-        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        .fade-in { animation: fadeIn 0.3s ease forwards; }
         .slide-up { animation: slideUp 0.3s ease forwards; }
         
-        /* DELETE ANIMATION CLASS */
         .fade-out-collapse {
             animation: fadeOutCollapse 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-            overflow: hidden; /* Viktig for height animasjon */
+            overflow: hidden; 
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -68,7 +81,7 @@
 
         /* LOADER */
         #loader { 
-            position: fixed; inset: 0; background: var(--accent); 
+            position: absolute; inset: 0; background: var(--accent); 
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
             transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
@@ -86,12 +99,16 @@
         /* LAYOUT */
         .view { 
             display: none; 
-            min-height: 100vh; 
+            height: 100%; 
+            width: 100%;
             flex-direction: column; 
+            position: absolute; 
+            inset: 0; 
             background: var(--bg); 
+            z-index: 10;
             padding-top: env(safe-area-inset-top); 
         }
-        .view.active { display: flex; }
+        .view.active { display: flex; z-index: 20; }
 
         /* HEADER */
         header { 
@@ -103,14 +120,12 @@
             justify-content: space-between; 
             gap: 20px;
             position: sticky; top: 0; z-index: 50;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05); /* Litt mer skygge */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
         
-        /* DESKTOP LOGO STØRRELSE (HALVERT) */
         .header-logo { height: 25px; width: auto; order: 2; }
         .home-title { font-size: 2rem; margin: 0; order: 1; }
 
-        /* MOBIL RESPONSIVITET */
         @media (max-width: 600px) {
             header { flex-direction: column; align-items: center; gap: 35px; padding: 15px 15px 15px 15px; }
             .header-logo { width: 70%; height: auto; margin: 0 auto; order: 1; }
@@ -118,7 +133,7 @@
         }
 
         /* SCROLL AREA */
-        #home-scroll { flex: 1; padding: 0 15px 120px 15px; }
+        #home-scroll { flex: 1; overflow-y: auto; padding: 0 15px 120px 15px; }
         .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; letter-spacing: 0.5px; }
         #home-scroll .week-header:first-child { margin-top: 15px; }
 
@@ -155,7 +170,7 @@
         .action-circle.blue { background-color: var(--accent) !important; }
 
         /* FAB & MENU */
-        .fab-container { position: fixed; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
+        .fab-container { position: absolute; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
         .fab-options {
             display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
             opacity: 0; transform: translateY(20px); pointer-events: none; transition: all 0.3s ease;
@@ -175,10 +190,10 @@
         .fab-main .material-icons-round { font-size: 32px; }
 
         /* EDITOR */
-        #view-editor { height: 100vh; overflow: hidden; position: fixed; inset: 0; }
+        #view-editor { height: 100%; overflow: hidden; position: absolute; inset: 0; }
         
         #editor-top {
-            height: 55px; /* LAVERE TOPP-BAR */
+            height: 50px; /* ENNÅ LAVERE */
             background: var(--surface); 
             border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; padding: 0 15px; 
@@ -191,12 +206,12 @@
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
         /* SESSION PLAN AREA (BLUE) */
-        #session-plan-area { flex: 1; background: var(--accent); overflow-y: auto; padding: 12px 15px; min-height: 100px; }
+        #session-plan-area { flex: 1; background: var(--accent); overflow-y: auto; padding: 10px 15px; min-height: 100px; }
         .empty-state { text-align: center; color: rgba(255,255,255,0.8); margin-top: 50px; pointer-events: none; font-weight: 600; }
         
-        /* LIBRARY AREA (WHITE) - MOBIL FIX FOR TAGS */
+        /* LIBRARY AREA (WHITE) */
         #library-area { 
-            height: 45%; 
+            height: 55%; /* ØKT HØYDE */
             background: var(--surface); 
             display: flex; 
             flex-direction: column; 
@@ -212,12 +227,12 @@
         
         /* TAG SCROLL FIX */
         .tag-scroll { 
-            display: flex; overflow-x: auto; padding: 10px; gap: 8px; 
+            display: flex; overflow-x: auto; padding: 10px 10px 25px 10px; /* Ekstra padding bunn */
+            gap: 8px; 
             border-top: 1px solid #eee; background: #f9f9f9; 
-            flex-shrink: 0; /* VIKTIG: Ikke krymp denne */
-            height: 55px; /* Fast høyde så den ikke forsvinner */
+            flex-shrink: 0; 
+            height: auto; min-height: 60px;
             align-items: center; scrollbar-width: none; 
-            padding-bottom: max(10px, env(safe-area-inset-bottom)); /* Safe area padding */
         }
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
@@ -225,19 +240,25 @@
         /* KORT DESIGN */
         .card {
             background: white; 
-            padding: 12px 15px; /* LAVERE KORT (Samme overalt) */
+            padding: 12px 15px; 
             margin-bottom: 8px; border-radius: 12px; 
             border: 1px solid #cbd2d9; 
             display: flex; justify-content: space-between; align-items: center; 
             box-shadow: var(--card-shadow); position: relative;
         }
+        
+        /* SPESIFIKT FOR BOKSER I BLÅTT FELT (Lavere) */
+        #session-plan-area .card {
+            padding: 8px 12px; /* Lavere padding */
+            min-height: auto;
+        }
+
         .sortable-chosen { background: #eef5fa; border-color: var(--accent); transform: scale(1.02); }
         .sortable-ghost { opacity: 0.4; background: #ccc; }
         
         .card-content { 
-            flex: 1; display: flex; flex-direction: row; /* Row for å ha tid ved siden av */
-            justify-content: space-between; /* Tittel venstre, tid høyre */
-            align-items: center; 
+            flex: 1; display: flex; flex-direction: row; 
+            justify-content: space-between; align-items: center; 
             pointer-events: none; text-align: left;
         }
         .card h4 { font-size: 0.95rem; font-weight: 800; color: #000; margin: 0; }
@@ -246,7 +267,7 @@
         .card-time-text { font-size: 0.85rem; font-weight: 600; color: #666; margin-left: 10px; white-space: nowrap;}
 
         .card-del { 
-            width: 35px; height: 35px; /* Litt mindre sletteknapp */
+            width: 35px; height: 35px; 
             color: #aaa; margin-left: 8px; cursor: pointer; font-size: 1.1rem; 
             display: flex; align-items: center; justify-content: center; 
             border-radius: 50%;
@@ -254,12 +275,13 @@
         .card-del:hover { background: #fee; color: var(--danger); }
         
         /* LIBRARY VIEW */
+        #view-library-full { height: 100%; overflow: hidden; position: absolute; inset: 0; }
         #library-search { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #ccc; font-size: 1rem; font-family: inherit; background: white; }
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
         .lib-cat-header { font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: none; letter-spacing: 0.5px; }
 
         /* PRESENTATION VIEW */
-        #view-pres { background: white; z-index: 50; height: 100vh; overflow: hidden; position: fixed; inset: 0; }
+        #view-pres { background: white; z-index: 50; height: 100%; overflow: hidden; position: absolute; inset: 0; }
         #pres-content { flex: 1; overflow-y: auto; padding: calc(20px + env(safe-area-inset-top)) 25px 100px 25px; }
         
         .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; padding-right: 60px; }
@@ -270,7 +292,7 @@
         .pres-tag { background: #eee; font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; }
 
         #btn-edit-pres { 
-            position: fixed; bottom: 30px; right: 30px; left: auto; transform: none; 
+            position: absolute; bottom: 30px; right: 30px; left: auto; transform: none; 
             background: var(--accent); color: white; width: 56px; height: 56px; 
             border-radius: 50%; box-shadow: var(--pill-shadow); 
             z-index: 9999; cursor: pointer; pointer-events: auto !important; 
@@ -285,7 +307,7 @@
             z-index: 9999; cursor: pointer; pointer-events: auto !important; 
         }
 
-        /* CLOSE BUTTON FOR INFO POPUP (NEW) */
+        /* CLOSE BUTTON FOR INFO POPUP */
         .circle-close {
             position: absolute; top: 15px; right: 15px;
             width: 32px; height: 32px; border-radius: 50%;
@@ -296,7 +318,7 @@
         }
 
         /* MODALS */
-        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 20000; display: none; place-items: center; backdrop-filter: blur(2px); }
+        .modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 20000; display: none; place-items: center; backdrop-filter: blur(2px); }
         .modal-box { 
             background: white; padding: 25px; border-radius: 12px; 
             width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; 
@@ -314,6 +336,7 @@
     </style>
 </head>
 <body>
+<div id="app-root">
 
     <div id="loader">
         <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/lasteikon.png" alt="Laster..." class="loader-icon">
@@ -334,6 +357,17 @@
             <p style="color:#555; margin-bottom:25px; line-height:1.5;">Det finnes allerede en økt på denne datoen. Vil du redigere den?</p>
             <button class="modal-btn center-grid" onclick="window.editExistingSession()">
                 Rediger økt
+            </button>
+            <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600; padding:10px;">Avbryt</button>
+        </div>
+    </div>
+
+    <div id="modal-delete-confirm" class="modal-bg">
+        <div class="modal-box slide-up">
+            <h3 style="margin-bottom:10px;">Slette øvelse?</h3>
+            <p style="color:#555; margin-bottom:25px;">Vil du slette denne øvelsen permanent fra banken?</p>
+            <button class="modal-btn center-grid" style="background-color: var(--danger);" onclick="window.confirmDeleteExercise()">
+                Ja, slett
             </button>
             <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600; padding:10px;">Avbryt</button>
         </div>
@@ -373,12 +407,11 @@
     <div id="modal-ex" class="modal-bg" onclick="window.closeModals()">
         <div class="modal-box slide-up" onclick="event.stopPropagation()" style="text-align:left; padding-top:40px;">
             <button class="circle-close" onclick="window.closeModals()">✕</button>
-            
             <h3 id="ex-title" class="cap-first" style="padding-right:20px;"></h3>
             <p id="ex-meta" style="color:#666; font-size:0.9rem; margin: 5px 0 15px 0;"></p>
             <p id="ex-desc" style="line-height:1.5; margin-bottom:20px;"></p>
             <div id="ex-tags" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;"></div>
-            </div>
+        </div>
     </div>
 
     <div id="view-home" class="view active fade-in">
@@ -428,13 +461,20 @@
         </div>
     </div>
 
-    <script>
+</div> <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbzP0nNeb4sTee9XPb9IHUUGPQDwVRUAe_3_g2r8tppN6Wden8JTYPODJ4QmRhzLxaithg/exec';
 
         let data = { exercises: [], sessions: {} };
-        let state = { categories: new Set(), date: null, session: { navn: "Ny økt", plan: [] }, catFilter: 'alle', tagFilter: null, editingExerciseId: null };
+        let state = { categories: new Set(), date: null, session: { navn: "Ny økt", plan: [] }, catFilter: 'alle', tagFilter: null, editingExerciseId: null, deleteTargetId: null };
 
         document.addEventListener('DOMContentLoaded', init);
+
+        // ENTER KEY TO SAVE TITLE
+        document.getElementById('input-title').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                window.confirmTitle();
+            }
+        });
 
         async function init() {
             const btn = document.getElementById('btn-create-session');
@@ -476,7 +516,7 @@
                         <button class="action-circle blue" onclick="event.stopPropagation(); window.editSessionDirect('${id}')">
                             <span class="material-icons-round" style="font-size:20px">edit</span>
                         </button>
-                        <button class="action-circle red" onclick="event.stopPropagation(); window.deleteSession('${id}', this)">
+                        <button class="action-circle red" onclick="event.stopPropagation(); window.deleteSession('${id}')">
                             <span class="material-icons-round" style="font-size:20px">delete</span>
                         </button>
                     </div>`;
@@ -486,7 +526,7 @@
                         <button class="action-circle blue" onclick="event.stopPropagation(); window.openEditExerciseModal('${id}')">
                             <span class="material-icons-round" style="font-size:20px">edit</span>
                         </button>
-                        <button class="action-circle red" onclick="event.stopPropagation(); window.deleteExerciseFromBank('${id}', this)">
+                        <button class="action-circle red" onclick="event.stopPropagation(); window.promptDeleteExercise('${id}')">
                             <span class="material-icons-round" style="font-size:20px">delete</span>
                         </button>
                     </div>`;
@@ -647,18 +687,27 @@
             if (sortedCats.length === 0) list.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">Ingen treff</p>';
         };
 
-        window.deleteExerciseFromBank = async function(id, btn) {
-            if(!confirm("Vil du slette denne øvelsen permanent fra banken?")) return;
-            const container = btn.closest('.action-container').parentNode; 
-            container.innerHTML = '<span class="rotating material-icons-round">hourglass_empty</span>';
+        window.promptDeleteExercise = function(id) {
+            state.deleteTargetId = id;
+            document.getElementById('modal-delete-confirm').style.display = 'grid';
+        };
+
+        window.confirmDeleteExercise = async function() {
+            const id = state.deleteTargetId;
+            if(!id) return;
             
+            window.closeModals(); // Close confirmation
+            
+            // Try updating UI first or show loader? Let's just delete.
             try {
                 await fetch(API_URL, {
                     method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ handling: 'slett_ovelse', id: id })
                 });
                 data.exercises = data.exercises.filter(e => e.id !== id);
-                window.filterFullLibrary(); 
+                if (document.getElementById('view-library-full').classList.contains('active')) {
+                    window.filterFullLibrary();
+                }
                 renderLibrary(); 
             } catch(e) {
                 alert("Kunne ikke slette.");
@@ -807,15 +856,12 @@
 
         // ANIMATED SESSION DELETE
         window.deleteSession = async function(d, btn) {
-            // Find the card container
             const card = document.getElementById(`card-${d}`);
             if(card) {
                 card.classList.add('fade-out-collapse');
-                
-                // Wait for animation, then remove and reload
                 setTimeout(async () => {
                     delete data.sessions[d]; 
-                    renderHome(); // Re-renders the list properly
+                    renderHome(); 
                     await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
                 }, 350);
             }
@@ -890,7 +936,7 @@
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>`;
             
-            // VIS TID KUN I EDITOR (showTime = true)
+            // VIS TID KUN I EDITOR (TEKST TIL HØYRE)
             if (showTime && ex.tid) {
                 html += `<span class="card-time-text">${ex.tid} min</span>`;
             }
@@ -898,7 +944,7 @@
             html += `</div>`; // Close card-content
 
             if(removable) {
-                // Slette-knapp med animasjon
+                // Slette-knapp
                 html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`;
             }
             div.innerHTML = html;
@@ -921,7 +967,7 @@
             data.exercises.forEach(ex => {
                 if(state.catFilter !== 'alle' && (ex.kategori||'').toLowerCase() !== state.catFilter) return;
                 if(state.tagFilter && !(ex.tags||[]).some(t => t.toLowerCase() === state.tagFilter)) return;
-                // SHOW TIME IS TRUE IN LIBRARY LIST
+                // SHOW TIME IS TRUE IN LIBRARY LIST (SIDE BY SIDE)
                 list.appendChild(createCard(ex, false, true));
             });
         }
