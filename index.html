@@ -91,16 +91,14 @@
         .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
         .session-actions { width: 90px; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
         
-        /* ACTION CIRCLES (RETTET) */
+        /* ACTION CIRCLES */
         .action-container { display: flex; gap: 10px; }
         .action-circle {
             width: 40px; height: 40px; border-radius: 50%;
             display: grid; place-items: center; 
-            color: white;
-            border: none; /* Sikre ingen border */
+            color: white; border: none; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        /* VIKTIG: Spesifikk styling for å unngå grå bakgrunn */
         .action-circle span { background: none; color: white; }
         .action-circle.red { background-color: var(--danger) !important; }
         .action-circle.blue { background-color: var(--accent) !important; }
@@ -253,7 +251,7 @@
             <textarea id="new-ex-desc" placeholder="Kort beskrivelse..."></textarea>
             
             <button class="modal-btn center-grid" id="btn-save-new-ex" onclick="window.saveExercise()">
-                <span class="material-icons-round" id="icon-save-new">save</span> &nbsp; Lagre
+                Lagre
             </button>
             <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
@@ -341,14 +339,13 @@
             initDrag();
         }
 
-        /* --- NY FUNKSJONALITET --- */
+        /* --- MENY / REDIGERING --- */
 
         window.toggleFab = function() {
             document.getElementById('fab-options').classList.toggle('show');
             document.getElementById('fab-main').classList.toggle('active');
         };
 
-        // VISER MENYEN (RØD OG BLÅ KNAPP)
         window.showActionMenu = function(id, type, element) {
             const container = document.getElementById(`act-${id}`);
             if(container.querySelector('.action-container')) return; 
@@ -449,9 +446,9 @@
             };
 
             const btn = document.getElementById('btn-save-new-ex');
-            const icon = document.getElementById('icon-save-new');
-            const oldText = btn.innerHTML;
-            icon.innerText = 'hourglass_empty'; icon.classList.add('rotating');
+            const oldText = btn.innerText;
+            // VIS LASTER PÅ KNAPP UTEN IKON
+            btn.innerHTML = '<span class="material-icons-round rotating">hourglass_empty</span>';
 
             try {
                 if (state.editingExerciseId) {
@@ -485,7 +482,7 @@
             } catch(e) {
                 alert("Feil ved lagring.");
             } finally {
-                btn.innerHTML = oldText;
+                btn.innerText = oldText;
             }
         };
 
@@ -495,33 +492,25 @@
             showView('view-library-full');
         };
 
-        // GRUPPERT VISNING AV KARTOTEK
         window.filterFullLibrary = function() {
             const term = document.getElementById('library-search').value.toLowerCase();
             const list = document.getElementById('full-library-list');
             list.innerHTML = '';
             
-            // 1. Grupper øvelsene
             const grouped = {};
             data.exercises.forEach(ex => {
-                // Filter først
                 if(ex.navn.toLowerCase().includes(term) || (ex.kategori||'').toLowerCase().includes(term)) {
                     const cat = (ex.kategori || 'Annet').trim();
-                    const catKey = cat.charAt(0).toUpperCase() + cat.slice(1); // Pen visning
+                    const catKey = cat.charAt(0).toUpperCase() + cat.slice(1); 
                     if(!grouped[catKey]) grouped[catKey] = [];
                     grouped[catKey].push(ex);
                 }
             });
 
-            // 2. Sorter kategorier alfabetisk
             const sortedCats = Object.keys(grouped).sort();
 
-            // 3. Render
             sortedCats.forEach(cat => {
-                // Header
                 list.innerHTML += `<div class="lib-cat-header">${cat}</div>`;
-                
-                // Cards
                 grouped[cat].forEach(ex => {
                     const div = document.createElement('div');
                     div.className = 'card';
@@ -554,8 +543,8 @@
                     body: JSON.stringify({ handling: 'slett_ovelse', id: id })
                 });
                 data.exercises = data.exercises.filter(e => e.id !== id);
-                window.filterFullLibrary(); // Re-render hele listen for å fjerne tomme kategorier om nødvendig
-                renderLibrary(); // Update editor list
+                window.filterFullLibrary(); 
+                renderLibrary(); 
             } catch(e) {
                 alert("Kunne ikke slette.");
             }
