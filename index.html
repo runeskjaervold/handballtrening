@@ -64,56 +64,19 @@
             0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; }
         }
 
-        /* LAYOUT */
+        /* LAYOUT & HEADER */
         .view { display: none; height: 100%; flex-direction: column; position: absolute; inset: 0; background: var(--bg); z-index: 10; }
         .view.active { display: flex; z-index: 20; }
 
-        /* --- HEADER & LOGO RESPONSIVITET --- */
-        
-        /* Standard (Desktop/Tablet) */
-        header { 
-            padding: 20px 30px; 
-            background: var(--bg); 
-            display: flex; 
-            flex-direction: row; /* Side ved side */
-            align-items: center; 
-            justify-content: space-between;
-            gap: 20px;
-        }
-        
-        .header-logo { 
-            height: 50px; /* Fast høyde på desktop */
-            width: auto; 
-            order: 2; /* Logo til høyre på desktop hvis ønskelig, eller fjern order */
-        }
+        header { padding: 20px 30px; background: var(--bg); display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 20px; }
+        .header-logo { height: 50px; width: auto; order: 2; }
+        .home-title { font-size: 2rem; margin: 0; order: 1; }
 
-        .home-title { 
-            font-size: 2rem; 
-            margin: 0;
-            order: 1;
-        }
-
-        /* MOBIL TILPASNING (Maks bredde 600px) */
+        /* MOBIL RESPONSIVITET */
         @media (max-width: 600px) {
-            header {
-                flex-direction: column; /* Stablet */
-                align-items: center;
-                gap: 15px;
-                padding: 20px 15px;
-            }
-
-            .header-logo {
-                width: 70%; /* 70% bredde kun på mobil */
-                height: auto;
-                margin: 0 auto;
-                order: 1; /* Logo først */
-            }
-
-            .home-title {
-                font-size: 1.5rem;
-                align-self: flex-start; /* Venstrestilt */
-                order: 2; /* Tittel etterpå */
-            }
+            header { flex-direction: column; align-items: center; gap: 15px; padding: 20px 15px; }
+            .header-logo { width: 70%; height: auto; margin: 0 auto; order: 1; }
+            .home-title { font-size: 1.5rem; align-self: flex-start; order: 2; }
         }
 
         #home-scroll { flex: 1; overflow-y: auto; padding: 10px 15px 100px 15px; }
@@ -134,12 +97,14 @@
         .db-month { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
         .db-day { font-size: 1.7rem; font-weight: 900; line-height: 1; margin: 2px 0; }
         .db-weekday { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
+        
         .session-info { flex: 1; padding: 0 15px; display: flex; align-items: center; }
         .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
+        
+        /* ACTIONS */
         .session-actions { position: absolute; right: 10px; top: 0; bottom: 0; width: 90px; display: flex; align-items: center; justify-content: flex-end; }
         .more-dots { color: #aaa; background: transparent !important; }
 
-        /* ACTION CIRCLES */
         .action-container { display: flex; gap: 10px; }
         .action-circle {
             width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; 
@@ -226,12 +191,6 @@
         input[type="date"], input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; margin: 10px 0; font-family: inherit; -webkit-appearance: none; }
         textarea { height: 120px; resize: none; }
         .modal-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        
-        /* CONFLICT MODAL LIST */
-        .conflict-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .conflict-item { background: #f0f0f0; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; text-align: left; display: flex; justify-content: space-between; align-items: center; }
-        .conflict-item:active { background: #e0e0e0; }
-
         .rotating { animation: spin 1s linear infinite; }
     </style>
 </head>
@@ -246,19 +205,6 @@
             <h3>Velg dato</h3>
             <input type="date" id="input-date">
             <button class="modal-btn center-grid" id="btn-create-session">Planlegg økt</button>
-            <button onclick="window.closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
-        </div>
-    </div>
-
-    <div id="modal-conflict" class="modal-bg">
-        <div class="modal-box slide-up">
-            <h3>Dato opptatt</h3>
-            <p style="color:#666; margin-bottom:15px;">Det finnes allerede økter på denne datoen.</p>
-            
-            <div id="conflict-list" class="conflict-list"></div>
-            
-            <div style="border-top:1px solid #eee; margin:10px 0;"></div>
-            <button class="modal-btn center-grid" onclick="window.createNewFromConflict()">Opprett ny økt</button>
             <button onclick="window.closeModals()" style="margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
@@ -352,7 +298,7 @@
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbzP0nNeb4sTee9XPb9IHUUGPQDwVRUAe_3_g2r8tppN6Wden8JTYPODJ4QmRhzLxaithg/exec';
 
-        let data = { exercises: [], sessions: {} }; // sessions is now ID-based object
+        let data = { exercises: [], sessions: {} };
         let state = { categories: new Set(), date: null, session: { navn: "Ny økt", plan: [] }, catFilter: 'alle', tagFilter: null, editingExerciseId: null };
 
         document.addEventListener('DOMContentLoaded', init);
@@ -365,8 +311,6 @@
                 const res = await fetch(API_URL + "?v=" + Date.now());
                 const json = await res.json();
                 data.exercises = json.ovelser || [];
-                // Data sessions kommer nå som ID-objekt. { "uuid": {dato:..}, "uuid": {dato:..} }
-                // Vi må støtte gammel data (dato-nøkler) også, ved å konvertere on-the-fly om nødvendig
                 data.sessions = json.planer || {};
                 
                 processCategories();
@@ -379,198 +323,8 @@
             initDrag();
         }
 
-        /* --- NY LOGIKK: FLERE ØKTER / ID-BASERT --- */
+        /* --- MENY / REDIGERING --- */
 
-        function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
-        window.startNewSession = function() {
-            const opts = document.getElementById('fab-options');
-            if(opts.classList.contains('show')) window.toggleFab();
-            document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('input-date').value = today; 
-            document.getElementById('modal-date').style.display = 'grid'; 
-        };
-
-        window.confirmDate = function() {
-            const input = document.getElementById('input-date');
-            if(!input.value) input.value = new Date().toISOString().split('T')[0];
-            const d = input.value;
-            state.date = d;
-
-            // Sjekk om det finnes økter på denne datoen
-            const sessionsOnDate = Object.values(data.sessions).filter(s => s.dato === d || (!s.dato && data.sessions[d])); 
-            // !s.dato check handles legacy data where key=date and value doesn't have date property
-
-            if (sessionsOnDate.length > 0) {
-                // Vis konflikt-modal
-                const list = document.getElementById('conflict-list');
-                list.innerHTML = '';
-                
-                // Må koble ID til visning. 
-                // Hvis legacy: key er datoen. Hvis nytt: key er ID.
-                Object.keys(data.sessions).forEach(key => {
-                    const sess = data.sessions[key];
-                    // Legacy fix: if sess.dato is undefined, assume key is dato
-                    const sessDate = sess.dato || key;
-                    
-                    if (sessDate === d) {
-                        const div = document.createElement('div');
-                        div.className = 'conflict-item';
-                        div.innerHTML = `<span>${sess.navn}</span> <span class="material-icons-round">edit</span>`;
-                        div.onclick = () => {
-                            state.session = sess;
-                            // Ensure session has ID for saving later (migration)
-                            if (!state.session.id) state.session.id = key; 
-                            window.loadEditor();
-                            window.closeModals();
-                        };
-                        list.appendChild(div);
-                    }
-                });
-                
-                document.getElementById('modal-date').style.display = 'none';
-                document.getElementById('modal-conflict').style.display = 'grid';
-            } else {
-                window.createNewFromConflict();
-            }
-        };
-
-        window.createNewFromConflict = function() {
-            state.session = { 
-                id: generateUUID(), 
-                dato: state.date, 
-                navn: "Håndballøkt", 
-                plan: [] 
-            };
-            window.loadEditor();
-            window.closeModals();
-        };
-
-        window.saveSession = async function() {
-            const cards = document.querySelectorAll('#session-plan-area .card');
-            state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
-            
-            // Ensure ID and Date
-            if (!state.session.id) state.session.id = generateUUID();
-            if (!state.session.dato) state.session.dato = state.date;
-
-            // Save locally by ID
-            data.sessions[state.session.id] = state.session;
-            
-            const icon = document.getElementById('icon-save');
-            icon.innerText = 'hourglass_empty'; icon.classList.add('rotating'); 
-            try {
-                await fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    body: JSON.stringify({ handling: 'lagre', id: state.session.id, dato: state.date, data: state.session })
-                });
-                icon.classList.remove('rotating'); icon.innerText = 'check';
-                setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
-            } catch(e) { icon.classList.remove('rotating'); icon.innerText = 'error'; alert("Lagring feilet"); }
-        };
-
-        /* --- RENDERING UPDATES --- */
-
-        function renderHome() {
-            const cont = document.getElementById('home-scroll');
-            cont.innerHTML = '';
-            
-            // Convert to array and handle legacy data
-            let sessionList = [];
-            Object.keys(data.sessions).forEach(key => {
-                let s = data.sessions[key];
-                // Migration logic for old data format
-                if (!s.dato) s.dato = key; 
-                if (!s.id) s.id = key;
-                sessionList.push(s);
-            });
-
-            // Sort by Date
-            sessionList.sort((a, b) => new Date(a.dato) - new Date(b.dato));
-
-            if(!sessionList.length) cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
-            
-            let lastWeekKey = null; 
-            const days = ['søn','man','tir','ons','tor','fre','lør']; 
-            const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
-
-            sessionList.forEach(s => {
-                const dateObj = new Date(s.dato);
-                const week = getWeek(dateObj);
-                const year = dateObj.getFullYear();
-                const weekKey = `${year}-${week}`;
-                
-                if(weekKey !== lastWeekKey) {
-                    cont.innerHTML += `<div class="week-header">Uke ${week} - ${year}</div>`;
-                    lastWeekKey = weekKey;
-                }
-
-                const dayName = days[dateObj.getDay()];
-                const monthName = months[dateObj.getMonth()];
-                const dayNum = dateObj.getDate();
-
-                const card = document.createElement('div');
-                card.className = 'session-card slide-up';
-                card.setAttribute('onclick', `window.openPres('${s.id}')`); // Use ID to open
-                
-                card.innerHTML = `
-                    <div class="date-box">
-                        <span class="db-weekday">${dayName.toUpperCase()}</span>
-                        <span class="db-day">${dayNum}</span>
-                        <span class="db-month">${monthName.toUpperCase()}</span>
-                    </div>
-                    <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
-                    <div class="session-actions center-grid" id="act-${s.id}" onclick="event.stopPropagation(); window.showActionMenu('${s.id}', 'session', this)">
-                        <span class="material-icons-round more-dots">more_vert</span>
-                    </div>`;
-                cont.appendChild(card);
-            });
-        }
-
-        window.deleteSession = async function(id) {
-            delete data.sessions[id]; 
-            renderHome();
-            await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', id: id}) });
-        };
-
-        window.openPres = function(id) {
-            state.session = data.sessions[id];
-            state.date = state.session.dato;
-            showView('view-pres');
-            
-            const dobj = new Date(state.date);
-            const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
-            const headerDate = `${dobj.getDate()}. ${months[dobj.getMonth()]} ${dobj.getFullYear()}`;
-            
-            let html = `
-                <div class="pres-header">
-                    <div style="color:#666">${headerDate}</div>
-                    <h1 class="pres-title cap-first">${state.session.navn}</h1>
-                </div>`;
-            (state.session.plan || []).forEach(ex => {
-                html += `
-                    <div class="pres-item">
-                        <h3 class="cap-first">${ex.navn}</h3>
-                        <div style="color:#555; margin-bottom:10px;">${fmtTime(ex.tid)} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
-                        <div style="line-height:1.5">${ex.beskrivelse||''}</div>
-                    </div>`;
-            });
-            document.getElementById('pres-content').innerHTML = html;
-        };
-
-        window.editSessionDirect = function(id) {
-            state.session = data.sessions[id];
-            state.date = state.session.dato;
-            loadEditor(); 
-        };
-
-        /* --- EXERCISE LOGIC (UNCHANGED MOSTLY) --- */
         window.toggleFab = function() {
             document.getElementById('fab-options').classList.toggle('show');
             document.getElementById('fab-main').classList.toggle('active');
@@ -615,6 +369,12 @@
                     setTimeout(() => { container.innerHTML = originalHtml; }, 280); 
                 }
             }, 4000);
+        };
+
+        window.editSessionDirect = function(d) {
+            state.date = d;
+            state.session = data.sessions[d];
+            loadEditor(); 
         };
 
         window.openNewExerciseModal = function() {
@@ -742,7 +502,6 @@
                     div.innerHTML = `
                         <div class="card-content">
                             <h4 class="cap-first">${ex.navn}</h4>
-                            <span class="card-meta">${fmtTime(ex.tid)}</span>
                         </div>
                         <div class="session-actions center-grid" id="act-${ex.id}" onclick="event.stopPropagation(); window.showActionMenu('${ex.id}', 'exercise', this)">
                             <span class="material-icons-round more-dots">more_vert</span>
@@ -774,6 +533,27 @@
         };
 
         /* --- STANDARD FUNKSJONER --- */
+
+        window.startNewSession = function() {
+            const opts = document.getElementById('fab-options');
+            if(opts.classList.contains('show')) window.toggleFab();
+            document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('input-date').value = today; 
+            document.getElementById('modal-date').style.display = 'grid'; 
+        };
+
+        window.confirmDate = function() {
+            const input = document.getElementById('input-date');
+            if(!input.value) input.value = new Date().toISOString().split('T')[0];
+            const d = input.value;
+            state.date = d;
+            if(data.sessions[d]) {
+                if(!confirm("Økt finnes. Redigere?")) return;
+                state.session = data.sessions[d];
+            } else { state.session = { navn: "Håndballøkt", plan: [] }; }
+            window.loadEditor(); window.closeModals();
+        };
 
         window.loadEditor = function() {
             document.getElementById('session-title-edit').innerText = state.session.navn;
@@ -830,6 +610,71 @@
             });
         }
 
+        function renderHome() {
+            const cont = document.getElementById('home-scroll');
+            cont.innerHTML = '';
+            const dates = Object.keys(data.sessions).sort((a, b) => new Date(a) - new Date(b));
+            if(!dates.length) cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
+            let lastWeekKey = null; 
+            const days = ['søn','man','tir','ons','tor','fre','lør']; 
+            const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+
+            dates.forEach(d => {
+                const s = data.sessions[d];
+                const dateObj = new Date(d);
+                const week = getWeek(dateObj);
+                const year = dateObj.getFullYear();
+                const weekKey = `${year}-${week}`;
+                if(weekKey !== lastWeekKey) {
+                    cont.innerHTML += `<div class="week-header">Uke ${week} - ${year}</div>`;
+                    lastWeekKey = weekKey;
+                }
+                const dayName = days[dateObj.getDay()];
+                const monthName = months[dateObj.getMonth()];
+                const dayNum = dateObj.getDate();
+                const card = document.createElement('div');
+                card.className = 'session-card slide-up';
+                card.setAttribute('onclick', `window.openPres('${d}')`);
+                card.innerHTML = `
+                    <div class="date-box">
+                        <span class="db-weekday">${dayName.toUpperCase()}</span>
+                        <span class="db-day">${dayNum}</span>
+                        <span class="db-month">${monthName.toUpperCase()}</span>
+                    </div>
+                    <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
+                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)">
+                        <span class="material-icons-round more-dots">more_vert</span>
+                    </div>`;
+                cont.appendChild(card);
+            });
+        }
+
+        window.deleteSession = async function(d) {
+            delete data.sessions[d]; renderHome();
+            await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
+        };
+
+        window.openPres = function(d) {
+            state.date = d; state.session = data.sessions[d]; showView('view-pres');
+            const dobj = new Date(d);
+            const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+            const headerDate = `${dobj.getDate()}. ${months[dobj.getMonth()]} ${dobj.getFullYear()}`;
+            let html = `
+                <div class="pres-header">
+                    <div style="color:#666">${headerDate}</div>
+                    <h1 class="pres-title cap-first">${state.session.navn}</h1>
+                </div>`;
+            (state.session.plan || []).forEach(ex => {
+                html += `
+                    <div class="pres-item">
+                        <h3 class="cap-first">${ex.navn}</h3>
+                        <div style="color:#555; margin-bottom:10px;">${fmtTime(ex.tid)} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
+                        <div style="line-height:1.5">${ex.beskrivelse||''}</div>
+                    </div>`;
+            });
+            document.getElementById('pres-content').innerHTML = html;
+        };
+
         window.openTitleModal = function() {
             document.getElementById('input-title').value = state.session.navn;
             document.getElementById('modal-title').style.display = 'grid';
@@ -851,6 +696,22 @@
         };
 
         window.closeModals = function() { document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none'); };
+
+        window.saveSession = async function() {
+            const cards = document.querySelectorAll('#session-plan-area .card');
+            state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
+            data.sessions[state.date] = state.session;
+            const icon = document.getElementById('icon-save');
+            icon.innerText = 'hourglass_empty'; icon.classList.add('rotating'); 
+            try {
+                await fetch(API_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
+                });
+                icon.classList.remove('rotating'); icon.innerText = 'check';
+                setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
+            } catch(e) { icon.classList.remove('rotating'); icon.innerText = 'error'; alert("Lagring feilet"); }
+        };
 
         function createCard(ex, removable) {
             const div = document.createElement('div');
