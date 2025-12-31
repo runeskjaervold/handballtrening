@@ -38,10 +38,10 @@
             justify-content: center; 
         }
 
-        /* APP CONTAINER */
+        /* APP CONTAINER - BREDERE PÅ PC (750px) */
         #app-root {
             width: 100%;
-            max-width: 600px; 
+            max-width: 750px; /* ENDRET FRA 600px TIL 750px */
             background-color: var(--bg);
             height: 100%;
             position: relative;
@@ -64,7 +64,6 @@
         .fade-out-collapse {
             animation: fadeOutCollapse 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
             overflow: hidden; 
-            transform-origin: top;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -72,8 +71,8 @@
         
         @keyframes fadeOutCollapse {
             0% { opacity: 1; transform: scale(1); max-height: 120px; margin-bottom: 8px; padding: 12px 15px; }
-            40% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; margin-top: 0; padding-top: 0; padding-bottom: 0; border: none; }
+            50% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border: none; }
         }
 
         .slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
@@ -81,10 +80,13 @@
         @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-20px); opacity: 0; } }
 
-        /* LOADER */
+        /* LOADER - DEKKER HELE SKJERMEN */
         #loader { 
-            position: absolute; inset: 0; background: var(--accent); 
-            z-index: 30000; display: flex; justify-content: center; align-items: center; 
+            position: fixed; /* Sikrer full dekning */
+            inset: 0; 
+            background: var(--accent); 
+            z-index: 99999; /* Over alt annet */
+            display: flex; justify-content: center; align-items: center; 
             transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
         .loader-icon {
@@ -130,10 +132,7 @@
 
         @media (max-width: 600px) {
             header { flex-direction: column; align-items: center; gap: 35px; padding: 15px 15px 15px 15px; }
-            
-            /* MINSKET LOGO STØRRELSE TIL 50% */
             .header-logo { width: 50%; height: auto; margin: 0 auto; order: 1; }
-            
             .home-title { font-size: 1.5rem; align-self: flex-start; order: 2; margin-bottom: 0; }
         }
 
@@ -239,10 +238,10 @@
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
 
-        /* KORT DESIGN */
+        /* KORT DESIGN - HØYERE BOKSER */
         .card {
             background: white; 
-            padding: 12px 15px; 
+            padding: 22px 15px; /* ØKT HØYDE (MER LUFT) */
             margin-bottom: 8px; border-radius: 12px; 
             border: 1px solid #cbd2d9; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -328,7 +327,6 @@
         textarea { height: 120px; resize: none; }
         .modal-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 10px rgba(50,134,175,0.3); }
         
-        /* CONFLICT MODAL SPECIFIC */
         #modal-conflict p { font-size: 1.1rem; }
         .rotating { animation: spin 1s linear infinite; }
     </style>
@@ -555,8 +553,9 @@
             setupExerciseModal();
         };
 
+        // FIXED: USE LOOSE COMPARISON TO MATCH STRING ID FROM HTML WITH NUMBER ID FROM DB
         window.openEditExerciseModal = function(id) {
-            const ex = data.exercises.find(e => e.id === id);
+            const ex = data.exercises.find(e => String(e.id) === String(id));
             if (!ex) return;
             state.editingExerciseId = id; 
             document.getElementById('modal-ex-header').innerText = "Rediger øvelse";
@@ -611,7 +610,7 @@
                         method: 'POST', mode: 'no-cors',
                         body: JSON.stringify({ handling: 'oppdater_ovelse', info: exInfo })
                     });
-                    const idx = data.exercises.findIndex(e => e.id === state.editingExerciseId);
+                    const idx = data.exercises.findIndex(e => String(e.id) === String(state.editingExerciseId));
                     if (idx !== -1) data.exercises[idx] = { ...data.exercises[idx], ...exInfo };
 
                 } else {
@@ -701,7 +700,7 @@
                     method: 'POST', mode: 'no-cors',
                     body: JSON.stringify({ handling: 'slett_ovelse', id: id })
                 });
-                data.exercises = data.exercises.filter(e => e.id !== id);
+                data.exercises = data.exercises.filter(e => String(e.id) !== String(id));
                 if (document.getElementById('view-library-full').classList.contains('active')) {
                     window.filterFullLibrary();
                 }
@@ -852,7 +851,7 @@
         }
 
         // ANIMATED SESSION DELETE (UPDATED LOGIC TO REMOVE HEADER)
-        window.deleteSession = async function(d) {
+        window.deleteSession = async function(d, btn) {
             const card = document.getElementById(`card-${d}`);
             if(!card) return;
 
@@ -960,7 +959,7 @@
             html += `</div>`; // Close card-content
 
             if(removable) {
-                // Slette-knapp
+                // Slette-knapp med animasjon
                 html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`;
             }
             div.innerHTML = html;
