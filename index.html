@@ -64,11 +64,16 @@
             0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; }
         }
 
-        /* LAYOUT */
+        /* LAYOUT & HEADER */
         .view { display: none; height: 100%; flex-direction: column; position: absolute; inset: 0; background: var(--bg); z-index: 10; }
         .view.active { display: flex; z-index: 20; }
 
         header { padding: 20px 15px; background: var(--bg); display: flex; align-items: center; justify-content: space-between; }
+        
+        /* NY STIL FOR TITTEL OG LOGO */
+        .home-title { font-size: 1.5rem; } /* Mindre skriftstørrelse */
+        .header-logo { height: 35px; width: auto; } /* Logo størrelse */
+
         #home-scroll { flex: 1; overflow-y: auto; padding: 10px 15px 100px 15px; }
         .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 20px 0 10px 5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
@@ -102,7 +107,7 @@
         .more-dots { color: #aaa; background: transparent !important; }
 
         /* ACTION CIRCLES (CLEAN) */
-        .action-container { display: flex; gap: 8px; }
+        .action-container { display: flex; gap: 10px; }
         .action-circle {
             width: 40px; height: 40px; border-radius: 50%;
             display: grid; place-items: center; 
@@ -281,7 +286,10 @@
     </div>
 
     <div id="view-home" class="view active fade-in">
-        <header><h1>Mine økter</h1></header>
+        <header>
+            <h1 class="home-title">Mine økter</h1>
+            <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/Trenerboka-logo.png" alt="Trenerboka Logo" class="header-logo">
+        </header>
         <div id="home-scroll"></div>
         <div class="fab-container">
             <div class="fab-options" id="fab-options">
