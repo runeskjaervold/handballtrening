@@ -161,9 +161,6 @@
         }
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
 
-        /* ACTIONS IN FULL LIBRARY */
-        .lib-actions { width: 90px; display: flex; justify-content: flex-end; align-items: center; }
-
         /* PRESENTATION VIEW */
         #view-pres { background: white; z-index: 50; }
         #pres-content { flex: 1; overflow-y: auto; padding: 25px 25px 100px 25px; }
@@ -189,16 +186,9 @@
 
         /* MODALS */
         .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 20000; display: none; place-items: center; }
-        
-        /* STØRRE POPUP VINDUE */
         .modal-box { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 12px; 
-            width: 95%; /* Bedre på mobil */
-            max-width: 600px;
-            max-height: 90vh; /* Sikrer at den ikke går utfor skjermen */
-            overflow-y: auto; /* Scrolling hvis tastatur dekker */
+            background: white; padding: 25px; border-radius: 12px; 
+            width: 95%; max-width: 600px; max-height: 90vh; overflow-y: auto;
             text-align: center; 
         }
         
@@ -278,7 +268,7 @@
         <div class="fab-container">
             <div class="fab-options" id="fab-options">
                 <button class="fab-option-btn" onclick="window.openFullLibrary()">Øvelsesbank <span class="material-icons-round">library_books</span></button>
-                <button class="fab-option-btn" onclick="window.openNewExerciseModal()">Ny øvelse <span class="material-icons-round">fitness_center</span></button>
+                <button class="fab-option-btn" onclick="window.openNewExerciseModal()">Ny øvelse <span class="material-icons-round">sports_handball</span></button>
                 <button class="fab-option-btn" onclick="window.startNewSession()">Ny økt <span class="material-icons-round">calendar_today</span></button>
             </div>
             <button class="fab-main" id="fab-main" onclick="window.toggleFab()"><span class="material-icons-round">add</span></button>
@@ -353,11 +343,10 @@
 
         window.showActionMenu = function(id, type, element) {
             const container = document.getElementById(`act-${id}`);
-            if(container.querySelector('.action-container')) return; // Already showing
+            if(container.querySelector('.action-container')) return; 
 
             const originalHtml = `<span class="material-icons-round fade-in" style="color:#aaa;">more_vert</span>`;
             
-            // Generate Buttons based on type
             let buttonsHtml = '';
             
             if (type === 'session') {
@@ -384,7 +373,6 @@
 
             container.innerHTML = buttonsHtml;
 
-            // Auto-hide after 4 seconds
             setTimeout(() => {
                 const ac = container.querySelector('.action-container');
                 if (ac) {
@@ -398,12 +386,12 @@
         window.editSessionDirect = function(d) {
             state.date = d;
             state.session = data.sessions[d];
-            loadEditor(); // Skip presentation view
+            loadEditor(); 
         };
 
         window.openNewExerciseModal = function() {
             window.toggleFab();
-            state.editingExerciseId = null; // Create mode
+            state.editingExerciseId = null; 
             document.getElementById('modal-ex-header').innerText = "Ny øvelse";
             setupExerciseModal();
         };
@@ -411,7 +399,7 @@
         window.openEditExerciseModal = function(id) {
             const ex = data.exercises.find(e => e.id === id);
             if (!ex) return;
-            state.editingExerciseId = id; // Update mode
+            state.editingExerciseId = id; 
             document.getElementById('modal-ex-header').innerText = "Rediger øvelse";
             setupExerciseModal(ex);
         };
@@ -460,23 +448,19 @@
 
             try {
                 if (state.editingExerciseId) {
-                    // UPDATE
                     exInfo.id = state.editingExerciseId;
                     await fetch(API_URL, {
                         method: 'POST', mode: 'no-cors',
                         body: JSON.stringify({ handling: 'oppdater_ovelse', info: exInfo })
                     });
-                    // Update local
                     const idx = data.exercises.findIndex(e => e.id === state.editingExerciseId);
                     if (idx !== -1) data.exercises[idx] = { ...data.exercises[idx], ...exInfo };
 
                 } else {
-                    // CREATE
                     await fetch(API_URL, {
                         method: 'POST', mode: 'no-cors',
                         body: JSON.stringify({ handling: 'ny_ovelse', info: exInfo })
                     });
-                    // Temp ID fix until reload (optional)
                     exInfo.id = Date.now().toString(); 
                     data.exercises.push(exInfo);
                 }
@@ -498,7 +482,6 @@
             }
         };
 
-        // KARTOTEK / BANK
         window.openFullLibrary = function() {
             window.toggleFab();
             window.filterFullLibrary(); 
@@ -532,7 +515,7 @@
 
         window.deleteExerciseFromBank = async function(id, btn) {
             if(!confirm("Vil du slette denne øvelsen permanent fra banken?")) return;
-            const container = btn.closest('.action-container').parentNode; // Reset view
+            const container = btn.closest('.action-container').parentNode; 
             container.innerHTML = '<span class="rotating material-icons-round">hourglass_empty</span>';
             
             try {
