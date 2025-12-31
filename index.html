@@ -80,7 +80,7 @@
         @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-20px); opacity: 0; } }
 
-        /* LOADER STYLE (JUSTERT) */
+        /* LOADER STYLE */
         #loader { 
             position: fixed; inset: 0; background: var(--accent); 
             z-index: 99999; display: flex; flex-direction: column; 
@@ -90,7 +90,6 @@
         
         .loader-icon {
             width: 120px; height: auto;
-            /* Myk overgang for skalering og flytting */
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
             animation: pulse-slow 2s ease-in-out infinite; 
         }
@@ -99,20 +98,11 @@
             font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.8rem;
             color: white; letter-spacing: 2px; margin-top: 20px; opacity: 0;
             transform: translateY(20px); 
-            /* HER ER MAGIEN: Delay på 0.5s slik at den venter til logoen har flyttet seg */
             transition: opacity 0.6s ease-in-out 0.5s, transform 0.6s ease-in-out 0.5s;
         }
 
-        /* Step 1: Flytt logo, deretter kommer teksten (pga delay) */
-        #loader.step-1 .loader-icon { 
-            transform: scale(0.7) translateY(-50px); /* Litt større logo (0.7) */
-            animation: none; 
-        }
-        #loader.step-1 .loader-text { 
-            opacity: 1; 
-            transform: translateY(-40px); /* Flytter opp sammen med logoens nye posisjon */
-        }
-        
+        #loader.step-1 .loader-icon { transform: scale(0.7) translateY(-50px); animation: none; }
+        #loader.step-1 .loader-text { opacity: 1; transform: translateY(-40px); }
         #loader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
 
         @keyframes pulse-slow {
@@ -121,28 +111,18 @@
 
         /* LAYOUT */
         .view { 
-            display: none; 
-            height: 100%; 
-            width: 100%;
-            flex-direction: column; 
-            position: absolute; 
-            inset: 0; 
-            background: var(--bg); 
-            z-index: 10;
+            display: none; height: 100%; width: 100%;
+            flex-direction: column; position: absolute; inset: 0; 
+            background: var(--bg); z-index: 10;
             padding-top: env(safe-area-inset-top); 
         }
         .view.active { display: flex; z-index: 20; }
 
         /* HEADER */
         header { 
-            padding: 20px 30px; 
-            background: var(--surface); 
-            display: flex; 
-            flex-direction: row; 
-            align-items: center; 
-            justify-content: space-between; 
-            gap: 20px;
-            position: sticky; top: 0; z-index: 50;
+            padding: 20px 30px; background: var(--surface); 
+            display: flex; flex-direction: row; align-items: center; justify-content: space-between; 
+            gap: 20px; position: sticky; top: 0; z-index: 50;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
         
@@ -192,7 +172,7 @@
         .action-circle.red { background-color: var(--danger) !important; }
         .action-circle.blue { background-color: var(--accent) !important; }
 
-        /* FAB & MENU */
+        /* FAB & MENU (GLOBAL PLACEMENT) */
         .fab-container { position: absolute; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; transition: opacity 0.3s; }
         .fab-options {
             display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
@@ -331,7 +311,16 @@
 
     <div id="loader">
         <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/lasteikon.png" alt="Laster..." class="loader-icon">
-        <div class="loader-text">TRENINGSBOKA</div>
+        <div class="loader-text">TRENERBOKA</div>
+    </div>
+
+    <div class="fab-container" id="fab-container">
+        <div class="fab-options" id="fab-options">
+            <button class="fab-option-btn" id="btn-fab-lib" onclick="window.openFullLibrary()">Øvelsesbank <span class="material-icons-round">library_books</span></button>
+            <button class="fab-option-btn" onclick="window.openNewExerciseModal()">Ny øvelse <span class="material-icons-round">sports_handball</span></button>
+            <button class="fab-option-btn" onclick="window.startNewSession()">Ny økt <span class="material-icons-round">calendar_today</span></button>
+        </div>
+        <button class="fab-main" id="fab-main" onclick="window.toggleFab()"><span class="material-icons-round">add</span></button>
     </div>
 
     <div id="modal-date" class="modal-bg">
@@ -412,15 +401,7 @@
             <h1 class="home-title">Mine økter</h1>
         </header>
         <div id="home-scroll"></div>
-        <div class="fab-container" id="fab-container">
-            <div class="fab-options" id="fab-options">
-                <button class="fab-option-btn" id="btn-fab-lib" onclick="window.openFullLibrary()">Øvelsesbank <span class="material-icons-round">library_books</span></button>
-                <button class="fab-option-btn" onclick="window.openNewExerciseModal()">Ny øvelse <span class="material-icons-round">sports_handball</span></button>
-                <button class="fab-option-btn" onclick="window.startNewSession()">Ny økt <span class="material-icons-round">calendar_today</span></button>
-            </div>
-            <button class="fab-main" id="fab-main" onclick="window.toggleFab()"><span class="material-icons-round">add</span></button>
         </div>
-    </div>
 
     <div id="view-library-full" class="view">
         <div id="editor-top">
@@ -645,14 +626,16 @@
 
         // FAB VISIBILITY LOGIC
         window.openFullLibrary = function() {
-            window.toggleFab();
+            window.toggleFab(); // Close expanded menu
             window.filterFullLibrary(); 
             showView('view-library-full');
-            // Hide Lib button in menu
-            document.getElementById('btn-fab-lib').style.display = 'none';
-            // Ensure container is visible
-            document.getElementById('fab-container').style.opacity = '1';
-            document.getElementById('fab-container').style.pointerEvents = 'auto';
+            
+            // SHOW FAB, BUT HIDE LIBRARY LINK INSIDE IT
+            const fab = document.getElementById('fab-container');
+            fab.style.display = 'flex'; // Ensure flex
+            fab.style.opacity = '1';
+            fab.style.pointerEvents = 'auto';
+            document.getElementById('btn-fab-lib').style.display = 'none'; // Hide lib link
         };
 
         window.filterFullLibrary = function() {
@@ -769,8 +752,7 @@
             checkEmpty(); showView('view-editor');
             
             // HIDE FAB IN EDITOR
-            document.getElementById('fab-container').style.opacity = '0';
-            document.getElementById('fab-container').style.pointerEvents = 'none';
+            document.getElementById('fab-container').style.display = 'none';
         };
 
         function checkEmpty() {
@@ -910,8 +892,7 @@
             });
             document.getElementById('pres-content').innerHTML = html;
             // HIDE FAB IN PRES VIEW
-            document.getElementById('fab-container').style.opacity = '0';
-            document.getElementById('fab-container').style.pointerEvents = 'none';
+            document.getElementById('fab-container').style.display = 'none';
         };
 
         window.openTitleModal = function() {
@@ -990,7 +971,6 @@
             data.exercises.forEach(ex => {
                 if(state.catFilter !== 'alle' && (ex.kategori||'').toLowerCase() !== state.catFilter) return;
                 if(state.tagFilter && !(ex.tags||[]).some(t => t.toLowerCase() === state.tagFilter)) return;
-                // SHOW TIME IS TRUE IN LIBRARY LIST (SIDE BY SIDE)
                 list.appendChild(createCard(ex, false, true));
             });
         }
@@ -1037,6 +1017,7 @@
             renderHome(); showView('view-home'); 
             // SHOW FAB IN HOME
             document.getElementById('btn-fab-lib').style.display = 'flex';
+            document.getElementById('fab-container').style.display = 'flex'; // Ensure visible
             document.getElementById('fab-container').style.opacity = '1';
             document.getElementById('fab-container').style.pointerEvents = 'auto';
         }
