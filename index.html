@@ -49,48 +49,6 @@
             overflow: hidden;
         }
 
-        /* --- LOGIN STYLES --- */
-        #login-overlay-container {
-            position: absolute; inset: 0; 
-            background: var(--accent); z-index: 20000; display: flex;
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        #login-overlay-container.hidden-login { transform: translateY(-100%); pointer-events: none; }
-        
-        .left-panel { flex: 1; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .left-panel img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .right-panel { flex: 1; background: var(--accent); display: flex; flex-direction: column; overflow-y: auto; position: relative; padding: 20px; justify-content: center; }
-        .inner-container { width: 100%; max-width: 350px; margin: auto; display: flex; flex-direction: column; align-items: center; }
-        
-        #main-logo { width: 80%; margin-bottom: 30px; }
-        
-        .auth-content { width: 100%; text-align: center; display: none; }
-        .auth-content.active { display: block; animation: fadeIn 0.5s ease; }
-
-        .right-panel h2, .right-panel p, .right-panel span, .remember-me-label { color: #ffffff; }
-        .right-panel input:not([type="checkbox"]) { 
-            width: 100%; padding: 16px; margin-bottom: 15px; border: none; 
-            background: #ffffff; border-radius: 12px; font-size: 1rem; outline: none; font-family: inherit;
-        }
-        .right-panel .btn { 
-            width: 100%; padding: 16px; margin-top: 5px; border: none; 
-            background: #ffffff; color: var(--accent); border-radius: 12px; 
-            font-size: 1rem; font-weight: 800; cursor: pointer; display: block;
-        }
-        .toggle-link { margin-top: 20px; display: block; cursor: pointer; font-size: 0.9rem; opacity: 0.9; }
-        .message-box { margin-bottom: 15px; color: #fff; min-height: 20px; text-align: center; font-size: 0.9rem; }
-        .remember-me-container { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 15px; width: 100%; cursor: pointer; }
-        .remember-me-container input { width: auto; margin-right: 10px; transform: scale(1.3); }
-
-        @media (max-width: 768px) {
-            #login-overlay-container { flex-direction: column; }
-            .left-panel { display: none; } /* Skjul bilde på mobil for renere look */
-            .right-panel { flex: 1; padding-top: 60px; justify-content: flex-start; }
-        }
-
-        /* --- END LOGIN STYLES --- */
-
         h1, h2, h3, button, input, textarea, select { font-family: 'Inter', sans-serif; text-transform: none; }
         h1, h2, h3 { font-weight: 800; margin: 0; }
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
@@ -292,6 +250,15 @@
         /* LIBRARY VIEW */
         #view-library-full { height: 100%; overflow: hidden; position: absolute; inset: 0; }
         #library-search { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #ccc; font-size: 1rem; font-family: inherit; background: white; }
+        
+        /* SØKEFELT */
+        #library-search { 
+            width: calc(100% - 30px); margin: 15px auto 5px auto; padding: 12px 15px;
+            border: 1px solid #dbe0e8; border-radius: 12px;
+            font-size: 1rem; font-family: inherit; background: white;
+            box-shadow: var(--card-shadow); display: block; -webkit-appearance: none;
+        }
+
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
         .lib-cat-header { font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: none; letter-spacing: 0.5px; }
 
@@ -326,6 +293,38 @@
             font-weight: 800; font-size: 14px; cursor: pointer; z-index: 10;
         }
 
+        /* --- LOGIN STYLES --- */
+        #login-overlay-container {
+            position: absolute; inset: 0; background: var(--accent); z-index: 20000; display: flex;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        #login-overlay-container.hidden-login { transform: translateY(-100%); pointer-events: none; }
+        
+        .left-panel { flex: 1; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .left-panel img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .right-panel { flex: 1; background: var(--accent); display: flex; flex-direction: column; overflow-y: auto; position: relative; padding: 20px; justify-content: center; }
+        .inner-container { width: 100%; max-width: 350px; margin: auto; display: flex; flex-direction: column; align-items: center; }
+        
+        #main-logo { width: 80%; margin-bottom: 30px; }
+        
+        .auth-content { width: 100%; text-align: center; display: none; }
+        .auth-content.active { display: block; animation: fadeIn 0.5s ease; }
+
+        .right-panel h2, .right-panel p, .right-panel span, .remember-me-label { color: #ffffff; }
+        .right-panel input:not([type="checkbox"]) { width: 100%; padding: 16px; margin-bottom: 15px; border: none; background: #ffffff; border-radius: 12px; font-size: 1rem; outline: none; font-family: inherit; }
+        
+        .toggle-link { margin-top: 20px; display: block; cursor: pointer; font-size: 0.9rem; opacity: 0.9; }
+        .message-box { margin-bottom: 15px; color: #fff; min-height: 20px; text-align: center; font-size: 0.9rem; }
+        .remember-me-container { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 15px; width: 100%; cursor: pointer; }
+        .remember-me-container input { width: auto; margin-right: 10px; transform: scale(1.3); }
+
+        @media (max-width: 768px) {
+            #login-overlay-container { flex-direction: column; }
+            .left-panel { display: none; } 
+            .right-panel { flex: 1; padding-top: 60px; justify-content: flex-start; }
+        }
+
         /* MODALS */
         .modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 20000; display: none; place-items: center; backdrop-filter: blur(2px); }
         .modal-box { 
@@ -346,35 +345,30 @@
 <body>
 <div id="app-root">
 
+    <div id="loader">
+        <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/lasteikon.png" alt="Laster..." class="loader-icon">
+        <div class="loader-text">TRENERBOKA</div>
+    </div>
+
     <div id="login-overlay-container">
         <div class="left-panel">
             <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/takktikkbrett-profilbilde.jpg" alt="Taktikkbrett">
         </div>
         <div class="right-panel">
-            <div id="login-loading-overlay">
-                <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/tekkboka-logo-kun-ikon-hvt.png" class="loader-bounce-img" alt="Laster" style="width:60px;animation: pulse-slow 1.5s infinite;">
-            </div>
-
+            <div id="login-loading-overlay"></div>
             <div class="inner-container">
                 <img id="main-logo" src="https://www.skjaervold.com/wp-content/uploads/2025/12/tekkboka-logo-hvit-scaled.png" alt="Tekkboka Logo">
-
                 <div id="forms-wrapper">
                     <div id="login-form" class="auth-content active">
                         <h2>Logg inn</h2>
                         <input type="email" id="login-email" placeholder="E-postadresse">
                         <input type="password" id="login-pass" placeholder="Passord">
-                        
-                        <label class="remember-me-container">
-                            <input type="checkbox" id="remember-me">
-                            <span class="remember-me-label">Husk meg</span>
-                        </label>
-
+                        <label class="remember-me-container"><input type="checkbox" id="remember-me"><span class="remember-me-label">Husk meg</span></label>
                         <div class="message-box"></div>
                         <button class="btn modal-btn" onclick="handleAuth('login')">Logg inn</button>
                         <span class="toggle-link" onclick="switchForms('login-form', 'signup-form')">Har du en invitasjonskode? Registrer deg</span>
                     </div>
-
-                    <div id="signup-form" class="auth-content hidden-state" style="display:none;">
+                    <div id="signup-form" class="auth-content" style="display:none;">
                         <h2>Ny bruker</h2>
                         <input type="text" id="signup-code" placeholder="Skriv inn invitasjonskode">
                         <input type="email" id="signup-email" placeholder="Din e-postadresse">
@@ -386,11 +380,6 @@
                 </div> 
             </div> 
         </div>
-    </div>
-
-    <div id="loader" class="loaded">
-        <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/lasteikon.png" alt="Laster..." class="loader-icon">
-        <div class="loader-text">TRENERBOKA</div>
     </div>
 
     <div class="fab-container" id="fab-container" style="display:none;">
@@ -416,9 +405,7 @@
         <div class="modal-box slide-up">
             <h3 style="margin-bottom:10px;">Økt finnes</h3>
             <p style="color:#555; margin-bottom:25px; line-height:1.5;">Det finnes allerede en økt på denne datoen. Vil du redigere den?</p>
-            <button class="modal-btn center-grid" onclick="window.editExistingSession()">
-                Rediger økt
-            </button>
+            <button class="modal-btn center-grid" onclick="window.editExistingSession()">Rediger økt</button>
             <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600; padding:10px;">Avbryt</button>
         </div>
     </div>
@@ -427,9 +414,7 @@
         <div class="modal-box slide-up">
             <h3 style="margin-bottom:10px;">Slette øvelse?</h3>
             <p style="color:#555; margin-bottom:25px;">Vil du slette denne øvelsen permanent fra banken?</p>
-            <button class="modal-btn center-grid" style="background-color: var(--danger);" onclick="window.confirmDeleteExercise()">
-                Ja, slett
-            </button>
+            <button class="modal-btn center-grid" style="background-color: var(--danger);" onclick="window.confirmDeleteExercise()">Ja, slett</button>
             <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600; padding:10px;">Avbryt</button>
         </div>
     </div>
@@ -457,10 +442,7 @@
             </div>
             <label style="font-size:0.85rem; font-weight:600; color:#555;">Beskrivelse</label>
             <textarea id="new-ex-desc" placeholder="Kort beskrivelse..."></textarea>
-            
-            <button class="modal-btn center-grid" id="btn-save-new-ex" onclick="window.saveExercise()">
-                Lagre
-            </button>
+            <button class="modal-btn center-grid" id="btn-save-new-ex" onclick="window.saveExercise()">Lagre</button>
             <button onclick="window.closeModals()" style="width:100%; margin-top:15px; color:#666; font-weight:600;">Avbryt</button>
         </div>
     </div>
@@ -515,7 +497,8 @@
     </div>
 
 </div> <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyHi0_rfWHoBS_YgduIpOBD6XtrBADJi6wwJkREhVcNvcXJOxHp2D5vGbw5XvWTSQz9/exec';
+        // --- DIN RIKTIGE SCRIPT-URL ---
+        const API_URL = 'https://script.google.com/macros/s/AKfycby1-Oc9Bsga_iE17rpx0Mw_7LZ-hfD5OxuTeeFnvOCgdkSt-HLP4qB970E8r3GERYBY/exec';
 
         let data = { exercises: [], sessions: {} };
         let state = { categories: new Set(), date: null, session: { navn: "Ny økt", plan: [] }, catFilter: 'alle', tagFilter: null, editingExerciseId: null, deleteTargetId: null };
@@ -524,10 +507,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             fillCredentials();
             setupEnterKeyNavigation();
-            checkSession(); // Starts loading process if logged in
+            checkSession(); 
         });
 
-        // --- AUTH & LOGIN LOGIC ---
+        // --- AUTH LOGIC ---
         function fillCredentials() {
             const savedEmail = localStorage.getItem('tekkbokaSavedEmail');
             const savedPass = localStorage.getItem('tekkbokaSavedPass');
@@ -560,9 +543,7 @@
         function completeLogin(email) {
             currentUserEmail = email;
             document.getElementById('login-overlay-container').classList.add('hidden-login');
-            // Show main loader animation while fetching data
             document.getElementById('loader').classList.remove('loaded');
-            
             initDataLoad();
         }
 
@@ -579,18 +560,15 @@
             const code = action === 'signup' ? document.getElementById('signup-code').value.trim() : "";
 
             if(!email || !password) { msgBox.innerText = "Fyll ut feltene"; return; }
-            msgBox.innerText = "Laster...";
+            msgBox.innerText = "Kobler til...";
 
             fetch(API_URL, {
-                method: 'POST', mode: 'no-cors', // Apps Script web app quirk handled by ContentService text output? 
-                // Note: Standard fetch to Apps Script usually requires handling redirects or text output.
-                // Since we used no-cors in previous steps but now need response data for login, 
-                // we actually need CORS or JSONP. 
-                // HOWEVER, the provided Taktikkboka script used ContentService.
-                // Let's use the standard fetch that worked for Taktikkboka.
+                method: 'POST',
+                redirect: 'follow', 
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ action: action, email: email, password: password, inviteCode: code })
             })
-            .then(res => res.json())
+            .then(response => response.json())
             .then(data => {
                 if(data.result === "success") {
                     if(action === 'signup') {
@@ -609,14 +587,12 @@
                         completeLogin(email);
                     }
                 } else {
-                    msgBox.innerText = data.message;
+                    msgBox.innerText = "Feil: " + data.message;
                 }
             })
             .catch(e => {
-                // Apps Script often returns opaque response with no-cors, but if we need data back we can't use no-cors easily
-                // The provided Taktikkboka code worked. 
-                // If it fails here, it might be due to URL change.
-                msgBox.innerText = "Feil ved tilkobling. Prøv igjen.";
+                console.error(e);
+                msgBox.innerText = "Kunne ikke koble til server. Sjekk nettverk.";
             });
         }
 
@@ -625,17 +601,17 @@
             window.location.reload();
         };
 
-        // --- MAIN APP INIT ---
+        // --- DATA INIT ---
         async function initDataLoad() {
             try {
-                // 1. Get Global Exercises
-                const exRes = await fetch(API_URL + "?v=" + Date.now()); // doGet
+                const exRes = await fetch(API_URL + "?v=" + Date.now()); 
                 const exJson = await exRes.json();
                 data.exercises = exJson.ovelser || [];
                 
-                // 2. Get User Plans (doPost action)
                 const planRes = await fetch(API_URL, {
                     method: 'POST',
+                    redirect: 'follow',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ action: "load_plans", email: currentUserEmail })
                 });
                 const planJson = await planRes.json();
@@ -646,22 +622,23 @@
                 renderLibrary();
                 renderFilters();
                 
-                // Animation steps
                 setTimeout(() => { document.getElementById('loader').classList.add('step-1'); }, 600); 
                 setTimeout(() => { 
                     document.getElementById('loader').classList.add('loaded'); 
                     showView('view-home');
                     document.getElementById('fab-container').style.display = 'flex';
+                    document.getElementById('fab-container').style.opacity = '1';
+                    document.getElementById('fab-container').style.pointerEvents = 'auto';
                 }, 2000);
 
-            } catch(e) { alert("Feil ved lasting av data."); }
+            } catch(e) { 
+                console.error(e);
+                alert("Feil ved lasting av data."); 
+            }
             initDrag();
         }
 
-
-        // --- UI & LOGIC ---
-
-        // Enter key for title
+        // --- APP LOGIC ---
         document.getElementById('input-title').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') window.confirmTitle();
         });
@@ -699,9 +676,7 @@
                         </button>
                     </div>`;
             }
-
             container.innerHTML = buttonsHtml;
-
             setTimeout(() => {
                 const ac = container.querySelector('.action-container');
                 if (ac) {
@@ -741,13 +716,11 @@
                 opt.value = cat.charAt(0).toUpperCase() + cat.slice(1);
                 dl.appendChild(opt);
             });
-
             document.getElementById('new-ex-name').value = ex.navn || '';
             document.getElementById('new-ex-cat').value = ex.kategori || '';
             document.getElementById('new-ex-time').value = ex.tid || '';
             document.getElementById('new-ex-tags').value = ex.tags ? ex.tags.join(', ') : '';
             document.getElementById('new-ex-desc').value = ex.beskrivelse || '';
-
             document.getElementById('modal-new-exercise').style.display = 'grid';
         }
 
@@ -759,17 +732,9 @@
             const desc = document.getElementById('new-ex-desc').value;
 
             if(!navn) { alert("Mangler navn"); return; }
-
             const tags = tagsRaw.split(',').map(t => t.trim()).filter(t => t);
             
-            const exInfo = {
-                navn: navn,
-                kategori: kat,
-                tid: tid,
-                tags: tags,
-                beskrivelse: desc
-            };
-
+            const exInfo = { navn: navn, kategori: kat, tid: tid, tags: tags, beskrivelse: desc };
             const btn = document.getElementById('btn-save-new-ex');
             const oldText = btn.innerText;
             btn.innerHTML = '<span class="material-icons-round rotating">hourglass_empty</span>';
@@ -778,36 +743,26 @@
                 if (state.editingExerciseId) {
                     exInfo.id = state.editingExerciseId;
                     await fetch(API_URL, {
-                        method: 'POST', 
+                        method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify({ handling: 'oppdater_ovelse', info: exInfo })
                     });
                     const idx = data.exercises.findIndex(e => String(e.id) === String(state.editingExerciseId));
                     if (idx !== -1) data.exercises[idx] = { ...data.exercises[idx], ...exInfo };
-
                 } else {
                     await fetch(API_URL, {
-                        method: 'POST', 
+                        method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify({ handling: 'ny_ovelse', info: exInfo })
                     });
                     exInfo.id = Date.now().toString(); 
                     data.exercises.push(exInfo);
                 }
-
                 if(kat) state.categories.add(kat.toLowerCase());
-                
                 renderLibrary(); 
-                if (document.getElementById('view-library-full').classList.contains('active')) {
-                    window.filterFullLibrary();
-                }
-
+                if (document.getElementById('view-library-full').classList.contains('active')) window.filterFullLibrary();
                 window.closeModals();
                 alert("Øvelse lagret!");
-
-            } catch(e) {
-                alert("Feil ved lagring.");
-            } finally {
-                btn.innerText = oldText;
-            }
+            } catch(e) { alert("Feil ved lagring."); } 
+            finally { btn.innerText = oldText; }
         };
 
         window.openFullLibrary = function() {
@@ -816,6 +771,8 @@
             showView('view-library-full');
             const fab = document.getElementById('fab-container');
             fab.style.display = 'flex'; 
+            fab.style.opacity = '1';
+            fab.style.pointerEvents = 'auto';
             document.getElementById('btn-fab-lib').style.display = 'none'; 
         };
 
@@ -833,9 +790,7 @@
                     grouped[catKey].push(ex);
                 }
             });
-
             const sortedCats = Object.keys(grouped).sort();
-
             sortedCats.forEach(cat => {
                 list.innerHTML += `<div class="lib-cat-header">${cat}</div>`;
                 grouped[cat].forEach(ex => {
@@ -843,18 +798,10 @@
                     div.className = 'card';
                     div.dataset.json = JSON.stringify(ex);
                     div.setAttribute('onclick', 'window.openExInfo(this)');
-                    div.innerHTML = `
-                        <div class="card-content">
-                            <h4 class="cap-first">${ex.navn}</h4>
-                        </div>
-                        <div class="session-actions center-grid" id="act-${ex.id}" onclick="event.stopPropagation(); window.showActionMenu('${ex.id}', 'exercise', this)">
-                            <span class="material-icons-round more-dots">more_vert</span>
-                        </div>
-                    `;
+                    div.innerHTML = `<div class="card-content"><h4 class="cap-first">${ex.navn}</h4></div><div class="session-actions center-grid" id="act-${ex.id}" onclick="event.stopPropagation(); window.showActionMenu('${ex.id}', 'exercise', this)"><span class="material-icons-round more-dots">more_vert</span></div>`;
                     list.appendChild(div);
                 });
             });
-            
             if (sortedCats.length === 0) list.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">Ingen treff</p>';
         };
 
@@ -869,17 +816,13 @@
             window.closeModals(); 
             try {
                 await fetch(API_URL, {
-                    method: 'POST', 
+                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ handling: 'slett_ovelse', id: id })
                 });
                 data.exercises = data.exercises.filter(e => String(e.id) !== String(id));
-                if (document.getElementById('view-library-full').classList.contains('active')) {
-                    window.filterFullLibrary();
-                }
+                if (document.getElementById('view-library-full').classList.contains('active')) window.filterFullLibrary();
                 renderLibrary(); 
-            } catch(e) {
-                alert("Kunne ikke slette.");
-            }
+            } catch(e) { alert("Kunne ikke slette."); }
         };
 
         window.startNewSession = function() {
@@ -896,13 +839,11 @@
             if(!input.value) input.value = new Date().toISOString().split('T')[0];
             const d = input.value;
             state.date = d;
-            
             if(data.sessions[d]) {
                 document.getElementById('modal-date').style.display = 'none';
                 document.getElementById('modal-conflict').style.display = 'grid';
                 return;
             } 
-            
             state.session = { navn: "Håndballøkt", plan: [] };
             window.loadEditor(); 
             window.closeModals();
@@ -973,14 +914,11 @@
         function renderHome() {
             const cont = document.getElementById('home-scroll');
             cont.innerHTML = '';
-            
             const dates = Object.keys(data.sessions).sort((a, b) => new Date(a) - new Date(b));
-            
             if(!dates.length) {
                 cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
                 return;
             }
-            
             let lastWeekKey = null; 
             const days = ['søn','man','tir','ons','tor','fre','lør']; 
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
@@ -988,7 +926,6 @@
             dates.forEach(d => {
                 const s = data.sessions[d];
                 const dateObj = new Date(d);
-                
                 const week = getWeek(dateObj);
                 const year = dateObj.getFullYear();
                 const weekKey = `${year}-${week}`;
@@ -1003,16 +940,7 @@
                 card.className = 'session-card slide-up';
                 card.id = `card-${d}`;
                 card.setAttribute('onclick', `window.openPres('${d}')`);
-                card.innerHTML = `
-                    <div class="date-box">
-                        <span class="db-weekday">${dayName.toUpperCase()}</span>
-                        <span class="db-day">${dayNum}</span>
-                        <span class="db-month">${monthName.toUpperCase()}</span>
-                    </div>
-                    <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
-                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)">
-                        <span class="material-icons-round more-dots">more_vert</span>
-                    </div>`;
+                card.innerHTML = `<div class="date-box"><span class="db-weekday">${dayName.toUpperCase()}</span><span class="db-day">${dayNum}</span><span class="db-month">${monthName.toUpperCase()}</span></div><div class="session-info"><span class="session-name cap-first">${s.navn}</span></div><div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)"><span class="material-icons-round more-dots">more_vert</span></div>`;
                 cont.appendChild(card);
             });
         }
@@ -1020,7 +948,6 @@
         window.deleteSession = async function(d, btn) {
             const card = document.getElementById(`card-${d}`);
             if(!card) return;
-
             card.classList.add('fade-out-collapse');
             const prev = card.previousElementSibling;
             const next = card.nextElementSibling;
@@ -1031,79 +958,27 @@
                     headerToRemove.classList.add('fade-out-collapse');
                 }
             }
-
             setTimeout(async () => {
                 card.remove();
                 if(headerToRemove) headerToRemove.remove();
                 delete data.sessions[d]; 
-                
-                // --- NEW SERVER LOGIC: delete_plan using email ---
-                // Since sessions are keyed by date in `data.sessions`, we need the ID if available, 
-                // but the old code assumed date key. 
-                // Wait... the new script uses ID in "Planer" sheet, but front-end uses date as key.
-                // Let's check `doPost` "load_plans". It returns object {ID: Data}.
-                // Ah, the front-end logic `data.sessions = planJson.plans` means keys are IDs now?
-                // Let's check initDataLoad. Yes.
-                // But `renderHome` sorts by date. 
-                // Wait, if `data.sessions` keys are IDs, `new Date(key)` might fail if ID is UUID.
-                // WE NEED TO FIX renderHome to handle UUID keys if that's the case.
-                // Actually, let's look at `doPost` "load_plans" again.
-                // It returns `userPlans[id] = planData`. 
-                // `planData` contains the `dato` property inside? No, `planData` is the JSON from Col D.
-                // The JSON from Col D is `params.data` from save.
-                // `params.data` is `state.session`. `state.session` has a `plan` array and `navn`.
-                // Does it have `dato` inside?
-                // `saveSession` sends `dato` as separate param, and `data` (the object).
-                // Usually `state.session` is just {navn:.., plan:..}.
-                // So we might lose the date if we rely on the object key being the date.
-                //
-                // CORRECTION: In the previous "simple" version, we used date as key.
-                // With the new multi-user script, we should probably stick to Date as Key for simplicity in UI,
-                // OR adapt the UI to handle IDs. 
-                // Let's stick to DATE AS KEY for the `data.sessions` object in frontend to minimize UI rewrite.
-                // 
-                // -> When loading plans: The script returns {ID: Data}. 
-                // We need to map this to {Dato: Data} for the frontend to work as before.
-                // But wait, what if multiple plans on same date? We solved that by "editing existing".
-                // So 1 plan per date per user.
-                //
-                // Let's adjust `initDataLoad` to remap the ID-based response to Date-based `data.sessions`.
-                
                 await fetch(API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ action: "delete_plan", email: currentUserEmail, id: d }) // d is the key (Date)
+                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "delete_plan", email: currentUserEmail, id: d }) 
                 });
             }, 350);
         };
 
-        // --- SPECIAL FIX FOR DATA LOADING ---
-        // The script returns plans indexed by ID. The frontend expects them indexed by Date (string).
-        // Since we enforce 1 plan per date per user, we can remap.
-        // Also, `deleteSession` sends the key `d`. If `d` is date, we need to find the ID?
-        // Or we just use Date as ID in the sheet?
-        // Let's use Date as the unique ID for the user's plan in the sheet to keep it simple.
-        
-        // RE-WRITING saveSession to use Date as ID
         window.saveSession = async function() {
             const cards = document.querySelectorAll('#session-plan-area .card');
             state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
-            
-            // Save locally
             data.sessions[state.date] = state.session;
-            
             const icon = document.getElementById('icon-save');
             icon.innerText = 'hourglass_empty'; icon.classList.add('rotating'); 
-            
             try {
                 await fetch(API_URL, {
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: "save_plan", 
-                        email: currentUserEmail, 
-                        id: state.date, // USE DATE AS ID
-                        dato: state.date, 
-                        data: state.session 
-                    })
+                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "save_plan", email: currentUserEmail, id: state.date, dato: state.date, data: state.session })
                 });
                 icon.classList.remove('rotating'); icon.innerText = 'check';
                 setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
@@ -1115,16 +990,10 @@
             div.className = 'card';
             div.dataset.json = JSON.stringify(ex);
             div.setAttribute('onclick', 'window.openExInfo(this)');
-            let html = `
-                <div class="card-content">
-                    <h4 class="cap-first">${ex.navn}</h4>`;
-            if (showTime && ex.tid) {
-                html += `<span class="card-time-text">${ex.tid} min</span>`;
-            }
+            let html = `<div class="card-content"><h4 class="cap-first">${ex.navn}</h4>`;
+            if (showTime && ex.tid) { html += `<span class="card-time-text">${ex.tid} min</span>`; }
             html += `</div>`; 
-            if(removable) {
-                html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`;
-            }
+            if(removable) { html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`; }
             div.innerHTML = html;
             return div;
         }
@@ -1132,10 +1001,7 @@
         window.removeCardFromPlan = function(btn) {
             const card = btn.parentElement;
             card.classList.add('fade-out-collapse');
-            setTimeout(() => {
-                card.remove();
-                checkEmpty();
-            }, 350);
+            setTimeout(() => { card.remove(); checkEmpty(); }, 350);
         };
 
         function renderLibrary() {
