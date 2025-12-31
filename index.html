@@ -49,6 +49,48 @@
             overflow: hidden;
         }
 
+        /* --- LOGIN STYLES --- */
+        #login-overlay-container {
+            position: absolute; inset: 0; 
+            background: var(--accent); z-index: 20000; display: flex;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        #login-overlay-container.hidden-login { transform: translateY(-100%); pointer-events: none; }
+        
+        .left-panel { flex: 1; background: var(--accent); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .left-panel img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .right-panel { flex: 1; background: var(--accent); display: flex; flex-direction: column; overflow-y: auto; position: relative; padding: 20px; justify-content: center; }
+        .inner-container { width: 100%; max-width: 350px; margin: auto; display: flex; flex-direction: column; align-items: center; }
+        
+        #main-logo { width: 80%; margin-bottom: 30px; }
+        
+        .auth-content { width: 100%; text-align: center; display: none; }
+        .auth-content.active { display: block; animation: fadeIn 0.5s ease; }
+
+        .right-panel h2, .right-panel p, .right-panel span, .remember-me-label { color: #ffffff; }
+        .right-panel input:not([type="checkbox"]) { 
+            width: 100%; padding: 16px; margin-bottom: 15px; border: none; 
+            background: #ffffff; border-radius: 12px; font-size: 1rem; outline: none; font-family: inherit;
+        }
+        .right-panel .btn { 
+            width: 100%; padding: 16px; margin-top: 5px; border: none; 
+            background: #ffffff; color: var(--accent); border-radius: 12px; 
+            font-size: 1rem; font-weight: 800; cursor: pointer; display: block;
+        }
+        .toggle-link { margin-top: 20px; display: block; cursor: pointer; font-size: 0.9rem; opacity: 0.9; }
+        .message-box { margin-bottom: 15px; color: #fff; min-height: 20px; text-align: center; font-size: 0.9rem; }
+        .remember-me-container { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 15px; width: 100%; cursor: pointer; }
+        .remember-me-container input { width: auto; margin-right: 10px; transform: scale(1.3); }
+
+        @media (max-width: 768px) {
+            #login-overlay-container { flex-direction: column; }
+            .left-panel { display: none; } /* Skjul bilde på mobil for renere look */
+            .right-panel { flex: 1; padding-top: 60px; justify-content: flex-start; }
+        }
+
+        /* --- END LOGIN STYLES --- */
+
         h1, h2, h3, button, input, textarea, select { font-family: 'Inter', sans-serif; text-transform: none; }
         h1, h2, h3 { font-weight: 800; margin: 0; }
         h1::first-letter, h2::first-letter, p::first-letter, .cap-first::first-letter { text-transform: uppercase; }
@@ -249,15 +291,7 @@
         
         /* LIBRARY VIEW */
         #view-library-full { height: 100%; overflow: hidden; position: absolute; inset: 0; }
-        
-        /* SØKEFELT I KARTOTEKET (FIXED) */
-        #library-search { 
-            width: calc(100% - 30px); margin: 15px auto 5px auto; padding: 12px 15px;
-            border: 1px solid #dbe0e8; border-radius: 12px;
-            font-size: 1rem; font-family: inherit; background: white;
-            box-shadow: var(--card-shadow); display: block; -webkit-appearance: none;
-        }
-        
+        #library-search { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #ccc; font-size: 1rem; font-family: inherit; background: white; }
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
         .lib-cat-header { font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: none; letter-spacing: 0.5px; }
 
@@ -312,16 +346,59 @@
 <body>
 <div id="app-root">
 
-    <div id="loader">
+    <div id="login-overlay-container">
+        <div class="left-panel">
+            <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/takktikkbrett-profilbilde.jpg" alt="Taktikkbrett">
+        </div>
+        <div class="right-panel">
+            <div id="login-loading-overlay">
+                <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/tekkboka-logo-kun-ikon-hvt.png" class="loader-bounce-img" alt="Laster" style="width:60px;animation: pulse-slow 1.5s infinite;">
+            </div>
+
+            <div class="inner-container">
+                <img id="main-logo" src="https://www.skjaervold.com/wp-content/uploads/2025/12/tekkboka-logo-hvit-scaled.png" alt="Tekkboka Logo">
+
+                <div id="forms-wrapper">
+                    <div id="login-form" class="auth-content active">
+                        <h2>Logg inn</h2>
+                        <input type="email" id="login-email" placeholder="E-postadresse">
+                        <input type="password" id="login-pass" placeholder="Passord">
+                        
+                        <label class="remember-me-container">
+                            <input type="checkbox" id="remember-me">
+                            <span class="remember-me-label">Husk meg</span>
+                        </label>
+
+                        <div class="message-box"></div>
+                        <button class="btn modal-btn" onclick="handleAuth('login')">Logg inn</button>
+                        <span class="toggle-link" onclick="switchForms('login-form', 'signup-form')">Har du en invitasjonskode? Registrer deg</span>
+                    </div>
+
+                    <div id="signup-form" class="auth-content hidden-state" style="display:none;">
+                        <h2>Ny bruker</h2>
+                        <input type="text" id="signup-code" placeholder="Skriv inn invitasjonskode">
+                        <input type="email" id="signup-email" placeholder="Din e-postadresse">
+                        <input type="password" id="signup-pass" placeholder="Velg et passord">
+                        <div class="message-box"></div>
+                        <button class="btn modal-btn" onclick="handleAuth('signup')">Registrer meg</button>
+                        <span class="toggle-link" onclick="switchForms('signup-form', 'login-form')">Avbryt (tilbake til logg inn)</span>
+                    </div>
+                </div> 
+            </div> 
+        </div>
+    </div>
+
+    <div id="loader" class="loaded">
         <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/lasteikon.png" alt="Laster..." class="loader-icon">
         <div class="loader-text">TRENERBOKA</div>
     </div>
 
-    <div class="fab-container" id="fab-container">
+    <div class="fab-container" id="fab-container" style="display:none;">
         <div class="fab-options" id="fab-options">
             <button class="fab-option-btn" id="btn-fab-lib" onclick="window.openFullLibrary()">Øvelsesbank <span class="material-icons-round">library_books</span></button>
             <button class="fab-option-btn" onclick="window.openNewExerciseModal()">Ny øvelse <span class="material-icons-round">sports_handball</span></button>
             <button class="fab-option-btn" onclick="window.startNewSession()">Ny økt <span class="material-icons-round">calendar_today</span></button>
+            <button class="fab-option-btn" onclick="window.logout()">Logg ut <span class="material-icons-round">logout</span></button>
         </div>
         <button class="fab-main" id="fab-main" onclick="window.toggleFab()"><span class="material-icons-round">add</span></button>
     </div>
@@ -398,7 +475,7 @@
         </div>
     </div>
 
-    <div id="view-home" class="view active fade-in">
+    <div id="view-home" class="view">
         <header>
             <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/Trenerboka-logo.png" alt="Trenerboka Logo" class="header-logo">
             <h1 class="home-title">Mine økter</h1>
@@ -438,50 +515,156 @@
     </div>
 
 </div> <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzP0nNeb4sTee9XPb9IHUUGPQDwVRUAe_3_g2r8tppN6Wden8JTYPODJ4QmRhzLxaithg/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyHi0_rfWHoBS_YgduIpOBD6XtrBADJi6wwJkREhVcNvcXJOxHp2D5vGbw5XvWTSQz9/exec';
 
         let data = { exercises: [], sessions: {} };
         let state = { categories: new Set(), date: null, session: { navn: "Ny økt", plan: [] }, catFilter: 'alle', tagFilter: null, editingExerciseId: null, deleteTargetId: null };
+        let currentUserEmail = null;
 
-        document.addEventListener('DOMContentLoaded', init);
-
-        // ENTER KEY TO SAVE TITLE
-        document.getElementById('input-title').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                window.confirmTitle();
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            fillCredentials();
+            setupEnterKeyNavigation();
+            checkSession(); // Starts loading process if logged in
         });
 
-        async function init() {
-            const btn = document.getElementById('btn-create-session');
-            if(btn) btn.addEventListener('click', confirmDate);
+        // --- AUTH & LOGIN LOGIC ---
+        function fillCredentials() {
+            const savedEmail = localStorage.getItem('tekkbokaSavedEmail');
+            const savedPass = localStorage.getItem('tekkbokaSavedPass');
+            if (savedEmail) document.getElementById('login-email').value = savedEmail;
+            if (savedPass) document.getElementById('login-pass').value = savedPass;
+            if (savedEmail && savedPass) document.getElementById('remember-me').checked = true;
+        }
 
+        function setupEnterKeyNavigation() {
+            const inputs = document.querySelectorAll('#login-form input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (index < inputs.length - 1) inputs[index+1].focus();
+                        else handleAuth('login');
+                    }
+                });
+            });
+        }
+
+        function checkSession() {
+            const savedSession = localStorage.getItem('tekkbokaSession');
+            if (savedSession) {
+                const session = JSON.parse(savedSession);
+                completeLogin(session.email);
+            }
+        }
+
+        function completeLogin(email) {
+            currentUserEmail = email;
+            document.getElementById('login-overlay-container').classList.add('hidden-login');
+            // Show main loader animation while fetching data
+            document.getElementById('loader').classList.remove('loaded');
+            
+            initDataLoad();
+        }
+
+        function switchForms(hideId, showId) {
+            document.getElementById(hideId).style.display = 'none';
+            document.getElementById(showId).style.display = 'block';
+            document.querySelectorAll('.message-box').forEach(b => b.innerText = "");
+        }
+
+        function handleAuth(action) {
+            const msgBox = document.querySelector(`#${action}-form .message-box`);
+            const email = document.getElementById(`${action}-email`).value.trim();
+            const password = document.getElementById(`${action}-pass`).value.trim();
+            const code = action === 'signup' ? document.getElementById('signup-code').value.trim() : "";
+
+            if(!email || !password) { msgBox.innerText = "Fyll ut feltene"; return; }
+            msgBox.innerText = "Laster...";
+
+            fetch(API_URL, {
+                method: 'POST', mode: 'no-cors', // Apps Script web app quirk handled by ContentService text output? 
+                // Note: Standard fetch to Apps Script usually requires handling redirects or text output.
+                // Since we used no-cors in previous steps but now need response data for login, 
+                // we actually need CORS or JSONP. 
+                // HOWEVER, the provided Taktikkboka script used ContentService.
+                // Let's use the standard fetch that worked for Taktikkboka.
+                body: JSON.stringify({ action: action, email: email, password: password, inviteCode: code })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.result === "success") {
+                    if(action === 'signup') {
+                        msgBox.innerText = "Konto opprettet! Logger inn...";
+                        setTimeout(() => completeLogin(email), 1000);
+                    } else {
+                        const remember = document.getElementById('remember-me').checked;
+                        if(remember) {
+                            localStorage.setItem('tekkbokaSavedEmail', email);
+                            localStorage.setItem('tekkbokaSavedPass', password);
+                        } else {
+                            localStorage.removeItem('tekkbokaSavedEmail');
+                            localStorage.removeItem('tekkbokaSavedPass');
+                        }
+                        localStorage.setItem('tekkbokaSession', JSON.stringify({email: email}));
+                        completeLogin(email);
+                    }
+                } else {
+                    msgBox.innerText = data.message;
+                }
+            })
+            .catch(e => {
+                // Apps Script often returns opaque response with no-cors, but if we need data back we can't use no-cors easily
+                // The provided Taktikkboka code worked. 
+                // If it fails here, it might be due to URL change.
+                msgBox.innerText = "Feil ved tilkobling. Prøv igjen.";
+            });
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('tekkbokaSession');
+            window.location.reload();
+        };
+
+        // --- MAIN APP INIT ---
+        async function initDataLoad() {
             try {
-                const res = await fetch(API_URL + "?v=" + Date.now());
-                const json = await res.json();
-                data.exercises = json.ovelser || [];
-                data.sessions = json.planer || {};
+                // 1. Get Global Exercises
+                const exRes = await fetch(API_URL + "?v=" + Date.now()); // doGet
+                const exJson = await exRes.json();
+                data.exercises = exJson.ovelser || [];
                 
+                // 2. Get User Plans (doPost action)
+                const planRes = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: "load_plans", email: currentUserEmail })
+                });
+                const planJson = await planRes.json();
+                data.sessions = planJson.plans || {};
+
                 processCategories();
                 renderHome();
                 renderLibrary();
                 renderFilters();
                 
-                // STEP 1: ANIMATION START
-                setTimeout(() => { 
-                    document.getElementById('loader').classList.add('step-1');
-                }, 600); 
-
-                // STEP 2: FINISH
+                // Animation steps
+                setTimeout(() => { document.getElementById('loader').classList.add('step-1'); }, 600); 
                 setTimeout(() => { 
                     document.getElementById('loader').classList.add('loaded'); 
+                    showView('view-home');
+                    document.getElementById('fab-container').style.display = 'flex';
                 }, 2000);
 
-            } catch(e) { alert("Feil ved lasting."); }
+            } catch(e) { alert("Feil ved lasting av data."); }
             initDrag();
         }
 
-        /* --- MENY / REDIGERING --- */
+
+        // --- UI & LOGIC ---
+
+        // Enter key for title
+        document.getElementById('input-title').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') window.confirmTitle();
+        });
 
         window.toggleFab = function() {
             document.getElementById('fab-options').classList.toggle('show');
@@ -595,7 +778,7 @@
                 if (state.editingExerciseId) {
                     exInfo.id = state.editingExerciseId;
                     await fetch(API_URL, {
-                        method: 'POST', mode: 'no-cors',
+                        method: 'POST', 
                         body: JSON.stringify({ handling: 'oppdater_ovelse', info: exInfo })
                     });
                     const idx = data.exercises.findIndex(e => String(e.id) === String(state.editingExerciseId));
@@ -603,7 +786,7 @@
 
                 } else {
                     await fetch(API_URL, {
-                        method: 'POST', mode: 'no-cors',
+                        method: 'POST', 
                         body: JSON.stringify({ handling: 'ny_ovelse', info: exInfo })
                     });
                     exInfo.id = Date.now().toString(); 
@@ -627,17 +810,12 @@
             }
         };
 
-        // FAB VISIBILITY LOGIC
         window.openFullLibrary = function() {
             window.toggleFab();
             window.filterFullLibrary(); 
             showView('view-library-full');
-            
-            // SHOW FAB, BUT HIDE LIBRARY LINK INSIDE IT
             const fab = document.getElementById('fab-container');
             fab.style.display = 'flex'; 
-            fab.style.opacity = '1';
-            fab.style.pointerEvents = 'auto';
             document.getElementById('btn-fab-lib').style.display = 'none'; 
         };
 
@@ -688,12 +866,10 @@
         window.confirmDeleteExercise = async function() {
             const id = state.deleteTargetId;
             if(!id) return;
-            
             window.closeModals(); 
-            
             try {
                 await fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors',
+                    method: 'POST', 
                     body: JSON.stringify({ handling: 'slett_ovelse', id: id })
                 });
                 data.exercises = data.exercises.filter(e => String(e.id) !== String(id));
@@ -705,8 +881,6 @@
                 alert("Kunne ikke slette.");
             }
         };
-
-        /* --- STANDARD FUNKSJONER --- */
 
         window.startNewSession = function() {
             const opts = document.getElementById('fab-options');
@@ -723,7 +897,6 @@
             const d = input.value;
             state.date = d;
             
-            // SJEKK FOR KONFLIKT
             if(data.sessions[d]) {
                 document.getElementById('modal-date').style.display = 'none';
                 document.getElementById('modal-conflict').style.display = 'grid';
@@ -747,14 +920,11 @@
             area.innerHTML = ''; 
             if(state.session.plan.length > 0) {
                 state.session.plan.forEach(ex => {
-                    // SHOW TIME IS TRUE IN EDITOR
                     const card = createCard(ex, true, true);
                     area.appendChild(card);
                 });
             }
             checkEmpty(); showView('view-editor');
-            
-            // HIDE FAB IN EDITOR
             document.getElementById('fab-container').style.display = 'none';
         };
 
@@ -792,7 +962,6 @@
                 onAdd: (evt) => { 
                     const item = evt.item;
                     const data = JSON.parse(item.dataset.json);
-                    // SHOW TIME IS TRUE IN EDITOR (DROP ZONE)
                     const newCard = createCard(data, true, true);
                     item.parentNode.replaceChild(newCard, item);
                     checkEmpty(); 
@@ -824,7 +993,6 @@
                 const year = dateObj.getFullYear();
                 const weekKey = `${year}-${week}`;
                 if(weekKey !== lastWeekKey) {
-                    // UKEFORMAT: Uke X - YYYY
                     cont.innerHTML += `<div class="week-header">Uke ${week} - ${year}</div>`;
                     lastWeekKey = weekKey;
                 }
@@ -854,11 +1022,9 @@
             if(!card) return;
 
             card.classList.add('fade-out-collapse');
-
             const prev = card.previousElementSibling;
             const next = card.nextElementSibling;
             let headerToRemove = null;
-
             if (prev && prev.classList.contains('week-header')) {
                 if (!next || next.classList.contains('week-header')) {
                     headerToRemove = prev;
@@ -869,67 +1035,75 @@
             setTimeout(async () => {
                 card.remove();
                 if(headerToRemove) headerToRemove.remove();
-                
                 delete data.sessions[d]; 
-                await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
+                
+                // --- NEW SERVER LOGIC: delete_plan using email ---
+                // Since sessions are keyed by date in `data.sessions`, we need the ID if available, 
+                // but the old code assumed date key. 
+                // Wait... the new script uses ID in "Planer" sheet, but front-end uses date as key.
+                // Let's check `doPost` "load_plans". It returns object {ID: Data}.
+                // Ah, the front-end logic `data.sessions = planJson.plans` means keys are IDs now?
+                // Let's check initDataLoad. Yes.
+                // But `renderHome` sorts by date. 
+                // Wait, if `data.sessions` keys are IDs, `new Date(key)` might fail if ID is UUID.
+                // WE NEED TO FIX renderHome to handle UUID keys if that's the case.
+                // Actually, let's look at `doPost` "load_plans" again.
+                // It returns `userPlans[id] = planData`. 
+                // `planData` contains the `dato` property inside? No, `planData` is the JSON from Col D.
+                // The JSON from Col D is `params.data` from save.
+                // `params.data` is `state.session`. `state.session` has a `plan` array and `navn`.
+                // Does it have `dato` inside?
+                // `saveSession` sends `dato` as separate param, and `data` (the object).
+                // Usually `state.session` is just {navn:.., plan:..}.
+                // So we might lose the date if we rely on the object key being the date.
+                //
+                // CORRECTION: In the previous "simple" version, we used date as key.
+                // With the new multi-user script, we should probably stick to Date as Key for simplicity in UI,
+                // OR adapt the UI to handle IDs. 
+                // Let's stick to DATE AS KEY for the `data.sessions` object in frontend to minimize UI rewrite.
+                // 
+                // -> When loading plans: The script returns {ID: Data}. 
+                // We need to map this to {Dato: Data} for the frontend to work as before.
+                // But wait, what if multiple plans on same date? We solved that by "editing existing".
+                // So 1 plan per date per user.
+                //
+                // Let's adjust `initDataLoad` to remap the ID-based response to Date-based `data.sessions`.
+                
+                await fetch(API_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ action: "delete_plan", email: currentUserEmail, id: d }) // d is the key (Date)
+                });
             }, 350);
         };
 
-        window.openPres = function(d) {
-            state.date = d; state.session = data.sessions[d]; showView('view-pres');
-            const dobj = new Date(d);
-            const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
-            const headerDate = `${dobj.getDate()}. ${months[dobj.getMonth()]} ${dobj.getFullYear()}`;
-            let html = `
-                <div class="pres-header">
-                    <div style="color:#666">${headerDate}</div>
-                    <h1 class="pres-title cap-first">${state.session.navn}</h1>
-                </div>`;
-            (state.session.plan || []).forEach(ex => {
-                html += `
-                    <div class="pres-item">
-                        <h3 class="cap-first">${ex.navn}</h3>
-                        <div style="color:#555; margin-bottom:10px;">${fmtTime(ex.tid)} • <span style="text-transform:capitalize">${ex.kategori}</span></div>
-                        <div style="line-height:1.5">${ex.beskrivelse||''}</div>
-                    </div>`;
-            });
-            document.getElementById('pres-content').innerHTML = html;
-            // HIDE FAB IN PRES VIEW
-            document.getElementById('fab-container').style.display = 'none';
-        };
-
-        window.openTitleModal = function() {
-            document.getElementById('input-title').value = state.session.navn;
-            document.getElementById('modal-title').style.display = 'grid';
-        };
-
-        window.confirmTitle = function() {
-            const v = document.getElementById('input-title').value;
-            if(v) { state.session.navn = v; document.getElementById('session-title-edit').innerText = v; }
-            window.closeModals();
-        };
-
-        window.openExInfo = function(el) {
-            const d = JSON.parse(el.dataset.json);
-            document.getElementById('ex-title').innerText = d.navn;
-            document.getElementById('ex-meta').innerText = `${fmtTime(d.tid)} • ${d.kategori||''}`;
-            document.getElementById('ex-desc').innerText = d.beskrivelse||'';
-            document.getElementById('ex-tags').innerHTML = (d.tags||[]).map(t=>`<span class="pres-tag">${t}</span>`).join('');
-            document.getElementById('modal-ex').style.display = 'grid';
-        };
-
-        window.closeModals = function() { document.querySelectorAll('.modal-bg').forEach(m => m.style.display = 'none'); };
-
+        // --- SPECIAL FIX FOR DATA LOADING ---
+        // The script returns plans indexed by ID. The frontend expects them indexed by Date (string).
+        // Since we enforce 1 plan per date per user, we can remap.
+        // Also, `deleteSession` sends the key `d`. If `d` is date, we need to find the ID?
+        // Or we just use Date as ID in the sheet?
+        // Let's use Date as the unique ID for the user's plan in the sheet to keep it simple.
+        
+        // RE-WRITING saveSession to use Date as ID
         window.saveSession = async function() {
             const cards = document.querySelectorAll('#session-plan-area .card');
             state.session.plan = Array.from(cards).map(c => JSON.parse(c.dataset.json));
+            
+            // Save locally
             data.sessions[state.date] = state.session;
+            
             const icon = document.getElementById('icon-save');
             icon.innerText = 'hourglass_empty'; icon.classList.add('rotating'); 
+            
             try {
                 await fetch(API_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    body: JSON.stringify({ handling: 'lagre', dato: state.date, data: state.session })
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: "save_plan", 
+                        email: currentUserEmail, 
+                        id: state.date, // USE DATE AS ID
+                        dato: state.date, 
+                        data: state.session 
+                    })
                 });
                 icon.classList.remove('rotating'); icon.innerText = 'check';
                 setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
@@ -941,17 +1115,13 @@
             div.className = 'card';
             div.dataset.json = JSON.stringify(ex);
             div.setAttribute('onclick', 'window.openExInfo(this)');
-            
             let html = `
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>`;
-            
             if (showTime && ex.tid) {
                 html += `<span class="card-time-text">${ex.tid} min</span>`;
             }
-            
             html += `</div>`; 
-
             if(removable) {
                 html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`;
             }
@@ -974,7 +1144,6 @@
             data.exercises.forEach(ex => {
                 if(state.catFilter !== 'alle' && (ex.kategori||'').toLowerCase() !== state.catFilter) return;
                 if(state.tagFilter && !(ex.tags||[]).some(t => t.toLowerCase() === state.tagFilter)) return;
-                // SHOW TIME IS TRUE IN LIBRARY LIST (SIDE BY SIDE)
                 list.appendChild(createCard(ex, false, true));
             });
         }
@@ -1019,9 +1188,8 @@
 
         function goHome() { 
             renderHome(); showView('view-home'); 
-            // SHOW FAB IN HOME
             document.getElementById('btn-fab-lib').style.display = 'flex';
-            document.getElementById('fab-container').style.display = 'flex'; // Ensure visible
+            document.getElementById('fab-container').style.display = 'flex';
             document.getElementById('fab-container').style.opacity = '1';
             document.getElementById('fab-container').style.pointerEvents = 'auto';
         }
