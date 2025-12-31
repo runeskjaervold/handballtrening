@@ -1,0 +1,78 @@
+function doGet(e) {
+  var output = { ovelser: [], planer: {} };
+  
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("ovelser");
+    
+    // Hvis arket ikke finnes, returner tom liste uten å kræsje
+    if (sheet) {
+      var data = sheet.getDataRange().getValues();
+      // Starter på rad 2 (index 1)
+      for (var i = 1; i < data.length; i++) {
+        // Sjekk at det finnes et navn i Kolonne C (index 2)
+        if (data[i][2] && data[i][2] !== "") { 
+          output.ovelser.push({
+            id: data[i][0],           // A
+            nummer: data[i][1],       // B
+            navn: data[i][2],         // C
+            tid: data[i][3],          // D
+            kategori: data[i][4],     // E
+            beskrivelse: data[i][5],  // F
+            tags: data[i][6] ? data[i][6].toString().split(",") : [] // G
+          });
+        }
+      }
+    }
+
+    var props = PropertiesService.getScriptProperties();
+    var saved = props.getProperty("PLANER");
+    if (saved) output.planer = JSON.parse(saved);
+    
+  } catch (err) {
+    // Returner feilen slik at vi kan se den i konsollen om nødvendig
+    return ContentService.createTextOutput(JSON.stringify({error: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(output))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var props = PropertiesService.getScriptProperties();
+    
+    if (data.handling === "lagre" || data.handling === "slett") {
+      var saved = props.getProperty("PLANER");
+      var planer = saved ? JSON.parse(saved) : {};
+      
+      if (data.handling === "lagre") planer[data.dato] = data.data;
+      if (data.handling === "slett") delete planer[data.dato];
+      
+      props.setProperty("PLANER", JSON.stringify(planer));
+      return ContentService.createTextOutput("OK");
+    }
+
+    if (data.handling === "ny_ovelse") {
+      var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("ovelser");
+      var uuid = Utilities.getUuid();
+      var num = sheet.getLastRow();
+      // Kolonner: ID, Nr, Navn, Tid, Kat, Besk, Tags
+      sheet.appendRow([
+        uuid, num, 
+        data.info.navn, data.info.tid, data.info.kategori, 
+        data.info.beskrivelse, data.info.tags.join(",")
+      ]);
+      return ContentService.createTextOutput("OK");
+    }
+    
+    // Legg til oppdater/slett øvelse her om nødvendig
+    
+  } catch (err) {
+    return ContentService.createTextOutput("Error: " + err.toString());
+  }
+  return ContentService.createTextOutput("OK");
+}
+
