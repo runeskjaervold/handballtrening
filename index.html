@@ -77,7 +77,8 @@
             background: var(--surface); border-radius: 12px; padding: 0; margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid white;
             display: flex; align-items: center; overflow: hidden; height: 80px;
-            position: relative; z-index: 1; cursor: pointer;
+            position: relative; /* Viktig for absolute positioning av children */
+            z-index: 1; cursor: pointer;
         }
         .date-box {
             background-color: var(--accent); width: 70px; height: 100%; 
@@ -87,21 +88,31 @@
         .db-month { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
         .db-day { font-size: 1.7rem; font-weight: 900; line-height: 1; margin: 2px 0; }
         .db-weekday { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; line-height: 1.2; }
+        
         .session-info { flex: 1; padding: 0 15px; display: flex; align-items: center; }
         .session-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
-        .session-actions { width: 90px; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
         
-        /* ACTION CIRCLES */
-        .action-container { display: flex; gap: 10px; }
+        /* ACTION CONTAINER - FIXED POSITION TO AVOID JUMPING */
+        .session-actions { 
+            position: absolute; right: 10px; top: 0; bottom: 0;
+            width: 90px; display: flex; align-items: center; justify-content: flex-end; 
+        }
+        
+        /* CLEAN DOTS (NO BG) */
+        .more-dots { color: #aaa; background: transparent !important; }
+
+        /* ACTION CIRCLES (CLEAN) */
+        .action-container { display: flex; gap: 8px; }
         .action-circle {
             width: 40px; height: 40px; border-radius: 50%;
             display: grid; place-items: center; 
             color: white; border: none; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .action-circle span { background: none; color: white; }
-        .action-circle.red { background-color: var(--danger) !important; }
-        .action-circle.blue { background-color: var(--accent) !important; }
+        /* Ikonet inni skal ikke ha bakgrunn */
+        .action-circle span { background: transparent; }
+        .action-circle.red { background-color: var(--danger); }
+        .action-circle.blue { background-color: var(--accent); }
 
         /* FAB & MENU */
         .fab-container { position: fixed; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
@@ -146,7 +157,7 @@
         .card {
             background: white; padding: 14px 16px; margin-bottom: 8px; border-radius: 12px; 
             border: 1px solid #cbd2d9; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05); position: relative; /* For actions */
         }
         .sortable-chosen { background: #eef5fa; border-color: var(--accent); transform: scale(1.02); }
         .sortable-ghost { opacity: 0.4; background: #ccc; }
@@ -161,9 +172,11 @@
             font-size: 1rem; font-family: inherit; background: white;
         }
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
+        
+        /* KATEGORI HEADER (RETTET: ingen uppercase) */
         .lib-cat-header {
-            font-size: 0.9rem; color: var(--text-soft); margin: 20px 0 10px 5px; 
-            font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; 
+            font-weight: 800; text-transform: none; letter-spacing: 0.5px;
         }
 
         /* PRESENTATION VIEW */
@@ -350,7 +363,7 @@
             const container = document.getElementById(`act-${id}`);
             if(container.querySelector('.action-container')) return; 
 
-            const originalHtml = `<span class="material-icons-round fade-in" style="color:#aaa;">more_vert</span>`;
+            const originalHtml = `<span class="material-icons-round fade-in more-dots">more_vert</span>`;
             let buttonsHtml = '';
             
             if (type === 'session') {
@@ -447,7 +460,6 @@
 
             const btn = document.getElementById('btn-save-new-ex');
             const oldText = btn.innerText;
-            // VIS LASTER PÅ KNAPP UTEN IKON
             btn.innerHTML = '<span class="material-icons-round rotating">hourglass_empty</span>';
 
             try {
@@ -522,7 +534,7 @@
                             <span>${fmtTime(ex.tid)}</span>
                         </div>
                         <div class="session-actions center-grid" id="act-${ex.id}" onclick="event.stopPropagation(); window.showActionMenu('${ex.id}', 'exercise', this)">
-                            <span class="material-icons-round" style="color:#aaa;">more_vert</span>
+                            <span class="material-icons-round more-dots">more_vert</span>
                         </div>
                     `;
                     list.appendChild(div);
@@ -661,7 +673,7 @@
                     </div>
                     <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
                     <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)">
-                        <span class="material-icons-round" style="color:#aaa;">more_vert</span>
+                        <span class="material-icons-round more-dots">more_vert</span>
                     </div>`;
                 cont.appendChild(card);
             });
