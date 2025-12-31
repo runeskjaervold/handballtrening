@@ -69,24 +69,20 @@
             to { transform: translateX(-20px); opacity: 0; }
         }
 
-        /* 2. LOADER MED ZOOM-UT EFFEKT */
+        /* LOADER MED ZOOM-UT EFFEKT */
         #loader { 
             position: fixed; inset: 0; 
             background: var(--accent); 
             z-index: 30000; display: flex; justify-content: center; align-items: center; 
-            
-            /* Transition for selve bakgrunnen */
             transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
         
         .loader-icon {
             width: 120px; height: auto;
-            /* Transition for bildet (Zoom og Fade) */
             transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease-in-out;
-            animation: pulse-slow 2s ease-in-out infinite; /* Puls mens den venter */
+            animation: pulse-slow 2s ease-in-out infinite; 
         }
 
-        /* KLASSEN SOM TRIGGES NÅR FERDIG */
         #loader.loaded {
             opacity: 0;
             visibility: hidden;
@@ -94,8 +90,8 @@
         }
 
         #loader.loaded .loader-icon {
-            transform: scale(30); /* Zoomer enormt inn */
-            opacity: 0; /* Fader ut samtidig */
+            transform: scale(30); 
+            opacity: 0; 
         }
         
         @keyframes pulse-slow {
@@ -213,19 +209,25 @@
         /* KOMPAKTE OG RUNDE KORT */
         .card {
             background: white; 
-            padding: 6px 12px; 
-            margin-bottom: 6px; 
-            border-radius: 8px; 
+            padding: 10px 12px; /* ØKT PADDING FOR BEDRE HØYDE/TOUCH */
+            margin-bottom: 8px; 
+            border-radius: 12px; 
             border: 1px solid #cbd2d9; 
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
-            touch-action: none;
+            /* Fjernet touch-action:none for å la sortable virke bedre */
         }
+        
+        .sortable-drag { opacity: 0; } 
+        /* Tydeligere farge når man holder kortet */
+        .sortable-chosen { background: #eef5fa; border-color: var(--accent); transform: scale(1.02); }
+        .sortable-ghost { opacity: 0.4; background: #ccc; }
+
         .card-content { flex: 1; display: flex; justify-content: space-between; align-items: center; pointer-events: none; }
         .card h4 { font-size: 0.9rem; font-weight: 800; color: #000; margin: 0; }
         .card span { font-size: 0.8rem; font-weight: 600; color: #555; background: #eee; padding: 2px 6px; border-radius: 6px; }
-        .card-del { width: 30px; height: 30px; color: #999; margin-left: 8px; cursor: pointer; font-size: 1.2rem; }
-        .card-del:hover { color: var(--danger); }
+        .card-del { width: 35px; height: 35px; color: #999; margin-left: 8px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .card-del:hover { color: var(--danger); background: #fff0f0; border-radius: 50%; }
 
         /* PRESENTATION VIEW */
         #view-pres { background: white; z-index: 50; }
@@ -374,10 +376,9 @@
                 renderLibrary();
                 renderFilters();
                 
-                // NY: LOAD ANIMATION (TRIGGER CLASS)
                 setTimeout(() => {
                     document.getElementById('loader').classList.add('loaded');
-                }, 800); // Litt mer tid for å se ikonet
+                }, 800);
 
             } catch(e) { alert("Feil ved lasting."); }
             
@@ -452,16 +453,32 @@
         }
 
         function initDrag() {
+            // FIX: Bruker 'clone' for library, men erstatter elementet manuelt ved 'onAdd' i session-planen
             new Sortable(document.getElementById('exercise-list'), {
                 group: { name: 'shared', pull: 'clone', put: false },
-                sort: false, animation: 150, forceFallback: true,
+                sort: false, 
+                animation: 150, 
+                forceFallback: true, // Viktig for mobil
                 delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5
             });
 
             new Sortable(document.getElementById('session-plan-area'), {
-                group: 'shared', animation: 150, forceFallback: true,
+                group: 'shared', 
+                animation: 150, 
+                forceFallback: true,
                 delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5,
-                onAdd: (evt) => { checkEmpty(); },
+                onAdd: (evt) => { 
+                    // NÅR ET KORT SLIPPES HER:
+                    const item = evt.item;
+                    // 1. Hent data
+                    const data = JSON.parse(item.dataset.json);
+                    // 2. Lag et NYTT "ekte" session-kort (med X-knapp)
+                    const newCard = createCard(data, true);
+                    // 3. Bytt ut det midlertidige "bibliotek-kortet" med det nye kortet
+                    item.parentNode.replaceChild(newCard, item);
+                    
+                    checkEmpty(); 
+                },
                 onRemove: checkEmpty
             });
         }
@@ -498,7 +515,6 @@
                 card.className = 'session-card slide-up';
                 card.setAttribute('onclick', `window.openPres('${d}')`);
                 
-                // ENDRET REKKEFØLGE: ONS - 13 - JUL
                 card.innerHTML = `
                     <div class="date-box">
                         <span class="db-weekday">${dayName.toUpperCase()}</span>
