@@ -249,7 +249,6 @@
         
         /* LIBRARY VIEW */
         #view-library-full { height: 100%; overflow: hidden; position: absolute; inset: 0; }
-        #library-search { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #ccc; font-size: 1rem; font-family: inherit; background: white; }
         
         /* SØKEFELT */
         #library-search { 
@@ -497,7 +496,7 @@
     </div>
 
 </div> <script>
-        // --- DIN RIKTIGE SCRIPT-URL ---
+        // --- DIN NYE SCRIPT-URL (OPPDATERT) ---
         const API_URL = 'https://script.google.com/macros/s/AKfycby1-Oc9Bsga_iE17rpx0Mw_7LZ-hfD5OxuTeeFnvOCgdkSt-HLP4qB970E8r3GERYBY/exec';
 
         let data = { exercises: [], sessions: {} };
@@ -543,7 +542,9 @@
         function completeLogin(email) {
             currentUserEmail = email;
             document.getElementById('login-overlay-container').classList.add('hidden-login');
+            // Show main loader animation while fetching data
             document.getElementById('loader').classList.remove('loaded');
+            
             initDataLoad();
         }
 
@@ -604,10 +605,12 @@
         // --- DATA INIT ---
         async function initDataLoad() {
             try {
+                // 1. Get Global Exercises
                 const exRes = await fetch(API_URL + "?v=" + Date.now()); 
                 const exJson = await exRes.json();
                 data.exercises = exJson.ovelser || [];
                 
+                // 2. Get User Plans (POST med text/plain header)
                 const planRes = await fetch(API_URL, {
                     method: 'POST',
                     redirect: 'follow',
@@ -622,10 +625,13 @@
                 renderLibrary();
                 renderFilters();
                 
+                // Animation steps
                 setTimeout(() => { document.getElementById('loader').classList.add('step-1'); }, 600); 
                 setTimeout(() => { 
                     document.getElementById('loader').classList.add('loaded'); 
                     showView('view-home');
+                    // FAB Logic
+                    document.getElementById('btn-fab-lib').style.display = 'flex';
                     document.getElementById('fab-container').style.display = 'flex';
                     document.getElementById('fab-container').style.opacity = '1';
                     document.getElementById('fab-container').style.pointerEvents = 'auto';
@@ -633,12 +639,17 @@
 
             } catch(e) { 
                 console.error(e);
-                alert("Feil ved lasting av data."); 
+                // IF ERROR, FORCE LOGOUT TO PREVENT HANGING
+                alert("Feil ved lasting av data. Logger ut..."); 
+                logout();
             }
             initDrag();
         }
 
-        // --- APP LOGIC ---
+
+        // --- UI & LOGIC ---
+
+        // Enter key for title
         document.getElementById('input-title').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') window.confirmTitle();
         });
@@ -676,7 +687,9 @@
                         </button>
                     </div>`;
             }
+
             container.innerHTML = buttonsHtml;
+
             setTimeout(() => {
                 const ac = container.querySelector('.action-container');
                 if (ac) {
@@ -716,11 +729,13 @@
                 opt.value = cat.charAt(0).toUpperCase() + cat.slice(1);
                 dl.appendChild(opt);
             });
+
             document.getElementById('new-ex-name').value = ex.navn || '';
             document.getElementById('new-ex-cat').value = ex.kategori || '';
             document.getElementById('new-ex-time').value = ex.tid || '';
             document.getElementById('new-ex-tags').value = ex.tags ? ex.tags.join(', ') : '';
             document.getElementById('new-ex-desc').value = ex.beskrivelse || '';
+
             document.getElementById('modal-new-exercise').style.display = 'grid';
         }
 
@@ -732,9 +747,17 @@
             const desc = document.getElementById('new-ex-desc').value;
 
             if(!navn) { alert("Mangler navn"); return; }
+
             const tags = tagsRaw.split(',').map(t => t.trim()).filter(t => t);
             
-            const exInfo = { navn: navn, kategori: kat, tid: tid, tags: tags, beskrivelse: desc };
+            const exInfo = {
+                navn: navn,
+                kategori: kat,
+                tid: tid,
+                tags: tags,
+                beskrivelse: desc
+            };
+
             const btn = document.getElementById('btn-save-new-ex');
             const oldText = btn.innerText;
             btn.innerHTML = '<span class="material-icons-round rotating">hourglass_empty</span>';
@@ -743,26 +766,40 @@
                 if (state.editingExerciseId) {
                     exInfo.id = state.editingExerciseId;
                     await fetch(API_URL, {
-                        method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        method: 'POST',
+                        redirect: 'follow',
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify({ handling: 'oppdater_ovelse', info: exInfo })
                     });
                     const idx = data.exercises.findIndex(e => String(e.id) === String(state.editingExerciseId));
                     if (idx !== -1) data.exercises[idx] = { ...data.exercises[idx], ...exInfo };
+
                 } else {
                     await fetch(API_URL, {
-                        method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        method: 'POST',
+                        redirect: 'follow',
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify({ handling: 'ny_ovelse', info: exInfo })
                     });
                     exInfo.id = Date.now().toString(); 
                     data.exercises.push(exInfo);
                 }
+
                 if(kat) state.categories.add(kat.toLowerCase());
+                
                 renderLibrary(); 
-                if (document.getElementById('view-library-full').classList.contains('active')) window.filterFullLibrary();
+                if (document.getElementById('view-library-full').classList.contains('active')) {
+                    window.filterFullLibrary();
+                }
+
                 window.closeModals();
                 alert("Øvelse lagret!");
-            } catch(e) { alert("Feil ved lagring."); } 
-            finally { btn.innerText = oldText; }
+
+            } catch(e) {
+                alert("Feil ved lagring.");
+            } finally {
+                btn.innerText = oldText;
+            }
         };
 
         window.openFullLibrary = function() {
@@ -790,7 +827,9 @@
                     grouped[catKey].push(ex);
                 }
             });
+
             const sortedCats = Object.keys(grouped).sort();
+
             sortedCats.forEach(cat => {
                 list.innerHTML += `<div class="lib-cat-header">${cat}</div>`;
                 grouped[cat].forEach(ex => {
@@ -798,10 +837,18 @@
                     div.className = 'card';
                     div.dataset.json = JSON.stringify(ex);
                     div.setAttribute('onclick', 'window.openExInfo(this)');
-                    div.innerHTML = `<div class="card-content"><h4 class="cap-first">${ex.navn}</h4></div><div class="session-actions center-grid" id="act-${ex.id}" onclick="event.stopPropagation(); window.showActionMenu('${ex.id}', 'exercise', this)"><span class="material-icons-round more-dots">more_vert</span></div>`;
+                    div.innerHTML = `
+                        <div class="card-content">
+                            <h4 class="cap-first">${ex.navn}</h4>
+                        </div>
+                        <div class="session-actions center-grid" id="act-${ex.id}" onclick="event.stopPropagation(); window.showActionMenu('${ex.id}', 'exercise', this)">
+                            <span class="material-icons-round more-dots">more_vert</span>
+                        </div>
+                    `;
                     list.appendChild(div);
                 });
             });
+            
             if (sortedCats.length === 0) list.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">Ingen treff</p>';
         };
 
@@ -813,16 +860,24 @@
         window.confirmDeleteExercise = async function() {
             const id = state.deleteTargetId;
             if(!id) return;
+            
             window.closeModals(); 
+            
             try {
                 await fetch(API_URL, {
-                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ handling: 'slett_ovelse', id: id })
                 });
                 data.exercises = data.exercises.filter(e => String(e.id) !== String(id));
-                if (document.getElementById('view-library-full').classList.contains('active')) window.filterFullLibrary();
+                if (document.getElementById('view-library-full').classList.contains('active')) {
+                    window.filterFullLibrary();
+                }
                 renderLibrary(); 
-            } catch(e) { alert("Kunne ikke slette."); }
+            } catch(e) {
+                alert("Kunne ikke slette.");
+            }
         };
 
         window.startNewSession = function() {
@@ -839,11 +894,13 @@
             if(!input.value) input.value = new Date().toISOString().split('T')[0];
             const d = input.value;
             state.date = d;
+            
             if(data.sessions[d]) {
                 document.getElementById('modal-date').style.display = 'none';
                 document.getElementById('modal-conflict').style.display = 'grid';
                 return;
             } 
+            
             state.session = { navn: "Håndballøkt", plan: [] };
             window.loadEditor(); 
             window.closeModals();
@@ -914,11 +971,14 @@
         function renderHome() {
             const cont = document.getElementById('home-scroll');
             cont.innerHTML = '';
+            
             const dates = Object.keys(data.sessions).sort((a, b) => new Date(a) - new Date(b));
+            
             if(!dates.length) {
                 cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
                 return;
             }
+            
             let lastWeekKey = null; 
             const days = ['søn','man','tir','ons','tor','fre','lør']; 
             const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
@@ -926,6 +986,7 @@
             dates.forEach(d => {
                 const s = data.sessions[d];
                 const dateObj = new Date(d);
+                
                 const week = getWeek(dateObj);
                 const year = dateObj.getFullYear();
                 const weekKey = `${year}-${week}`;
@@ -940,7 +1001,16 @@
                 card.className = 'session-card slide-up';
                 card.id = `card-${d}`;
                 card.setAttribute('onclick', `window.openPres('${d}')`);
-                card.innerHTML = `<div class="date-box"><span class="db-weekday">${dayName.toUpperCase()}</span><span class="db-day">${dayNum}</span><span class="db-month">${monthName.toUpperCase()}</span></div><div class="session-info"><span class="session-name cap-first">${s.navn}</span></div><div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)"><span class="material-icons-round more-dots">more_vert</span></div>`;
+                card.innerHTML = `
+                    <div class="date-box">
+                        <span class="db-weekday">${dayName.toUpperCase()}</span>
+                        <span class="db-day">${dayNum}</span>
+                        <span class="db-month">${monthName.toUpperCase()}</span>
+                    </div>
+                    <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
+                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)">
+                        <span class="material-icons-round more-dots">more_vert</span>
+                    </div>`;
                 cont.appendChild(card);
             });
         }
@@ -948,22 +1018,29 @@
         window.deleteSession = async function(d, btn) {
             const card = document.getElementById(`card-${d}`);
             if(!card) return;
+
             card.classList.add('fade-out-collapse');
+
             const prev = card.previousElementSibling;
             const next = card.nextElementSibling;
             let headerToRemove = null;
+
             if (prev && prev.classList.contains('week-header')) {
                 if (!next || next.classList.contains('week-header')) {
                     headerToRemove = prev;
                     headerToRemove.classList.add('fade-out-collapse');
                 }
             }
+
             setTimeout(async () => {
                 card.remove();
                 if(headerToRemove) headerToRemove.remove();
+                
                 delete data.sessions[d]; 
                 await fetch(API_URL, { 
-                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ action: "delete_plan", email: currentUserEmail, id: d }) 
                 });
             }, 350);
@@ -975,10 +1052,19 @@
             data.sessions[state.date] = state.session;
             const icon = document.getElementById('icon-save');
             icon.innerText = 'hourglass_empty'; icon.classList.add('rotating'); 
+            
             try {
                 await fetch(API_URL, {
-                    method: 'POST', redirect: 'follow', headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: "save_plan", email: currentUserEmail, id: state.date, dato: state.date, data: state.session })
+                    method: 'POST', 
+                    redirect: 'follow',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ 
+                        action: "save_plan", 
+                        email: currentUserEmail, 
+                        id: state.date, 
+                        dato: state.date, 
+                        data: state.session 
+                    })
                 });
                 icon.classList.remove('rotating'); icon.innerText = 'check';
                 setTimeout(() => { icon.innerText = 'save'; window.goHome(); }, 1000);
@@ -990,10 +1076,20 @@
             div.className = 'card';
             div.dataset.json = JSON.stringify(ex);
             div.setAttribute('onclick', 'window.openExInfo(this)');
-            let html = `<div class="card-content"><h4 class="cap-first">${ex.navn}</h4>`;
-            if (showTime && ex.tid) { html += `<span class="card-time-text">${ex.tid} min</span>`; }
+            
+            let html = `
+                <div class="card-content">
+                    <h4 class="cap-first">${ex.navn}</h4>`;
+            
+            if (showTime && ex.tid) {
+                html += `<span class="card-time-text">${ex.tid} min</span>`;
+            }
+            
             html += `</div>`; 
-            if(removable) { html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`; }
+
+            if(removable) {
+                html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`;
+            }
             div.innerHTML = html;
             return div;
         }
@@ -1001,7 +1097,10 @@
         window.removeCardFromPlan = function(btn) {
             const card = btn.parentElement;
             card.classList.add('fade-out-collapse');
-            setTimeout(() => { card.remove(); checkEmpty(); }, 350);
+            setTimeout(() => {
+                card.remove();
+                checkEmpty();
+            }, 350);
         };
 
         function renderLibrary() {
