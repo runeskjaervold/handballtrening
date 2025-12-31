@@ -80,7 +80,7 @@
         @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-20px); opacity: 0; } }
 
-        /* --- LOADER STYLE (STATIC START) --- */
+        /* LOADER STYLE */
         #loader { 
             position: fixed; inset: 0; background: var(--accent); 
             z-index: 99999; display: flex; flex-direction: column; 
@@ -90,53 +90,34 @@
         
         .loader-icon {
             width: 120px; height: auto;
-            /* Ingen animasjon her til å begynne med - helt i ro */
-            transition: transform 0.8s cubic-bezier(0.2, 0.0, 0.2, 1); /* Smooth flytting */
+            transition: transform 0.8s cubic-bezier(0.2, 0.0, 0.2, 1);
         }
         
         .loader-text {
             font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.8rem;
             color: white; letter-spacing: 2px; margin-top: 20px; opacity: 0;
             transform: translateY(20px); 
-            /* Teksten venter litt (0.3s delay) før den fader inn */
             transition: opacity 0.8s ease-in-out 0.2s, transform 0.8s ease-in-out 0.2s;
         }
 
-        /* Step 1: Flytt logo, vis tekst */
-        #loader.step-1 .loader-icon { 
-            transform: scale(0.7) translateY(-50px); 
-        }
-        #loader.step-1 .loader-text { 
-            opacity: 1; 
-            transform: translateY(-40px);
-        }
-        
+        #loader.step-1 .loader-icon { transform: scale(0.7) translateY(-50px); }
+        #loader.step-1 .loader-text { opacity: 1; transform: translateY(-40px); }
         #loader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
 
         /* LAYOUT */
         .view { 
-            display: none; 
-            height: 100%; 
-            width: 100%;
-            flex-direction: column; 
-            position: absolute; 
-            inset: 0; 
-            background: var(--bg); 
-            z-index: 10;
+            display: none; height: 100%; width: 100%;
+            flex-direction: column; position: absolute; inset: 0; 
+            background: var(--bg); z-index: 10;
             padding-top: env(safe-area-inset-top); 
         }
         .view.active { display: flex; z-index: 20; }
 
         /* HEADER */
         header { 
-            padding: 20px 30px; 
-            background: var(--surface); 
-            display: flex; 
-            flex-direction: row; 
-            align-items: center; 
-            justify-content: space-between; 
-            gap: 20px;
-            position: sticky; top: 0; z-index: 50;
+            padding: 20px 30px; background: var(--surface); 
+            display: flex; flex-direction: row; align-items: center; justify-content: space-between; 
+            gap: 20px; position: sticky; top: 0; z-index: 50;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
         
@@ -268,7 +249,15 @@
         
         /* LIBRARY VIEW */
         #view-library-full { height: 100%; overflow: hidden; position: absolute; inset: 0; }
-        #library-search { width: 100%; padding: 15px; border: none; border-bottom: 1px solid #ccc; font-size: 1rem; font-family: inherit; background: white; }
+        
+        /* SØKEFELT I KARTOTEKET (FIXED) */
+        #library-search { 
+            width: calc(100% - 30px); margin: 15px auto 5px auto; padding: 12px 15px;
+            border: 1px solid #dbe0e8; border-radius: 12px;
+            font-size: 1rem; font-family: inherit; background: white;
+            box-shadow: var(--card-shadow); display: block; -webkit-appearance: none;
+        }
+        
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
         .lib-cat-header { font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: none; letter-spacing: 0.5px; }
 
@@ -415,7 +404,7 @@
             <h1 class="home-title">Mine økter</h1>
         </header>
         <div id="home-scroll"></div>
-        </div>
+    </div>
 
     <div id="view-library-full" class="view">
         <div id="editor-top">
@@ -481,7 +470,7 @@
                 // STEP 1: ANIMATION START
                 setTimeout(() => { 
                     document.getElementById('loader').classList.add('step-1');
-                }, 600); // Kortere ventetid før start
+                }, 600); 
 
                 // STEP 2: FINISH
                 setTimeout(() => { 
