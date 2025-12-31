@@ -80,7 +80,7 @@
         @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-20px); opacity: 0; } }
 
-        /* LOADER STYLE */
+        /* --- LOADER STYLE (STATIC START) --- */
         #loader { 
             position: fixed; inset: 0; background: var(--accent); 
             z-index: 99999; display: flex; flex-direction: column; 
@@ -90,39 +90,53 @@
         
         .loader-icon {
             width: 120px; height: auto;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-            animation: pulse-slow 2s ease-in-out infinite; 
+            /* Ingen animasjon her til å begynne med - helt i ro */
+            transition: transform 0.8s cubic-bezier(0.2, 0.0, 0.2, 1); /* Smooth flytting */
         }
         
         .loader-text {
             font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.8rem;
             color: white; letter-spacing: 2px; margin-top: 20px; opacity: 0;
             transform: translateY(20px); 
-            transition: opacity 0.6s ease-in-out 0.5s, transform 0.6s ease-in-out 0.5s;
+            /* Teksten venter litt (0.3s delay) før den fader inn */
+            transition: opacity 0.8s ease-in-out 0.2s, transform 0.8s ease-in-out 0.2s;
         }
 
-        #loader.step-1 .loader-icon { transform: scale(0.7) translateY(-50px); animation: none; }
-        #loader.step-1 .loader-text { opacity: 1; transform: translateY(-40px); }
+        /* Step 1: Flytt logo, vis tekst */
+        #loader.step-1 .loader-icon { 
+            transform: scale(0.7) translateY(-50px); 
+        }
+        #loader.step-1 .loader-text { 
+            opacity: 1; 
+            transform: translateY(-40px);
+        }
+        
         #loader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
-
-        @keyframes pulse-slow {
-            0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; }
-        }
 
         /* LAYOUT */
         .view { 
-            display: none; height: 100%; width: 100%;
-            flex-direction: column; position: absolute; inset: 0; 
-            background: var(--bg); z-index: 10;
+            display: none; 
+            height: 100%; 
+            width: 100%;
+            flex-direction: column; 
+            position: absolute; 
+            inset: 0; 
+            background: var(--bg); 
+            z-index: 10;
             padding-top: env(safe-area-inset-top); 
         }
         .view.active { display: flex; z-index: 20; }
 
         /* HEADER */
         header { 
-            padding: 20px 30px; background: var(--surface); 
-            display: flex; flex-direction: row; align-items: center; justify-content: space-between; 
-            gap: 20px; position: sticky; top: 0; z-index: 50;
+            padding: 20px 30px; 
+            background: var(--surface); 
+            display: flex; 
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 20px;
+            position: sticky; top: 0; z-index: 50;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
         
@@ -172,7 +186,7 @@
         .action-circle.red { background-color: var(--danger) !important; }
         .action-circle.blue { background-color: var(--accent) !important; }
 
-        /* FAB & MENU (GLOBAL PLACEMENT) */
+        /* FAB & MENU */
         .fab-container { position: absolute; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; transition: opacity 0.3s; }
         .fab-options {
             display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
@@ -467,12 +481,12 @@
                 // STEP 1: ANIMATION START
                 setTimeout(() => { 
                     document.getElementById('loader').classList.add('step-1');
-                }, 800); 
+                }, 600); // Kortere ventetid før start
 
                 // STEP 2: FINISH
                 setTimeout(() => { 
                     document.getElementById('loader').classList.add('loaded'); 
-                }, 2200);
+                }, 2000);
 
             } catch(e) { alert("Feil ved lasting."); }
             initDrag();
@@ -626,16 +640,16 @@
 
         // FAB VISIBILITY LOGIC
         window.openFullLibrary = function() {
-            window.toggleFab(); // Close expanded menu
+            window.toggleFab();
             window.filterFullLibrary(); 
             showView('view-library-full');
             
             // SHOW FAB, BUT HIDE LIBRARY LINK INSIDE IT
             const fab = document.getElementById('fab-container');
-            fab.style.display = 'flex'; // Ensure flex
+            fab.style.display = 'flex'; 
             fab.style.opacity = '1';
             fab.style.pointerEvents = 'auto';
-            document.getElementById('btn-fab-lib').style.display = 'none'; // Hide lib link
+            document.getElementById('btn-fab-lib').style.display = 'none'; 
         };
 
         window.filterFullLibrary = function() {
@@ -971,6 +985,7 @@
             data.exercises.forEach(ex => {
                 if(state.catFilter !== 'alle' && (ex.kategori||'').toLowerCase() !== state.catFilter) return;
                 if(state.tagFilter && !(ex.tags||[]).some(t => t.toLowerCase() === state.tagFilter)) return;
+                // SHOW TIME IS TRUE IN LIBRARY LIST (SIDE BY SIDE)
                 list.appendChild(createCard(ex, false, true));
             });
         }
