@@ -214,16 +214,21 @@
         #full-library-list { padding: 15px; overflow-y: auto; flex: 1; background: #f7f9fc; }
         .lib-cat-header { font-size: 0.95rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; text-transform: none; letter-spacing: 0.5px; }
 
-        /* PRESENTATION VIEW */
+        /* PRESENTATION VIEW (FIX) */
         #view-pres { background: white; z-index: 50; height: 100vh; overflow: hidden; position: fixed; inset: 0; }
         
         #pres-content { 
             flex: 1; 
             overflow-y: auto; 
-            padding: 80px 25px 100px 25px; 
+            /* JUSTERT PADDING-TOP FOR Å STARTE HØYERE */
+            padding: calc(20px + env(safe-area-inset-top)) 25px 100px 25px; 
         }
         
-        .pres-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        /* EKSTRA HØYRE-PADDING I HEADER SÅ TEKST IKKE KOLLIDERER MED KNAPPEN */
+        .pres-header { 
+            margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; 
+            padding-right: 60px; /* Plass til lukkeknapp */
+        }
         .pres-title { font-size: 2rem; line-height: 1.1; margin-bottom: 5px; margin-top: 15px; color: var(--accent); }
         .pres-item { padding: 20px 0; border-bottom: 1px solid #eee; }
         .pres-item h3 { font-size: 1.4rem; margin-bottom: 5px; }
@@ -240,7 +245,8 @@
         
         #btn-close-pres { 
             position: absolute; 
-            top: calc(15px + env(safe-area-inset-top)); 
+            /* SAMME TOP-AVSTAND SOM TEKSTEN STARTET PÅ */
+            top: calc(20px + env(safe-area-inset-top)); 
             right: 20px; 
             background: #f0f0f0; width: 44px; height: 44px; border-radius: 50%; 
             z-index: 9999; cursor: pointer; pointer-events: auto !important; 
@@ -253,10 +259,10 @@
         input[type="date"], input[type="text"], input[type="number"], textarea, select { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; margin: 10px 0; font-family: inherit; -webkit-appearance: none; }
         textarea { height: 120px; resize: none; }
         .modal-btn { width: 100%; padding: 15px; background: var(--accent); color: white; border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        .rotating { animation: spin 1s linear infinite; }
         
         /* CONFLICT MODAL SPECIFIC */
         #modal-conflict p { font-size: 1.1rem; }
+        .rotating { animation: spin 1s linear infinite; }
     </style>
 </head>
 <body>
@@ -401,82 +407,7 @@
             initDrag();
         }
 
-        /* --- LOGIKK: AUTO-SCROLL TIL IDAG --- */
-        function renderHome() {
-            const cont = document.getElementById('home-scroll');
-            cont.innerHTML = '';
-            
-            const dates = Object.keys(data.sessions).sort((a, b) => new Date(a) - new Date(b));
-            
-            if(!dates.length) {
-                cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
-                return;
-            }
-            
-            let lastWeekKey = null; 
-            const days = ['søn','man','tir','ons','tor','fre','lør']; 
-            const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
-            
-            // DATO FOR I DAG (ISO FORMAT YYYY-MM-DD)
-            const todayStr = new Date().toISOString().split('T')[0];
-            let scrollId = null;
-            let foundNext = false;
-
-            dates.forEach(d => {
-                const s = data.sessions[d];
-                
-                // Finn første økt som er i dag eller senere
-                if (!foundNext && d >= todayStr) {
-                    scrollId = `card-${d}`;
-                    foundNext = true;
-                }
-
-                const dateObj = new Date(d);
-                const week = getWeek(dateObj);
-                const year = dateObj.getFullYear();
-                const weekKey = `${year}-${week}`;
-                if(weekKey !== lastWeekKey) {
-                    cont.innerHTML += `<div class="week-header">Uke ${week} - ${year}</div>`;
-                    lastWeekKey = weekKey;
-                }
-                const dayName = days[dateObj.getDay()];
-                const monthName = months[dateObj.getMonth()];
-                const dayNum = dateObj.getDate();
-                
-                const card = document.createElement('div');
-                card.className = 'session-card slide-up';
-                card.id = `card-${d}`; // VIKTIG FOR RULLING
-                card.setAttribute('onclick', `window.openPres('${d}')`);
-                card.innerHTML = `
-                    <div class="date-box">
-                        <span class="db-weekday">${dayName.toUpperCase()}</span>
-                        <span class="db-day">${dayNum}</span>
-                        <span class="db-month">${monthName.toUpperCase()}</span>
-                    </div>
-                    <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
-                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)">
-                        <span class="material-icons-round more-dots">more_vert</span>
-                    </div>`;
-                cont.appendChild(card);
-            });
-
-            // AUTOMATISK RULLING (etter at innholdet er laget)
-            if (scrollId) {
-                setTimeout(() => {
-                    const el = document.getElementById(scrollId);
-                    if(el) {
-                        el.scrollIntoView({behavior: "smooth", block: "center"});
-                    }
-                }, 500); // Venter 500ms
-            } else {
-                // Hvis ingen fremtidige økter, rull til bunnen (siste økt)
-                 setTimeout(() => {
-                    cont.scrollTop = cont.scrollHeight;
-                }, 500);
-            }
-        }
-
-        /* --- ØVRIGE FUNKSJONER --- */
+        /* --- MENY / REDIGERING --- */
 
         window.toggleFab = function() {
             document.getElementById('fab-options').classList.toggle('show');
@@ -685,6 +616,144 @@
             }
         };
 
+        /* --- STANDARD FUNKSJONER --- */
+
+        window.startNewSession = function() {
+            const opts = document.getElementById('fab-options');
+            if(opts.classList.contains('show')) window.toggleFab();
+            document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('input-date').value = today; 
+            document.getElementById('modal-date').style.display = 'grid'; 
+        };
+
+        window.confirmDate = function() {
+            const input = document.getElementById('input-date');
+            if(!input.value) input.value = new Date().toISOString().split('T')[0];
+            const d = input.value;
+            state.date = d;
+            
+            // SJEKK FOR KONFLIKT
+            if(data.sessions[d]) {
+                document.getElementById('modal-date').style.display = 'none';
+                document.getElementById('modal-conflict').style.display = 'grid';
+                return;
+            } 
+            
+            state.session = { navn: "Håndballøkt", plan: [] };
+            window.loadEditor(); 
+            window.closeModals();
+        };
+
+        window.editExistingSession = function() {
+            state.session = data.sessions[state.date];
+            window.loadEditor();
+            window.closeModals();
+        };
+
+        window.loadEditor = function() {
+            document.getElementById('session-title-edit').innerText = state.session.navn;
+            const area = document.getElementById('session-plan-area');
+            area.innerHTML = ''; 
+            if(state.session.plan.length > 0) {
+                state.session.plan.forEach(ex => {
+                    const card = createCard(ex, true);
+                    area.appendChild(card);
+                });
+            }
+            checkEmpty(); showView('view-editor');
+        };
+
+        function checkEmpty() {
+            const area = document.getElementById('session-plan-area');
+            let emptyMsg = area.querySelector('.empty-state');
+            if (!emptyMsg) {
+                emptyMsg = document.createElement('div');
+                emptyMsg.className = 'empty-state';
+                emptyMsg.innerText = 'Dra øvelser hit';
+                area.appendChild(emptyMsg);
+            }
+            const hasCards = area.querySelectorAll('.card').length > 0;
+            emptyMsg.style.display = hasCards ? 'none' : 'block';
+        }
+
+        window.editCurrentSession = function() { 
+            if (!state.date) { alert("Ingen dato valgt"); return; }
+            window.loadEditor(); 
+        };
+
+        function processCategories() {
+            data.exercises.forEach(e => { if(e.kategori) state.categories.add(e.kategori.toLowerCase()); });
+        }
+
+        function initDrag() {
+            new Sortable(document.getElementById('exercise-list'), {
+                group: { name: 'shared', pull: 'clone', put: false },
+                sort: false, animation: 150, forceFallback: true,
+                delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5
+            });
+            new Sortable(document.getElementById('session-plan-area'), {
+                group: 'shared', animation: 150, forceFallback: true,
+                delay: 200, delayOnTouchOnly: true, touchStartThreshold: 5,
+                onAdd: (evt) => { 
+                    const item = evt.item;
+                    const data = JSON.parse(item.dataset.json);
+                    const newCard = createCard(data, true);
+                    item.parentNode.replaceChild(newCard, item);
+                    checkEmpty(); 
+                },
+                onRemove: checkEmpty
+            });
+        }
+
+        function renderHome() {
+            const cont = document.getElementById('home-scroll');
+            cont.innerHTML = '';
+            
+            const dates = Object.keys(data.sessions).sort((a, b) => new Date(a) - new Date(b));
+            
+            if(!dates.length) {
+                cont.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Ingen planlagte økter</p>';
+                return;
+            }
+            
+            let lastWeekKey = null; 
+            const days = ['søn','man','tir','ons','tor','fre','lør']; 
+            const months = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+            
+            dates.forEach(d => {
+                const s = data.sessions[d];
+                const dateObj = new Date(d);
+                const week = getWeek(dateObj);
+                const year = dateObj.getFullYear();
+                const weekKey = `${year}-${week}`;
+                
+                if(weekKey !== lastWeekKey) {
+                    cont.innerHTML += `<div class="week-header">Uke ${week} - ${year}</div>`;
+                    lastWeekKey = weekKey;
+                }
+                const dayName = days[dateObj.getDay()];
+                const monthName = months[dateObj.getMonth()];
+                const dayNum = dateObj.getDate();
+                
+                const card = document.createElement('div');
+                card.className = 'session-card slide-up';
+                card.id = `card-${d}`; 
+                card.setAttribute('onclick', `window.openPres('${d}')`);
+                card.innerHTML = `
+                    <div class="date-box">
+                        <span class="db-weekday">${dayName.toUpperCase()}</span>
+                        <span class="db-day">${dayNum}</span>
+                        <span class="db-month">${monthName.toUpperCase()}</span>
+                    </div>
+                    <div class="session-info"><span class="session-name cap-first">${s.navn}</span></div>
+                    <div class="session-actions center-grid" id="act-${d}" onclick="event.stopPropagation(); window.showActionMenu('${d}', 'session', this)">
+                        <span class="material-icons-round more-dots">more_vert</span>
+                    </div>`;
+                cont.appendChild(card);
+            });
+        }
+
         window.deleteSession = async function(d) {
             delete data.sessions[d]; renderHome();
             await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
@@ -755,7 +824,7 @@
             div.dataset.json = JSON.stringify(ex);
             div.setAttribute('onclick', 'window.openExInfo(this)');
             
-            // UTEN TID
+            // UTEN TID I KORTET
             let html = `
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>
@@ -821,69 +890,6 @@
             var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
             return Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
         }
-
-        window.startNewSession = function() {
-            const opts = document.getElementById('fab-options');
-            if(opts.classList.contains('show')) window.toggleFab();
-            document.getElementById('session-plan-area').innerHTML = '<div class="empty-state">Dra øvelser hit</div>';
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('input-date').value = today; 
-            document.getElementById('modal-date').style.display = 'grid'; 
-        };
-
-        window.confirmDate = function() {
-            const input = document.getElementById('input-date');
-            if(!input.value) input.value = new Date().toISOString().split('T')[0];
-            const d = input.value;
-            state.date = d;
-            
-            if(data.sessions[d]) {
-                document.getElementById('modal-date').style.display = 'none';
-                document.getElementById('modal-conflict').style.display = 'grid';
-                return;
-            } 
-            
-            state.session = { navn: "Håndballøkt", plan: [] };
-            window.loadEditor(); 
-            window.closeModals();
-        };
-
-        window.editExistingSession = function() {
-            state.session = data.sessions[state.date];
-            window.loadEditor();
-            window.closeModals();
-        };
-
-        window.loadEditor = function() {
-            document.getElementById('session-title-edit').innerText = state.session.navn;
-            const area = document.getElementById('session-plan-area');
-            area.innerHTML = ''; 
-            if(state.session.plan.length > 0) {
-                state.session.plan.forEach(ex => {
-                    const card = createCard(ex, true);
-                    area.appendChild(card);
-                });
-            }
-            checkEmpty(); showView('view-editor');
-        };
-
-        function checkEmpty() {
-            const area = document.getElementById('session-plan-area');
-            let emptyMsg = area.querySelector('.empty-state');
-            if (!emptyMsg) {
-                emptyMsg = document.createElement('div');
-                emptyMsg.className = 'empty-state';
-                emptyMsg.innerText = 'Dra øvelser hit';
-                area.appendChild(emptyMsg);
-            }
-            const hasCards = area.querySelectorAll('.card').length > 0;
-            emptyMsg.style.display = hasCards ? 'none' : 'block';
-        }
-
-        window.editCurrentSession = function() { 
-            if (!state.date) { alert("Ingen dato valgt"); return; }
-            window.loadEditor(); 
-        };
 
         function fmtTime(t) {
             if(!t) return '';
