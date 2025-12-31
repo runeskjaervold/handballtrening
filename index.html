@@ -7,7 +7,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -38,7 +38,7 @@
             justify-content: center; 
         }
 
-        /* APP CONTAINER - 750px BREDDE */
+        /* APP CONTAINER */
         #app-root {
             width: 100%;
             max-width: 750px;
@@ -80,19 +80,45 @@
         @keyframes slideInRight { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-20px); opacity: 0; } }
 
-        /* LOADER */
+        /* --- LOADER STYLE (UPDATED) --- */
         #loader { 
             position: fixed; inset: 0; background: var(--accent); 
-            z-index: 99999; display: flex; justify-content: center; align-items: center; 
+            z-index: 99999; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
             transition: opacity 0.8s ease-in-out, visibility 0.8s;
         }
+        
         .loader-icon {
             width: 120px; height: auto;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease-in-out;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             animation: pulse-slow 2s ease-in-out infinite; 
         }
+        
+        .loader-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900; /* Veldig tykk */
+            font-size: 1.8rem;
+            color: white;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Step 1: Data loaded -> Icon shrinks/moves up, Text appears */
+        #loader.step-1 .loader-icon {
+            transform: scale(0.5) translateY(-60px); /* Halvparten og opp */
+            animation: none; /* Stopp pulsing */
+        }
+        #loader.step-1 .loader-text {
+            opacity: 1;
+            transform: translateY(-40px); /* Flytt opp sammen med ikonet */
+        }
+
+        /* Step 2: Fade out entire screen */
         #loader.loaded { opacity: 0; visibility: hidden; pointer-events: none; }
-        #loader.loaded .loader-icon { transform: scale(30); opacity: 0; }
+
         @keyframes pulse-slow {
             0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; }
         }
@@ -138,7 +164,7 @@
         .week-header { font-size: 0.9rem; color: var(--text-soft); margin: 25px 0 10px 5px; font-weight: 800; letter-spacing: 0.5px; }
         #home-scroll .week-header:first-child { margin-top: 15px; }
 
-        /* SESSION CARD (HOME) */
+        /* SESSION CARD */
         .session-card {
             background: var(--surface); border-radius: 12px; padding: 0; margin-bottom: 12px;
             box-shadow: var(--card-shadow); border: 1px solid white;
@@ -170,8 +196,8 @@
         .action-circle.red { background-color: var(--danger) !important; }
         .action-circle.blue { background-color: var(--accent) !important; }
 
-        /* FAB & MENU */
-        .fab-container { position: absolute; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
+        /* FAB & MENU (GLOBAL NOW) */
+        .fab-container { position: absolute; bottom: 30px; right: 30px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; transition: opacity 0.3s; }
         .fab-options {
             display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
             opacity: 0; transform: translateY(20px); pointer-events: none; transition: all 0.3s ease;
@@ -194,31 +220,22 @@
         #view-editor { height: 100%; overflow: hidden; position: absolute; inset: 0; }
         
         #editor-top {
-            height: 55px; 
-            background: var(--surface); 
+            height: 55px; background: var(--surface); 
             border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center; padding: 0 15px; 
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .nav-icon { width: 40px; height: 40px; font-size: 26px; color: var(--accent); cursor: pointer; }
         #session-title-edit { font-weight: 800; border-bottom: 1px dashed #999; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; color: var(--text); }
         
         #editor-ws { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* SESSION PLAN AREA (BLUE) */
         #session-plan-area { flex: 1; background: var(--accent); overflow-y: auto; padding: 10px 15px; min-height: 100px; }
         .empty-state { text-align: center; color: rgba(255,255,255,0.8); margin-top: 50px; pointer-events: none; font-weight: 600; }
         
-        /* LIBRARY AREA (WHITE) */
         #library-area { 
-            height: 55%; 
-            background: var(--surface); 
-            display: flex; 
-            flex-direction: column; 
-            border-top: 1px solid var(--border); 
-            z-index: 20; 
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            height: 55%; background: var(--surface); display: flex; flex-direction: column; 
+            border-top: 1px solid var(--border); z-index: 20; box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
         }
         .cat-scroll { display: flex; overflow-x: auto; padding: 12px; gap: 8px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; scrollbar-width: none; }
         .cat-chip { padding: 8px 16px; background: #f0f0f0; border-radius: 12px; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
@@ -227,45 +244,35 @@
         #exercise-list { flex: 1; overflow-y: auto; padding: 10px; background: #f7f9fc; }
         
         .tag-scroll { 
-            display: flex; overflow-x: auto; padding: 10px 10px 25px 10px; 
-            gap: 8px; 
-            border-top: 1px solid #eee; background: #f9f9f9; 
-            flex-shrink: 0; 
-            height: auto; min-height: 60px;
-            align-items: center; scrollbar-width: none; 
+            display: flex; overflow-x: auto; padding: 10px 10px 25px 10px; gap: 8px; 
+            border-top: 1px solid #eee; background: #f9f9f9; flex-shrink: 0; 
+            height: auto; min-height: 60px; align-items: center; scrollbar-width: none; 
         }
         .tag-chip { padding: 4px 10px; background: white; border: 1px solid #ccc; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; cursor: pointer; }
         .tag-chip.active { background: #333; color: white; border-color: #333; }
 
-        /* KORT DESIGN (Felles for blått felt og liste) */
+        /* KORT DESIGN */
         .card {
-            background: white; 
-            padding: 10px 12px; /* KOMPAKT OG LIKT OVERALT */
-            margin-bottom: 8px; border-radius: 12px; 
-            border: 1px solid #cbd2d9; 
-            display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: var(--card-shadow); position: relative;
-            min-height: 50px; /* Sikrer lik minstehøyde */
+            background: white; padding: 10px 12px; margin-bottom: 8px; border-radius: 12px; 
+            border: 1px solid #cbd2d9; display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: var(--card-shadow); position: relative; min-height: 50px;
         }
         
-        /* Fjernet spesifikk padding for #session-plan-area for å ha lik stil */
+        #session-plan-area .card { padding: 8px 12px; min-height: auto; }
 
         .sortable-chosen { background: #eef5fa; border-color: var(--accent); transform: scale(1.02); }
         .sortable-ghost { opacity: 0.4; background: #ccc; }
         
         .card-content { 
-            flex: 1; display: flex; flex-direction: row; 
-            justify-content: space-between; align-items: center; 
+            flex: 1; display: flex; flex-direction: row; justify-content: space-between; align-items: center; 
             pointer-events: none; text-align: left;
         }
         .card h4 { font-size: 0.95rem; font-weight: 800; color: #000; margin: 0; }
         .card-time-text { font-size: 0.85rem; font-weight: 600; color: #666; margin-left: 10px; white-space: nowrap;}
 
         .card-del { 
-            width: 35px; height: 35px; 
-            color: #aaa; margin-left: 8px; cursor: pointer; font-size: 1.1rem; 
-            display: flex; align-items: center; justify-content: center; 
-            border-radius: 50%;
+            width: 35px; height: 35px; color: #aaa; margin-left: 8px; cursor: pointer; font-size: 1.1rem; 
+            display: flex; align-items: center; justify-content: center; border-radius: 50%;
         }
         .card-del:hover { background: #fee; color: var(--danger); }
         
@@ -295,28 +302,22 @@
         }
         
         #btn-close-pres { 
-            position: absolute; 
-            top: calc(20px + env(safe-area-inset-top)); 
-            right: 20px; 
+            position: absolute; top: calc(20px + env(safe-area-inset-top)); right: 20px; 
             background: #f0f0f0; width: 44px; height: 44px; border-radius: 50%; 
             z-index: 9999; cursor: pointer; pointer-events: auto !important; 
         }
 
         .circle-close {
-            position: absolute; top: 15px; right: 15px;
-            width: 32px; height: 32px; border-radius: 50%;
-            background: #eee; color: #333;
-            display: grid; place-items: center;
-            font-weight: 800; font-size: 14px;
-            cursor: pointer; z-index: 10;
+            position: absolute; top: 15px; right: 15px; width: 32px; height: 32px; border-radius: 50%;
+            background: #eee; color: #333; display: grid; place-items: center;
+            font-weight: 800; font-size: 14px; cursor: pointer; z-index: 10;
         }
 
         /* MODALS */
         .modal-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 20000; display: none; place-items: center; backdrop-filter: blur(2px); }
         .modal-box { 
-            background: white; padding: 25px; border-radius: 12px; 
-            width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; 
-            text-align: center; position: relative; 
+            background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; 
+            max-height: 85vh; overflow-y: auto; text-align: center; position: relative; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
         
@@ -333,6 +334,7 @@
 
     <div id="loader">
         <img src="https://www.skjaervold.com/wp-content/uploads/2025/12/lasteikon.png" alt="Laster..." class="loader-icon">
+        <div class="loader-text">TRENINGSBOKA</div>
     </div>
 
     <div id="modal-date" class="modal-bg">
@@ -413,9 +415,9 @@
             <h1 class="home-title">Mine økter</h1>
         </header>
         <div id="home-scroll"></div>
-        <div class="fab-container">
+        <div class="fab-container" id="fab-container">
             <div class="fab-options" id="fab-options">
-                <button class="fab-option-btn" onclick="window.openFullLibrary()">Øvelsesbank <span class="material-icons-round">library_books</span></button>
+                <button class="fab-option-btn" id="btn-fab-lib" onclick="window.openFullLibrary()">Øvelsesbank <span class="material-icons-round">library_books</span></button>
                 <button class="fab-option-btn" onclick="window.openNewExerciseModal()">Ny øvelse <span class="material-icons-round">sports_handball</span></button>
                 <button class="fab-option-btn" onclick="window.startNewSession()">Ny økt <span class="material-icons-round">calendar_today</span></button>
             </div>
@@ -484,7 +486,16 @@
                 renderLibrary();
                 renderFilters();
                 
-                setTimeout(() => { document.getElementById('loader').classList.add('loaded'); }, 800);
+                // STEP 1: ANIMATION START (SHRINK LOGO, SHOW TEXT)
+                setTimeout(() => { 
+                    document.getElementById('loader').classList.add('step-1');
+                }, 800); // Vent litt før animasjonen starter
+
+                // STEP 2: FINISH (FADE OUT)
+                setTimeout(() => { 
+                    document.getElementById('loader').classList.add('loaded'); 
+                }, 2200); // 800ms + 1400ms (ish)
+
             } catch(e) { alert("Feil ved lasting."); }
             initDrag();
         }
@@ -550,7 +561,6 @@
             setupExerciseModal();
         };
 
-        // FIXED: USE LOOSE COMPARISON TO MATCH STRING ID FROM HTML WITH NUMBER ID FROM DB
         window.openEditExerciseModal = function(id) {
             const ex = data.exercises.find(e => String(e.id) === String(id));
             if (!ex) return;
@@ -636,10 +646,16 @@
             }
         };
 
+        // FAB VISIBILITY LOGIC
         window.openFullLibrary = function() {
             window.toggleFab();
             window.filterFullLibrary(); 
             showView('view-library-full');
+            // Hide Lib button in menu
+            document.getElementById('btn-fab-lib').style.display = 'none';
+            // Ensure container is visible
+            document.getElementById('fab-container').style.opacity = '1';
+            document.getElementById('fab-container').style.pointerEvents = 'auto';
         };
 
         window.filterFullLibrary = function() {
@@ -690,7 +706,7 @@
             const id = state.deleteTargetId;
             if(!id) return;
             
-            window.closeModals(); // Close confirmation
+            window.closeModals(); 
             
             try {
                 await fetch(API_URL, {
@@ -724,7 +740,6 @@
             const d = input.value;
             state.date = d;
             
-            // SJEKK FOR KONFLIKT
             if(data.sessions[d]) {
                 document.getElementById('modal-date').style.display = 'none';
                 document.getElementById('modal-conflict').style.display = 'grid';
@@ -748,12 +763,15 @@
             area.innerHTML = ''; 
             if(state.session.plan.length > 0) {
                 state.session.plan.forEach(ex => {
-                    // SHOW TIME IS TRUE IN EDITOR
                     const card = createCard(ex, true, true);
                     area.appendChild(card);
                 });
             }
             checkEmpty(); showView('view-editor');
+            
+            // HIDE FAB IN EDITOR
+            document.getElementById('fab-container').style.opacity = '0';
+            document.getElementById('fab-container').style.pointerEvents = 'none';
         };
 
         function checkEmpty() {
@@ -790,7 +808,6 @@
                 onAdd: (evt) => { 
                     const item = evt.item;
                     const data = JSON.parse(item.dataset.json);
-                    // SHOW TIME IS TRUE IN EDITOR (DROP ZONE)
                     const newCard = createCard(data, true, true);
                     item.parentNode.replaceChild(newCard, item);
                     checkEmpty(); 
@@ -822,7 +839,6 @@
                 const year = dateObj.getFullYear();
                 const weekKey = `${year}-${week}`;
                 if(weekKey !== lastWeekKey) {
-                    // UKEFORMAT: Uke X - YYYY
                     cont.innerHTML += `<div class="week-header">Uke ${week} - ${year}</div>`;
                     lastWeekKey = weekKey;
                 }
@@ -847,34 +863,28 @@
             });
         }
 
-        // ANIMATED SESSION DELETE (UPDATED LOGIC TO REMOVE HEADER)
         window.deleteSession = async function(d, btn) {
             const card = document.getElementById(`card-${d}`);
             if(!card) return;
 
-            // 1. Animate card
             card.classList.add('fade-out-collapse');
 
-            // 2. Check if we need to remove the header (if it was the only item in that week)
             const prev = card.previousElementSibling;
             const next = card.nextElementSibling;
             let headerToRemove = null;
 
             if (prev && prev.classList.contains('week-header')) {
-                // If next is another header, or null, this week is empty
                 if (!next || next.classList.contains('week-header')) {
                     headerToRemove = prev;
                     headerToRemove.classList.add('fade-out-collapse');
                 }
             }
 
-            // 3. Remove from DOM after animation
             setTimeout(async () => {
                 card.remove();
                 if(headerToRemove) headerToRemove.remove();
                 
                 delete data.sessions[d]; 
-                // Do NOT call renderHome() to avoid flashing
                 await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify({handling:'slett', dato:d}) });
             }, 350);
         };
@@ -898,6 +908,9 @@
                     </div>`;
             });
             document.getElementById('pres-content').innerHTML = html;
+            // HIDE FAB IN PRES VIEW
+            document.getElementById('fab-container').style.opacity = '0';
+            document.getElementById('fab-container').style.pointerEvents = 'none';
         };
 
         window.openTitleModal = function() {
@@ -948,22 +961,19 @@
                 <div class="card-content">
                     <h4 class="cap-first">${ex.navn}</h4>`;
             
-            // VIS TID KUN I EDITOR (TEKST TIL HØYRE)
             if (showTime && ex.tid) {
                 html += `<span class="card-time-text">${ex.tid} min</span>`;
             }
             
-            html += `</div>`; // Close card-content
+            html += `</div>`; 
 
             if(removable) {
-                // Slette-knapp med animasjon
                 html += `<div class="card-del center-grid" onclick="event.stopPropagation(); window.removeCardFromPlan(this)">✕</div>`;
             }
             div.innerHTML = html;
             return div;
         }
 
-        // REMOVE CARD ANIMATION
         window.removeCardFromPlan = function(btn) {
             const card = btn.parentElement;
             card.classList.add('fade-out-collapse');
@@ -979,7 +989,6 @@
             data.exercises.forEach(ex => {
                 if(state.catFilter !== 'alle' && (ex.kategori||'').toLowerCase() !== state.catFilter) return;
                 if(state.tagFilter && !(ex.tags||[]).some(t => t.toLowerCase() === state.tagFilter)) return;
-                // SHOW TIME IS TRUE IN LIBRARY LIST (SIDE BY SIDE)
                 list.appendChild(createCard(ex, false, true));
             });
         }
@@ -1022,7 +1031,13 @@
             v.classList.add('active'); v.classList.add('fade-in');
         }
 
-        function goHome() { renderHome(); showView('view-home'); }
+        function goHome() { 
+            renderHome(); showView('view-home'); 
+            // SHOW FAB IN HOME
+            document.getElementById('btn-fab-lib').style.display = 'flex';
+            document.getElementById('fab-container').style.opacity = '1';
+            document.getElementById('fab-container').style.pointerEvents = 'auto';
+        }
 
         function getWeek(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
